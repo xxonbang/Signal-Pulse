@@ -481,19 +481,28 @@
         }
 
         .signal-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px;
-            font-size: 1rem;
-            transition: transform 0.3s;
+            margin: 0 auto 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .signal-icon::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
         }
 
         .signal-card:hover .signal-icon {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .signal-count {
@@ -511,44 +520,49 @@
         }
 
         /* Strong Buy */
-        .signal-card.strong-buy::before { background: linear-gradient(90deg, #059669, #10b981); }
-        .signal-card.strong-buy { border-color: rgba(5, 150, 105, 0.15); background: linear-gradient(to bottom, rgba(5, 150, 105, 0.04), var(--bg-secondary)); }
-        .signal-card.strong-buy .signal-icon { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+        .signal-card.strong-buy::before { background: #059669; }
+        .signal-card.strong-buy { border-color: rgba(5, 150, 105, 0.2); background: var(--bg-secondary); }
+        .signal-card.strong-buy .signal-icon { background: rgba(5, 150, 105, 0.12); color: #059669; border-radius: 8px; }
         .signal-card.strong-buy .signal-count { color: #059669; }
         .signal-card.strong-buy .signal-label { color: #059669; }
-        .signal-card.strong-buy:hover { border-color: rgba(5, 150, 105, 0.3); box-shadow: 0 12px 24px rgba(5, 150, 105, 0.15); }
+        .signal-card.strong-buy:hover { border-color: rgba(5, 150, 105, 0.4); box-shadow: 0 8px 20px rgba(5, 150, 105, 0.12); }
+        .signal-card.strong-buy.active { border-color: #059669; background: rgba(5, 150, 105, 0.06); }
 
         /* Buy */
-        .signal-card.buy::before { background: linear-gradient(90deg, #10b981, #34d399); }
-        .signal-card.buy { border-color: rgba(16, 185, 129, 0.15); background: linear-gradient(to bottom, rgba(16, 185, 129, 0.04), var(--bg-secondary)); }
-        .signal-card.buy .signal-icon { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
+        .signal-card.buy::before { background: #10b981; }
+        .signal-card.buy { border-color: rgba(16, 185, 129, 0.2); background: var(--bg-secondary); }
+        .signal-card.buy .signal-icon { background: rgba(16, 185, 129, 0.12); color: #10b981; border-radius: 8px; }
         .signal-card.buy .signal-count { color: #10b981; }
         .signal-card.buy .signal-label { color: #10b981; }
-        .signal-card.buy:hover { border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15); }
+        .signal-card.buy:hover { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.12); }
+        .signal-card.buy.active { border-color: #10b981; background: rgba(16, 185, 129, 0.06); }
 
         /* Neutral */
-        .signal-card.neutral::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
-        .signal-card.neutral { border-color: rgba(217, 119, 6, 0.15); background: linear-gradient(to bottom, rgba(217, 119, 6, 0.04), var(--bg-secondary)); }
-        .signal-card.neutral .signal-icon { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
+        .signal-card.neutral::before { background: #d97706; }
+        .signal-card.neutral { border-color: rgba(217, 119, 6, 0.2); background: var(--bg-secondary); }
+        .signal-card.neutral .signal-icon { background: rgba(217, 119, 6, 0.12); color: #d97706; border-radius: 8px; }
         .signal-card.neutral .signal-count { color: #d97706; }
         .signal-card.neutral .signal-label { color: #d97706; }
-        .signal-card.neutral:hover { border-color: rgba(217, 119, 6, 0.3); box-shadow: 0 12px 24px rgba(217, 119, 6, 0.15); }
+        .signal-card.neutral:hover { border-color: rgba(217, 119, 6, 0.4); box-shadow: 0 8px 20px rgba(217, 119, 6, 0.12); }
+        .signal-card.neutral.active { border-color: #d97706; background: rgba(217, 119, 6, 0.06); }
 
         /* Sell */
-        .signal-card.sell::before { background: linear-gradient(90deg, #ea580c, #f97316); }
-        .signal-card.sell { border-color: rgba(234, 88, 12, 0.15); background: linear-gradient(to bottom, rgba(234, 88, 12, 0.04), var(--bg-secondary)); }
-        .signal-card.sell .signal-icon { background: linear-gradient(135deg, #ea580c, #f97316); color: white; }
+        .signal-card.sell::before { background: #ea580c; }
+        .signal-card.sell { border-color: rgba(234, 88, 12, 0.2); background: var(--bg-secondary); }
+        .signal-card.sell .signal-icon { background: rgba(234, 88, 12, 0.12); color: #ea580c; border-radius: 8px; }
         .signal-card.sell .signal-count { color: #ea580c; }
         .signal-card.sell .signal-label { color: #ea580c; }
-        .signal-card.sell:hover { border-color: rgba(234, 88, 12, 0.3); box-shadow: 0 12px 24px rgba(234, 88, 12, 0.15); }
+        .signal-card.sell:hover { border-color: rgba(234, 88, 12, 0.4); box-shadow: 0 8px 20px rgba(234, 88, 12, 0.12); }
+        .signal-card.sell.active { border-color: #ea580c; background: rgba(234, 88, 12, 0.06); }
 
         /* Strong Sell */
-        .signal-card.strong-sell::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
-        .signal-card.strong-sell { border-color: rgba(220, 38, 38, 0.15); background: linear-gradient(to bottom, rgba(220, 38, 38, 0.04), var(--bg-secondary)); }
-        .signal-card.strong-sell .signal-icon { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+        .signal-card.strong-sell::before { background: #dc2626; }
+        .signal-card.strong-sell { border-color: rgba(220, 38, 38, 0.2); background: var(--bg-secondary); }
+        .signal-card.strong-sell .signal-icon { background: rgba(220, 38, 38, 0.12); color: #dc2626; border-radius: 8px; }
         .signal-card.strong-sell .signal-count { color: #dc2626; }
         .signal-card.strong-sell .signal-label { color: #dc2626; }
-        .signal-card.strong-sell:hover { border-color: rgba(220, 38, 38, 0.3); box-shadow: 0 12px 24px rgba(220, 38, 38, 0.15); }
+        .signal-card.strong-sell:hover { border-color: rgba(220, 38, 38, 0.4); box-shadow: 0 8px 20px rgba(220, 38, 38, 0.12); }
+        .signal-card.strong-sell.active { border-color: #dc2626; background: rgba(220, 38, 38, 0.06); }
 
         .filter-indicator {
             display: none;
@@ -696,7 +710,8 @@
             .signal-summary { grid-template-columns: repeat(5, 1fr); gap: 6px; }
             .signal-card { padding: 12px 4px 10px; border-radius: 12px; }
             .signal-card::before { height: 3px; }
-            .signal-icon { width: 28px; height: 28px; font-size: 0.8rem; margin-bottom: 6px; }
+            .signal-icon { width: 24px; height: 24px; margin-bottom: 6px; }
+            .signal-icon svg { width: 12px; height: 12px; }
             .signal-count { font-size: 1.1rem; }
             .signal-label { font-size: 0.55rem; letter-spacing: 0; }
             .results-table-wrapper { display: none; }
@@ -718,7 +733,8 @@
             .signal-summary { gap: 14px; }
             .signal-card { padding: 24px 16px 20px; border-radius: 20px; }
             .signal-card::before { height: 5px; }
-            .signal-icon { width: 44px; height: 44px; font-size: 1.2rem; margin-bottom: 12px; }
+            .signal-icon { width: 40px; height: 40px; margin-bottom: 12px; }
+            .signal-icon svg { width: 18px; height: 18px; }
             .signal-count { font-size: 2.25rem; }
             .signal-label { font-size: 0.75rem; }
             .features-grid { grid-template-columns: repeat(4, 1fr); }
@@ -1126,27 +1142,27 @@
 
                 <div class="signal-summary" id="signal-summary">
                     <div class="signal-card strong-buy ${currentSignal === '적극매수' ? 'active' : ''}" data-signal="적극매수" onclick="filterBySignal('적극매수')">
-                        <div class="signal-icon">🚀</div>
+                        <div class="signal-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
                         <div class="signal-count">${signalCounts['적극매수']}</div>
                         <div class="signal-label">적극매수</div>
                     </div>
                     <div class="signal-card buy ${currentSignal === '매수' ? 'active' : ''}" data-signal="매수" onclick="filterBySignal('매수')">
-                        <div class="signal-icon">📈</div>
+                        <div class="signal-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg></div>
                         <div class="signal-count">${signalCounts['매수']}</div>
                         <div class="signal-label">매수</div>
                     </div>
                     <div class="signal-card neutral ${currentSignal === '중립' ? 'active' : ''}" data-signal="중립" onclick="filterBySignal('중립')">
-                        <div class="signal-icon">⚖️</div>
+                        <div class="signal-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg></div>
                         <div class="signal-count">${signalCounts['중립']}</div>
                         <div class="signal-label">중립</div>
                     </div>
                     <div class="signal-card sell ${currentSignal === '매도' ? 'active' : ''}" data-signal="매도" onclick="filterBySignal('매도')">
-                        <div class="signal-icon">📉</div>
+                        <div class="signal-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
                         <div class="signal-count">${signalCounts['매도']}</div>
                         <div class="signal-label">매도</div>
                     </div>
                     <div class="signal-card strong-sell ${currentSignal === '적극매도' ? 'active' : ''}" data-signal="적극매도" onclick="filterBySignal('적극매도')">
-                        <div class="signal-icon">🔻</div>
+                        <div class="signal-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg></div>
                         <div class="signal-count">${signalCounts['적극매도']}</div>
                         <div class="signal-label">적극매도</div>
                     </div>
