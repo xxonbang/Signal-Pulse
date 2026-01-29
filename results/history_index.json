@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-01-29 09:44:20",
+  "updated_at": "2026-01-29 23:26:49",
   "retention_days": 30,
   "total_records": 2,
   "history": [
@@ -8,9 +8,10 @@
       "filename": "analysis_2026-01-29.json",
       "total_stocks": 120,
       "signals": {
-        "중립": 104,
-        "매수": 13,
-        "적극매수": 3
+        "적극매수": 23,
+        "매수": 69,
+        "중립": 20,
+        "매도": 8
       }
     },
     {
