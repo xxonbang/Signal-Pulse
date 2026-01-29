@@ -62,8 +62,42 @@ async def collect_all_stocks() -> list[dict]:
     return all_stocks
 
 
+async def click_more_buttons(page: Page):
+    """'더보기' 버튼들을 클릭하여 추가 정보 표시"""
+    # 종목 정보 더보기 버튼 클릭
+    try:
+        stock_info_btn = page.locator('button:has-text("종목 정보 더보기")')
+        if await stock_info_btn.count() > 0:
+            await stock_info_btn.first.click()
+            await page.wait_for_timeout(500)
+    except Exception:
+        pass
+
+    # 매매동향 더보기 버튼 클릭
+    try:
+        trading_btn = page.locator('button:has-text("매매동향 더보기")')
+        if await trading_btn.count() > 0:
+            await trading_btn.first.click()
+            await page.wait_for_timeout(500)
+    except Exception:
+        pass
+
+    # 일반적인 "더보기" 버튼들 모두 클릭
+    try:
+        more_buttons = page.locator('button:has-text("더보기")')
+        count = await more_buttons.count()
+        for i in range(min(count, 5)):  # 최대 5개까지만
+            try:
+                await more_buttons.nth(i).click()
+                await page.wait_for_timeout(300)
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+
 async def capture_stock_screenshot(page: Page, stock: dict, capture_dir: Path, max_retries: int = 3) -> dict:
-    """개별 종목 페이지 스크린샷 캡처 (재시도 포함)"""
+    """개별 종목 페이지 스크린샷 캡처 (모바일 버전, 더보기 확장)"""
     code = stock["code"]
     name = stock["name"]
     url = STOCK_DETAIL_URL.format(code=code)
@@ -73,7 +107,11 @@ async def capture_stock_screenshot(page: Page, stock: dict, capture_dir: Path, m
             await page.goto(url, wait_until="networkidle", timeout=30000)
             await page.wait_for_timeout(2000)
 
-            # 전체 페이지 스크롤
+            # 더보기 버튼들 클릭 (종목 정보, 매매동향 등)
+            await click_more_buttons(page)
+            await page.wait_for_timeout(1000)
+
+            # 전체 페이지 스크롤 (콘텐츠 로딩 유도)
             await page.evaluate("""
                 async () => {
                     await new Promise(resolve => {

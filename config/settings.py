@@ -19,21 +19,21 @@ GEMINI_API_KEYS = [
 ]
 GEMINI_API_KEYS = [k for k in GEMINI_API_KEYS if k]  # None 제거
 
-# 타겟 URL (신버전 stock.naver.com)
+# 타겟 URL (모바일 버전 m.stock.naver.com - 더 많은 정보 표시)
 KOSPI_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSPI&orderType=quantTop&startIdx=0&pageSize=50"
 KOSDAQ_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSDAQ&orderType=quantTop&startIdx=0&pageSize=70"
-STOCK_DETAIL_URL = "https://stock.naver.com/domestic/stock/{code}"
+STOCK_DETAIL_URL = "https://m.stock.naver.com/domestic/stock/{code}/total"
 
-# 스크래핑 설정
+# 스크래핑 설정 (모바일 뷰포트)
 MAX_KOSPI_STOCKS = 50
 MAX_KOSDAQ_STOCKS = 70
 MAX_STOCKS_PER_MARKET = 50  # 하위 호환성 유지
-VIEWPORT_WIDTH = 1920
-VIEWPORT_HEIGHT = 1080
-DEVICE_SCALE_FACTOR = 2
+VIEWPORT_WIDTH = 430   # iPhone 14 Pro Max 너비
+VIEWPORT_HEIGHT = 932  # iPhone 14 Pro Max 높이
+DEVICE_SCALE_FACTOR = 3
 
-# User-Agent (봇 탐지 우회)
-USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+# User-Agent (모바일)
+USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
 
 # 캡처/출력 경로
 CAPTURES_DIR = ROOT_DIR / "captures"
