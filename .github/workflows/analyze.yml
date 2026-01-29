@@ -159,7 +159,7 @@ jobs:
       needs.check-market.outputs.is_market_open == 'true' &&
       github.event.inputs.skip_kis != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     outputs:
       success: ${{ steps.kis_analysis.outputs.kis_success }}
 
@@ -256,9 +256,9 @@ jobs:
           stock_count = len(gemini_data.get('stocks', {}))
           print(f'변환된 종목 수: {stock_count}')
 
-          # Gemini 분석 (배치)
+          # Gemini 분석 (배치) - 배치 크기 증가로 API 호출 횟수 감소
           print('\\nGemini AI 분석 시작...')
-          analysis_results = analyze_kis_data_batch(gemini_data, batch_size=10)
+          analysis_results = analyze_kis_data_batch(gemini_data, batch_size=20)
           print(f'분석 완료: {len(analysis_results)}개 종목')
 
           # 분석 결과 저장 (프론트엔드 타입과 일치)
