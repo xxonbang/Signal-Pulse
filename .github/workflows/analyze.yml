@@ -412,6 +412,9 @@ jobs:
               fi
 
               git commit -m "Update analysis results - $KST_TIME KST [Vision: $VISION_STATUS, KIS: $KIS_STATUS]"
+
+              # 원격 변경사항이 있을 수 있으므로 pull --rebase 후 push
+              git pull --rebase origin main || true
               git push
               echo "Results committed and pushed."
               echo "committed=true" >> $GITHUB_OUTPUT
