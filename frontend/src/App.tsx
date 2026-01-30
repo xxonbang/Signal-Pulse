@@ -1,18 +1,48 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { Navigation } from '@/components/common';
 import { Hero, AnalysisTabs, Footer } from '@/components/layout';
 import { HistoryPanel } from '@/components/history';
 import { VisionAnalysis, APIAnalysis, CombinedAnalysis } from '@/pages';
 import { useUIStore } from '@/store/uiStore';
+import { fetchLatestData, fetchKISData, fetchKISAnalysis, fetchHistoryIndex } from '@/services/api';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
       retry: 2,
+      staleTime: 1000 * 60 * 5, // 5분간 데이터를 fresh로 유지
     },
   },
 });
+
+// 앱 로드 시 모든 데이터를 미리 prefetch하는 훅
+function usePrefetchAllData() {
+  const client = useQueryClient();
+
+  useEffect(() => {
+    // 백그라운드에서 모든 데이터 prefetch (병렬 실행)
+    Promise.allSettled([
+      client.prefetchQuery({
+        queryKey: ['vision', 'latest'],
+        queryFn: fetchLatestData,
+      }),
+      client.prefetchQuery({
+        queryKey: ['kis-data'],
+        queryFn: fetchKISData,
+      }),
+      client.prefetchQuery({
+        queryKey: ['kis-analysis'],
+        queryFn: fetchKISAnalysis,
+      }),
+      client.prefetchQuery({
+        queryKey: ['history', 'index'],
+        queryFn: fetchHistoryIndex,
+      }),
+    ]);
+  }, [client]);
+}
 
 function FeaturesSection() {
   return (
@@ -117,6 +147,9 @@ function MainContent() {
 }
 
 function AppContent() {
+  // 앱 로드 시 모든 데이터 미리 로드
+  usePrefetchAllData();
+
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary">
       <Navigation />
