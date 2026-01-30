@@ -16,7 +16,7 @@ export function StockCard({ stock }: StockCardProps) {
           rel="noopener noreferrer"
           className="flex-1 min-w-0 text-inherit no-underline hover:text-accent-primary transition-colors"
         >
-          <div className="font-semibold text-sm md:text-base text-text-primary truncate">{stock.name}</div>
+          <div className="font-semibold text-base md:text-lg text-text-primary truncate">{stock.name}</div>
           <div className="text-xs md:text-sm text-text-muted font-mono">{stock.code}</div>
         </a>
         <SignalBadge signal={stock.signal} />

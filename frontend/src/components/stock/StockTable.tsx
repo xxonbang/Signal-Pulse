@@ -36,7 +36,7 @@ export function StockTable({ stocks }: StockTableProps) {
                   rel="noopener noreferrer"
                   className="text-inherit no-underline hover:text-accent-primary hover:underline transition-colors"
                 >
-                  <div className="font-semibold text-text-primary text-sm">{stock.name}</div>
+                  <div className="font-semibold text-text-primary text-base">{stock.name}</div>
                   <div className="text-xs text-text-muted font-mono mt-0.5">{stock.code}</div>
                 </a>
               </td>
