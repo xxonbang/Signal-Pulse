@@ -234,15 +234,51 @@ function TipText({ children }: { children: React.ReactNode }) {
   );
 }
 
+// 시그널 타입 리스트
+const SIGNAL_TYPES: SignalType[] = ['적극매수', '매수', '중립', '매도', '적극매도'];
+
 export function CombinedAnalysis() {
   const { activeTab } = useUIStore();
   const [marketFilter, setMarketFilter] = useState<MarketType>('all');
-  const [matchFilter, setMatchFilter] = useState<MatchStatus | 'all'>('all');
+  // 멀티셀렉트: 빈 Set = 전체 선택
+  const [matchFilters, setMatchFilters] = useState<Set<MatchStatus>>(new Set());
+  const [signalFilters, setSignalFilters] = useState<Set<SignalType>>(new Set());
 
   // 탭 변경 시 필터 초기화
   useEffect(() => {
-    setMatchFilter('all');
+    setMatchFilters(new Set());
+    setSignalFilters(new Set());
   }, [activeTab]);
+
+  // 필터 토글 함수
+  const toggleMatchFilter = (status: MatchStatus) => {
+    setMatchFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(status)) {
+        next.delete(status);
+      } else {
+        next.add(status);
+      }
+      return next;
+    });
+  };
+
+  const toggleSignalFilter = (signal: SignalType) => {
+    setSignalFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(signal)) {
+        next.delete(signal);
+      } else {
+        next.add(signal);
+      }
+      return next;
+    });
+  };
+
+  const clearAllFilters = () => {
+    setMatchFilters(new Set());
+    setSignalFilters(new Set());
+  };
 
   // Vision AI 데이터 로드
   const { data: visionData, isLoading: isLoadingVision } = useQuery({
@@ -328,14 +364,24 @@ export function CombinedAnalysis() {
       stocks = stocks.filter(s => s.market.toLowerCase() === marketFilter);
     }
 
-    // 일치 상태 필터
-    if (matchFilter !== 'all') {
-      stocks = stocks.filter(s => s.matchStatus === matchFilter);
+    // 일치 상태 필터 (멀티셀렉트: 빈 Set = 전체)
+    if (matchFilters.size > 0) {
+      stocks = stocks.filter(s => matchFilters.has(s.matchStatus));
+    }
+
+    // 시그널 필터 (멀티셀렉트: 빈 Set = 전체)
+    // OR 로직: vision 또는 api 시그널 중 하나라도 선택된 필터에 포함되면 표시
+    if (signalFilters.size > 0) {
+      stocks = stocks.filter(s => {
+        const visionMatch = s.visionSignal && signalFilters.has(s.visionSignal);
+        const apiMatch = s.apiSignal && signalFilters.has(s.apiSignal);
+        return visionMatch || apiMatch;
+      });
     }
 
     // 신뢰도 순으로 정렬 (높은 순)
     return stocks.sort((a, b) => b.confidenceScore - a.confidenceScore);
-  }, [combinedStocks, marketFilter, matchFilter]);
+  }, [combinedStocks, marketFilter, matchFilters, signalFilters]);
 
   // 통계 계산
   const stats = useMemo(() => {
@@ -426,29 +472,101 @@ export function CombinedAnalysis() {
         "완전 일치" 종목은 Vision AI와 API 분석 시그널이 동일합니다. "불일치" 종목은 추가 검토가 필요합니다.
       </TipText>
 
-      {/* 일치 상태 필터 */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {[
-          { value: 'all' as const, label: '전체', count: combinedStocks.length },
-          { value: 'match' as const, label: '완전 일치', count: stats.matched },
-          { value: 'partial' as const, label: '유사', count: stats.partial },
-          { value: 'mismatch' as const, label: '불일치', count: stats.mismatched },
-          { value: 'vision-only' as const, label: 'Vision만', count: stats.visionOnly },
-          { value: 'api-only' as const, label: 'API만', count: stats.apiOnly },
-        ].map(({ value, label, count }) => (
-          <button
-            key={value}
-            onClick={() => setMatchFilter(value)}
-            className={cn(
-              'px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
-              matchFilter === value
-                ? 'bg-accent-primary text-white'
-                : 'bg-bg-secondary text-text-secondary hover:bg-bg-tertiary'
-            )}
-          >
-            {label} ({count})
-          </button>
-        ))}
+      {/* 필터 영역 */}
+      <div className="bg-bg-secondary border border-border rounded-xl p-4 mb-5">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold text-text-primary">필터</span>
+          {(matchFilters.size > 0 || signalFilters.size > 0) && (
+            <button
+              onClick={clearAllFilters}
+              className="text-xs text-accent-primary hover:underline"
+            >
+              필터 초기화
+            </button>
+          )}
+        </div>
+
+        {/* 일치 상태 필터 */}
+        <div className="mb-3">
+          <div className="text-xs text-text-muted mb-2">일치 상태 (복수 선택 가능)</div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { value: 'match' as MatchStatus, label: '완전 일치', icon: '✓', count: stats.matched },
+              { value: 'partial' as MatchStatus, label: '유사', icon: '≈', count: stats.partial },
+              { value: 'mismatch' as MatchStatus, label: '불일치', icon: '✗', count: stats.mismatched },
+              { value: 'vision-only' as MatchStatus, label: 'Vision만', icon: '👁', count: stats.visionOnly },
+              { value: 'api-only' as MatchStatus, label: 'API만', icon: '📡', count: stats.apiOnly },
+            ].map(({ value, label, icon, count }) => (
+              <button
+                key={value}
+                onClick={() => toggleMatchFilter(value)}
+                className={cn(
+                  'px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border',
+                  matchFilters.has(value)
+                    ? 'bg-accent-primary text-white border-accent-primary'
+                    : 'bg-bg-primary text-text-secondary border-border hover:border-accent-primary'
+                )}
+              >
+                <span className="mr-1">{icon}</span>
+                {label} ({count})
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 시그널 필터 */}
+        <div>
+          <div className="text-xs text-text-muted mb-2">시그널 (복수 선택 가능)</div>
+          <div className="flex flex-wrap gap-2">
+            {SIGNAL_TYPES.map((signal) => {
+              const signalColors: Record<SignalType, string> = {
+                '적극매수': 'bg-signal-strong-buy text-white border-signal-strong-buy',
+                '매수': 'bg-signal-buy text-white border-signal-buy',
+                '중립': 'bg-signal-neutral text-white border-signal-neutral',
+                '매도': 'bg-signal-sell text-white border-signal-sell',
+                '적극매도': 'bg-signal-strong-sell text-white border-signal-strong-sell',
+              };
+              const count = combinedStocks.filter(s => s.visionSignal === signal || s.apiSignal === signal).length;
+              return (
+                <button
+                  key={signal}
+                  onClick={() => toggleSignalFilter(signal)}
+                  className={cn(
+                    'px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border',
+                    signalFilters.has(signal)
+                      ? signalColors[signal]
+                      : 'bg-bg-primary text-text-secondary border-border hover:border-accent-primary'
+                  )}
+                >
+                  {signal} ({count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 선택된 필터 표시 */}
+        {(matchFilters.size > 0 || signalFilters.size > 0) && (
+          <div className="mt-3 pt-3 border-t border-border-light">
+            <div className="text-xs text-text-muted">
+              선택된 필터: {' '}
+              {matchFilters.size === 0 && signalFilters.size === 0 ? '전체' : (
+                <>
+                  {Array.from(matchFilters).map(m => {
+                    const labels: Record<MatchStatus, string> = {
+                      'match': '완전 일치', 'partial': '유사', 'mismatch': '불일치',
+                      'vision-only': 'Vision만', 'api-only': 'API만'
+                    };
+                    return labels[m];
+                  }).join(', ')}
+                  {matchFilters.size > 0 && signalFilters.size > 0 && ' + '}
+                  {Array.from(signalFilters).join(', ')}
+                </>
+              )}
+              {' '}→ {filteredStocks.length}건
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 시장 탭 */}
