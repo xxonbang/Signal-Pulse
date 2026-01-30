@@ -136,12 +136,20 @@ function WorkflowSection() {
 function MainContent() {
   const { activeTab } = useUIStore();
 
+  // CSS 기반 탭 전환: 모든 탭을 마운트 상태로 유지하고 display로 숨김
+  // → 탭 전환 시 리마운트 없이 즉시 전환
   return (
     <>
       <AnalysisTabs />
-      {activeTab === 'vision' && <VisionAnalysis />}
-      {activeTab === 'api' && <APIAnalysis />}
-      {activeTab === 'combined' && <CombinedAnalysis />}
+      <div style={{ display: activeTab === 'vision' ? 'block' : 'none' }}>
+        <VisionAnalysis />
+      </div>
+      <div style={{ display: activeTab === 'api' ? 'block' : 'none' }}>
+        <APIAnalysis />
+      </div>
+      <div style={{ display: activeTab === 'combined' ? 'block' : 'none' }}>
+        <CombinedAnalysis />
+      </div>
     </>
   );
 }
