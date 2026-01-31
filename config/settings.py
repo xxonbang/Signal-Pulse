@@ -40,7 +40,10 @@ CAPTURES_DIR = ROOT_DIR / "captures"
 OUTPUT_DIR = ROOT_DIR / "output"
 
 # AI 설정
+# Vision 분석용 (이미지 기반 복잡한 추론)
 GEMINI_MODEL = "gemini-2.5-flash"
+# KIS API 데이터 분석용 (텍스트/JSON 대량 처리, 저비용)
+GEMINI_MODEL_LITE = "gemini-2.5-flash-lite"
 
 # 시그널 카테고리
 SIGNAL_CATEGORIES = ["적극매수", "매수", "중립", "매도", "적극매도"]

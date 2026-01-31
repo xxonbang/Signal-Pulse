@@ -11,7 +11,7 @@ from google import genai
 # KST 시간대
 KST = timezone(timedelta(hours=9))
 
-from config.settings import GEMINI_API_KEYS, GEMINI_MODEL, SIGNAL_CATEGORIES
+from config.settings import GEMINI_API_KEYS, GEMINI_MODEL, GEMINI_MODEL_LITE, SIGNAL_CATEGORIES
 from modules.utils import parse_json_response, resize_image
 
 
@@ -427,12 +427,12 @@ def analyze_kis_data(
             client = genai.Client(api_key=api_key)
 
             print(f"[API] Gemini API 호출 시작...")
-            print(f"[API] 모델: {GEMINI_MODEL}")
+            print(f"[API] 모델: {GEMINI_MODEL_LITE} (KIS 데이터 분석용)")
             print(f"[API] 요청 데이터: {len(prompt):,}자")
             api_start_time = time.time()
 
             response = client.models.generate_content(
-                model=GEMINI_MODEL,
+                model=GEMINI_MODEL_LITE,
                 contents=[
                     {
                         "role": "user",
