@@ -438,7 +438,10 @@ def analyze_kis_data(
                         "role": "user",
                         "parts": [{"text": prompt}]
                     }
-                ]
+                ],
+                config={
+                    "max_output_tokens": 65536,  # 최대 출력 토큰 (기본값 8K → 64K)
+                }
             )
 
             api_elapsed = time.time() - api_start_time
