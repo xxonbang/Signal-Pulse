@@ -185,7 +185,10 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
                         "role": "user",
                         "parts": parts
                     }
-                ]
+                ],
+                config={
+                    "max_output_tokens": 65536,  # 최대 출력 토큰 (120개 종목 분석용)
+                }
             )
 
             api_elapsed = time.time() - api_start_time
