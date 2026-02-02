@@ -9,7 +9,10 @@
 """
 import time
 from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 from modules.kis_client import KISClient
 
@@ -260,8 +263,8 @@ class KISStockDetailAPI:
         path = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
         tr_id = "FHKST03010100"
 
-        end_date = datetime.now().strftime("%Y%m%d")
-        start_date = (datetime.now() - timedelta(days=days)).strftime("%Y%m%d")
+        end_date = datetime.now(KST).strftime("%Y%m%d")
+        start_date = (datetime.now(KST) - timedelta(days=days)).strftime("%Y%m%d")
 
         params = {
             "FID_COND_MRKT_DIV_CODE": "J",
@@ -584,7 +587,7 @@ class KISStockDetailAPI:
         """
         data = {
             "stock_code": stock_code,
-            "collected_at": datetime.now().isoformat(),
+            "collected_at": datetime.now(KST).isoformat(),
         }
 
         # 1. 현재가 시세 (필수)
@@ -674,7 +677,7 @@ class KISStockDetailAPI:
                 results.append({
                     "stock_code": code,
                     "error": str(e),
-                    "collected_at": datetime.now().isoformat(),
+                    "collected_at": datetime.now(KST).isoformat(),
                 })
 
             time.sleep(delay)

@@ -4,7 +4,10 @@
 - 등락률 순위 (상승/하락)
 """
 from typing import Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 from modules.kis_client import KISClient
 
@@ -317,7 +320,7 @@ class KISRankAPI:
         return {
             "kospi": self.get_volume_rank(market="KOSPI", limit=30, exclude_etf=exclude_etf),
             "kosdaq": self.get_volume_rank(market="KOSDAQ", limit=30, exclude_etf=exclude_etf),
-            "collected_at": datetime.now().isoformat(),
+            "collected_at": datetime.now(KST).isoformat(),
             "category": "volume",
             "exclude_etf": exclude_etf,
         }
@@ -345,7 +348,7 @@ class KISRankAPI:
             "kospi_down": self.get_fluctuation_rank(market="KOSPI", direction="DOWN", limit=30, exclude_etf=exclude_etf),
             "kosdaq_up": self.get_fluctuation_rank(market="KOSDAQ", direction="UP", limit=30, exclude_etf=exclude_etf),
             "kosdaq_down": self.get_fluctuation_rank(market="KOSDAQ", direction="DOWN", limit=30, exclude_etf=exclude_etf),
-            "collected_at": datetime.now().isoformat(),
+            "collected_at": datetime.now(KST).isoformat(),
             "category": "fluctuation",
             "exclude_etf": exclude_etf,
         }
@@ -386,7 +389,7 @@ class KISRankAPI:
             "fluctuation": fluctuation_data,
             "unique_stock_codes": list(all_codes),
             "unique_stock_count": len(all_codes),
-            "collected_at": datetime.now().isoformat(),
+            "collected_at": datetime.now(KST).isoformat(),
         }
 
 

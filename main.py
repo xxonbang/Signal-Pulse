@@ -46,14 +46,14 @@ def cleanup_old_results(results_dir: Path, retention_days: int = RESULTS_RETENTI
     if not history_dir.exists():
         return 0
 
-    cutoff_date = datetime.now() - timedelta(days=retention_days)
+    cutoff_date = datetime.now(KST).replace(tzinfo=None) - timedelta(days=retention_days)
     cleaned = 0
 
     for item in history_dir.iterdir():
         if item.is_file() and item.suffix == ".json":
             try:
-                # 파일명에서 날짜 추출 (analysis_YYYY-MM-DD.json)
-                date_str = item.stem.replace("analysis_", "")
+                # 파일명에서 날짜 추출 (vision_YYYY-MM-DD.json)
+                date_str = item.stem.replace("vision_", "")
                 file_date = datetime.strptime(date_str, "%Y-%m-%d")
 
                 if file_date < cutoff_date:
@@ -77,7 +77,7 @@ def update_history_index(results_dir: Path):
     for item in sorted(history_dir.iterdir(), reverse=True):
         if item.is_file() and item.suffix == ".json":
             try:
-                date_str = item.stem.replace("analysis_", "")
+                date_str = item.stem.replace("vision_", "")
                 # 파일에서 요약 정보 읽기
                 with open(item, "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -193,17 +193,17 @@ async def main():
     save_json(output_data, json_path)
     print(f"JSON 저장: {json_path}")
 
-    # 2. results/latest.json 저장 (현재 결과)
-    latest_path = results_dir / "latest.json"
+    # 2. results/vision_latest.json 저장 (현재 결과)
+    latest_path = results_dir / "vision_latest.json"
     save_json(output_data, latest_path)
-    print(f"Latest 저장: {latest_path}")
+    print(f"Vision Latest 저장: {latest_path}")
 
     # 3. results/history/ 에 날짜별 저장 (30일 보관)
     history_dir = results_dir / "history"
     history_dir.mkdir(parents=True, exist_ok=True)
-    history_path = history_dir / f"analysis_{today}.json"
+    history_path = history_dir / f"vision_{today}.json"
     save_json(output_data, history_path)
-    print(f"History 저장: {history_path}")
+    print(f"Vision History 저장: {history_path}")
 
     # 4. 히스토리 인덱스 갱신
     history_count = update_history_index(results_dir)

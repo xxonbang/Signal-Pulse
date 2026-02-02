@@ -4,15 +4,18 @@
 from __future__ import annotations
 import json
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 from PIL import Image
 import io
 
 
 def get_today_capture_dir(base_dir: Path) -> Path:
     """오늘 날짜의 캡처 디렉토리 반환"""
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.now(KST).strftime("%Y-%m-%d")
     capture_dir = base_dir / today
     capture_dir.mkdir(parents=True, exist_ok=True)
     return capture_dir
@@ -314,7 +317,7 @@ def generate_markdown_report(results: list, output_path: Path) -> None:
     """마크다운 리포트 생성"""
     lines = [
         "# AI 주식 분석 리포트",
-        f"\n생성 시간: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+        f"\n생성 시간: {datetime.now(KST).strftime('%Y-%m-%d %H:%M:%S')}\n",
         "| 종목명 | 코드 | 시그널 | 캡처 시각 | 분석 시각 | 분석 근거 |",
         "|--------|------|--------|-----------|-----------|----------|"
     ]

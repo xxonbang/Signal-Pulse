@@ -5,7 +5,7 @@
   "history": [
     {
       "date": "2026-02-01",
-      "filename": "analysis_2026-02-01.json",
+      "filename": "vision_2026-02-01.json",
       "total_stocks": 19,
       "signals": {
         "적극매수": 4,
@@ -17,7 +17,7 @@
     },
     {
       "date": "2026-01-31",
-      "filename": "analysis_2026-01-31.json",
+      "filename": "vision_2026-01-31.json",
       "total_stocks": 120,
       "signals": {
         "매수": 41,
@@ -29,7 +29,7 @@
     },
     {
       "date": "2026-01-30",
-      "filename": "analysis_2026-01-30.json",
+      "filename": "vision_2026-01-30.json",
       "total_stocks": 120,
       "signals": {
         "중립": 30,
@@ -41,7 +41,7 @@
     },
     {
       "date": "2026-01-29",
-      "filename": "analysis_2026-01-29.json",
+      "filename": "vision_2026-01-29.json",
       "total_stocks": 120,
       "signals": {
         "적극매수": 23,
@@ -52,7 +52,7 @@
     },
     {
       "date": "2026-01-28",
-      "filename": "analysis_2026-01-28.json",
+      "filename": "vision_2026-01-28.json",
       "total_stocks": 117,
       "signals": {
         "매도": 34,

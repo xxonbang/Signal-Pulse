@@ -3,7 +3,7 @@ import type { AnalysisData, HistoryIndex, KISGeminiData, KISAnalysisData } from 
 const BASE_URL = import.meta.env.DEV ? '' : '.';
 
 export async function fetchLatestData(): Promise<AnalysisData> {
-  const response = await fetch(`${BASE_URL}/results/latest.json`);
+  const response = await fetch(`${BASE_URL}/results/vision_latest.json`);
   if (!response.ok) {
     throw new Error('Failed to fetch latest data');
   }
@@ -29,8 +29,8 @@ export async function fetchHistoryIndex(): Promise<HistoryIndex> {
 // KIS API 데이터 fetch 함수들 (404 시 null 반환)
 export async function fetchKISData(): Promise<KISGeminiData | null> {
   try {
-    // top50_gemini.json은 Gemini 분석용으로 변환된 데이터 (stocks 키 포함)
-    const response = await fetch(`${BASE_URL}/results/kis/top50_gemini.json`);
+    // kis_gemini.json은 Gemini 분석용으로 변환된 데이터 (stocks 키 포함)
+    const response = await fetch(`${BASE_URL}/results/kis/kis_gemini.json`);
     if (!response.ok) {
       if (response.status === 404) {
         return null; // 파일이 없으면 null 반환 (에러 아님)
@@ -45,7 +45,7 @@ export async function fetchKISData(): Promise<KISGeminiData | null> {
 
 export async function fetchKISAnalysis(): Promise<KISAnalysisData | null> {
   try {
-    const response = await fetch(`${BASE_URL}/results/kis/analysis.json`);
+    const response = await fetch(`${BASE_URL}/results/kis/kis_analysis.json`);
     if (!response.ok) {
       if (response.status === 404) {
         return null; // 파일이 없으면 null 반환 (에러 아님)

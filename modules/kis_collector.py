@@ -7,7 +7,10 @@
 import json
 from pathlib import Path
 from typing import Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -99,7 +102,7 @@ class KISDataCollector:
             "kosdaq_count": len(kosdaq),
             "unique_stock_codes": unique_codes,
             "unique_stock_count": len(unique_codes),
-            "collected_at": datetime.now().isoformat(),
+            "collected_at": datetime.now(KST).isoformat(),
             "exclude_etf": exclude_etf,
         }
 
@@ -148,7 +151,7 @@ class KISDataCollector:
         Returns:
             종합 데이터
         """
-        start_time = datetime.now()
+        start_time = datetime.now(KST)
         print("\n" + "=" * 60)
         print(f"[KIS] 전체 데이터 수집 시작: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print("=" * 60)
@@ -168,7 +171,7 @@ class KISDataCollector:
         )
 
         # 3. 데이터 통합
-        end_time = datetime.now()
+        end_time = datetime.now(KST)
         duration = (end_time - start_time).total_seconds()
 
         result = {
@@ -221,7 +224,7 @@ class KISDataCollector:
                 }
             }
         """
-        start_time = datetime.now()
+        start_time = datetime.now(KST)
         print("\n" + "=" * 60)
         print(f"[KIS] Top50 전체 데이터 수집 시작: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"[KIS] ETF 제외: {exclude_etf}, 확장 데이터: {include_extended}")
@@ -245,7 +248,7 @@ class KISDataCollector:
         )
 
         # 3. 데이터 통합
-        end_time = datetime.now()
+        end_time = datetime.now(KST)
         duration = (end_time - start_time).total_seconds()
 
         result = {
@@ -288,7 +291,7 @@ class KISDataCollector:
             저장된 파일 경로
         """
         if filename is None:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now(KST).strftime("%Y%m%d_%H%M%S")
             filename = f"kis_data_{timestamp}.json"
 
         filepath = self.output_dir / filename
@@ -300,7 +303,7 @@ class KISDataCollector:
         return filepath
 
     def save_latest(self, data: Dict[str, Any]) -> Path:
-        """최신 데이터로 저장 (latest.json)
+        """최신 데이터로 저장 (kis_latest.json)
 
         Args:
             data: 저장할 데이터
@@ -308,7 +311,7 @@ class KISDataCollector:
         Returns:
             저장된 파일 경로
         """
-        return self.save_to_json(data, "latest.json")
+        return self.save_to_json(data, "kis_latest.json")
 
     def run(
         self,
@@ -374,11 +377,11 @@ class KISDataCollector:
 
         # 최신 파일로 저장 (두 가지 형식)
         self.save_to_json(data, "top50_latest.json")
-        self.save_to_json(data, "latest.json")  # 워크플로우 호환용
+        self.save_to_json(data, "kis_latest.json")  # 명확한 KIS 파일명
 
         # 타임스탬프 파일 저장 (선택)
         if save_timestamped:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now(KST).strftime("%Y%m%d_%H%M%S")
             self.save_to_json(data, f"kis_data_{timestamp}.json")
 
         return data

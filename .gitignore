@@ -35,8 +35,10 @@ frontend/node_modules/
 
 # KIS timestamped data files (local testing)
 results/kis/kis_data_*.json
+results/kis/kis_gemini_*.json
 results/kis/top50_*.json
 results/kis/rankings*.json
-!results/kis/latest.json
-!results/kis/analysis.json
-!results/kis/top50_gemini.json
+# KIS tracked files (명확한 파일명)
+!results/kis/kis_latest.json
+!results/kis/kis_analysis.json
+!results/kis/kis_gemini.json

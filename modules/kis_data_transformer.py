@@ -6,7 +6,10 @@ KIS 데이터 변환기 - Gemini 분석용 통합 포맷
 import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -72,7 +75,7 @@ class KISDataTransformer:
                 "format_version": "2.0",
                 "format_description": "종목별 통합 데이터 (Gemini 분석용)",
                 "original_collected_at": meta.get("collected_at"),
-                "transformed_at": datetime.now().isoformat(),
+                "transformed_at": datetime.now(KST).isoformat(),
                 "total_stocks": len(stocks),
                 "kospi_count": meta.get("kospi_count", 0),
                 "kosdaq_count": meta.get("kosdaq_count", 0),
@@ -333,7 +336,7 @@ class KISDataTransformer:
     def save_transformed_data(
         self,
         data: Dict[str, Any],
-        filename: str = "top50_gemini.json",
+        filename: str = "kis_gemini.json",
     ) -> Path:
         """변환된 데이터 저장"""
         filepath = self.output_dir / filename
@@ -346,7 +349,7 @@ class KISDataTransformer:
     def run(
         self,
         input_file: str = "top50_latest.json",
-        output_file: str = "top50_gemini.json",
+        output_file: str = "kis_gemini.json",
     ) -> Dict[str, Any]:
         """데이터 변환 실행
 
@@ -367,8 +370,8 @@ class KISDataTransformer:
         self.save_transformed_data(transformed, output_file)
 
         # 타임스탬프 파일도 저장
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.save_transformed_data(transformed, f"top50_gemini_{timestamp}.json")
+        timestamp = datetime.now(KST).strftime("%Y%m%d_%H%M%S")
+        self.save_transformed_data(transformed, f"kis_gemini_{timestamp}.json")
 
         return transformed
 

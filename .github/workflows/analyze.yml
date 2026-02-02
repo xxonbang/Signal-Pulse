@@ -258,14 +258,17 @@ jobs:
           python -c "
           import json
           from pathlib import Path
-          from datetime import datetime
+          from datetime import datetime, timedelta, timezone
           from modules.kis_data_transformer import KISDataTransformer
           from modules.ai_engine import analyze_kis_data_batch
 
-          # KIS 원본 데이터 로드 (top50_latest.json 또는 latest.json)
+          # KST 시간대
+          KST = timezone(timedelta(hours=9))
+
+          # KIS 원본 데이터 로드 (top50_latest.json 또는 kis_latest.json)
           kis_raw_path = Path('results/kis/top50_latest.json')
           if not kis_raw_path.exists():
-              kis_raw_path = Path('results/kis/latest.json')
+              kis_raw_path = Path('results/kis/kis_latest.json')
           if not kis_raw_path.exists():
               print('KIS 데이터 파일이 없습니다.')
               exit(1)
@@ -279,8 +282,8 @@ jobs:
           transformer = KISDataTransformer()
           gemini_data = transformer.transform_for_gemini(raw_data)
 
-          # 변환된 데이터 저장 (프론트엔드용 - top50_gemini.json)
-          gemini_path = Path('results/kis/top50_gemini.json')
+          # 변환된 데이터 저장 (프론트엔드용 - kis_gemini.json)
+          gemini_path = Path('results/kis/kis_gemini.json')
           with open(gemini_path, 'w', encoding='utf-8') as f:
               json.dump(gemini_data, f, ensure_ascii=False, indent=2)
           print(f'변환 데이터 저장: {gemini_path}')
@@ -302,12 +305,12 @@ jobs:
 
           # 분석 결과 저장 (프론트엔드 타입과 일치)
           output_data = {
-              'analysis_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+              'analysis_time': datetime.now(KST).strftime('%Y-%m-%d %H:%M:%S'),
               'total_analyzed': len(analysis_results),
               'results': analysis_results,
           }
 
-          output_path = Path('results/kis/analysis.json')
+          output_path = Path('results/kis/kis_analysis.json')
           with open(output_path, 'w', encoding='utf-8') as f:
               json.dump(output_data, f, ensure_ascii=False, indent=2)
 
@@ -378,24 +381,26 @@ jobs:
           # Vision 결과 복사 (glob 패턴은 ls로 처리)
           LATEST_FILE=$(ls -t output/analysis_*.json 2>/dev/null | head -n1)
           if [ -n "$LATEST_FILE" ] && [ -f "$LATEST_FILE" ]; then
-            cp "$LATEST_FILE" results/latest.json
-            cp "$LATEST_FILE" "results/history/$(basename $LATEST_FILE)"
+            cp "$LATEST_FILE" results/vision_latest.json
+            # 히스토리 파일명: analysis_YYYY-MM-DD.json → vision_YYYY-MM-DD.json
+            DATE_PART=$(basename "$LATEST_FILE" | sed 's/analysis_//' | sed 's/.json//')
+            cp "$LATEST_FILE" "results/history/vision_${DATE_PART}.json"
             echo "Vision 결과 복사 완료: $LATEST_FILE"
           else
             echo "::warning::Vision 분석 결과 파일을 찾을 수 없습니다"
           fi
 
           # KIS 결과 확인
-          if [ -f results/kis/analysis.json ]; then
+          if [ -f results/kis/kis_analysis.json ]; then
             echo "KIS 분석 결과 확인됨"
           else
-            echo "::warning::KIS 분석 결과 파일(analysis.json)을 찾을 수 없습니다"
+            echo "::warning::KIS 분석 결과 파일(kis_analysis.json)을 찾을 수 없습니다"
           fi
 
-          if [ -f results/kis/top50_gemini.json ]; then
+          if [ -f results/kis/kis_gemini.json ]; then
             echo "KIS 변환 데이터 확인됨"
           else
-            echo "::warning::KIS 변환 데이터 파일(top50_gemini.json)을 찾을 수 없습니다"
+            echo "::warning::KIS 변환 데이터 파일(kis_gemini.json)을 찾을 수 없습니다"
           fi
 
       - name: Update history index
@@ -403,7 +408,10 @@ jobs:
           python -c "
           import json
           from pathlib import Path
-          from datetime import datetime
+          from datetime import datetime, timedelta, timezone
+
+          # KST 시간대
+          KST = timezone(timedelta(hours=9))
 
           results_dir = Path('results')
           history_dir = results_dir / 'history'
@@ -414,7 +422,7 @@ jobs:
               for item in sorted(history_dir.iterdir(), reverse=True):
                   if item.is_file() and item.suffix == '.json':
                       try:
-                          date_str = item.stem.replace('analysis_', '')
+                          date_str = item.stem.replace('vision_', '')
                           with open(item, 'r', encoding='utf-8') as f:
                               data = json.load(f)
                           signal_counts = {}
@@ -431,7 +439,7 @@ jobs:
                           continue
 
           index_data = {
-              'updated_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+              'updated_at': datetime.now(KST).strftime('%Y-%m-%d %H:%M:%S'),
               'retention_days': 30,
               'total_records': len(history_files),
               'history': history_files
@@ -461,10 +469,10 @@ jobs:
               VISION_STATUS="N/A"
               KIS_STATUS="N/A"
 
-              if [ -f results/latest.json ]; then
+              if [ -f results/vision_latest.json ]; then
                 VISION_STATUS="OK"
               fi
-              if [ -f results/kis/analysis.json ]; then
+              if [ -f results/kis/kis_analysis.json ]; then
                 KIS_STATUS="OK"
               fi
 
