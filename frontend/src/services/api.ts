@@ -3,7 +3,7 @@ import type { AnalysisData, HistoryIndex, KISGeminiData, KISAnalysisData } from 
 const BASE_URL = import.meta.env.DEV ? '' : '.';
 
 export async function fetchLatestData(): Promise<AnalysisData> {
-  const response = await fetch(`${BASE_URL}/results/vision_analysis.json`);
+  const response = await fetch(`${BASE_URL}/results/vision/vision_analysis.json`);
   if (!response.ok) {
     throw new Error('Failed to fetch latest data');
   }
@@ -11,7 +11,7 @@ export async function fetchLatestData(): Promise<AnalysisData> {
 }
 
 export async function fetchHistoryData(filename: string): Promise<AnalysisData> {
-  const response = await fetch(`${BASE_URL}/results/history/${filename}`);
+  const response = await fetch(`${BASE_URL}/results/vision/history/${filename}`);
   if (!response.ok) {
     throw new Error('Failed to fetch history data');
   }
@@ -19,7 +19,7 @@ export async function fetchHistoryData(filename: string): Promise<AnalysisData> 
 }
 
 export async function fetchHistoryIndex(): Promise<HistoryIndex> {
-  const response = await fetch(`${BASE_URL}/results/history_index.json`);
+  const response = await fetch(`${BASE_URL}/results/vision/history_index.json`);
   if (!response.ok) {
     throw new Error('Failed to fetch history index');
   }

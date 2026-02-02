@@ -374,15 +374,15 @@ jobs:
 
       - name: Setup results directory
         run: |
-          mkdir -p results/history
+          mkdir -p results/vision/history
 
           # Vision 결과 복사 (glob 패턴은 ls로 처리)
           LATEST_FILE=$(ls -t output/analysis_*.json 2>/dev/null | head -n1)
           if [ -n "$LATEST_FILE" ] && [ -f "$LATEST_FILE" ]; then
-            cp "$LATEST_FILE" results/vision_analysis.json
+            cp "$LATEST_FILE" results/vision/vision_analysis.json
             # 히스토리 파일명: analysis_YYYY-MM-DD.json → vision_YYYY-MM-DD.json
             DATE_PART=$(basename "$LATEST_FILE" | sed 's/analysis_//' | sed 's/.json//')
-            cp "$LATEST_FILE" "results/history/vision_${DATE_PART}.json"
+            cp "$LATEST_FILE" "results/vision/history/vision_${DATE_PART}.json"
             echo "Vision 결과 복사 완료: $LATEST_FILE"
           else
             echo "::warning::Vision 분석 결과 파일을 찾을 수 없습니다"
@@ -412,7 +412,8 @@ jobs:
           KST = timezone(timedelta(hours=9))
 
           results_dir = Path('results')
-          history_dir = results_dir / 'history'
+          vision_dir = results_dir / 'vision'
+          history_dir = vision_dir / 'history'
 
           # 히스토리 파일 목록 수집
           history_files = []
@@ -443,7 +444,7 @@ jobs:
               'history': history_files
           }
 
-          index_path = results_dir / 'history_index.json'
+          index_path = vision_dir / 'history_index.json'
           with open(index_path, 'w', encoding='utf-8') as f:
               json.dump(index_data, f, ensure_ascii=False, indent=2)
 
@@ -467,7 +468,7 @@ jobs:
               VISION_STATUS="N/A"
               KIS_STATUS="N/A"
 
-              if [ -f results/vision_analysis.json ]; then
+              if [ -f results/vision/vision_analysis.json ]; then
                 VISION_STATUS="OK"
               fi
               if [ -f results/kis/kis_analysis.json ]; then

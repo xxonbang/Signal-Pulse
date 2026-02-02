@@ -42,7 +42,7 @@ def cleanup_captures():
 
 def cleanup_old_results(results_dir: Path, retention_days: int = RESULTS_RETENTION_DAYS):
     """오래된 분석 결과 정리 (retention_days 이전 파일 삭제)"""
-    history_dir = results_dir / "history"
+    history_dir = results_dir / "vision" / "history"
     if not history_dir.exists():
         return 0
 
@@ -68,7 +68,8 @@ def cleanup_old_results(results_dir: Path, retention_days: int = RESULTS_RETENTI
 
 def update_history_index(results_dir: Path):
     """히스토리 인덱스 파일 생성/갱신"""
-    history_dir = results_dir / "history"
+    vision_dir = results_dir / "vision"
+    history_dir = vision_dir / "history"
     if not history_dir.exists():
         history_dir.mkdir(parents=True, exist_ok=True)
 
@@ -105,7 +106,7 @@ def update_history_index(results_dir: Path):
         "history": history_files
     }
 
-    index_path = results_dir / "history_index.json"
+    index_path = vision_dir / "history_index.json"
     with open(index_path, "w", encoding="utf-8") as f:
         json.dump(index_data, f, ensure_ascii=False, indent=2)
 
@@ -193,13 +194,15 @@ async def main():
     save_json(output_data, json_path)
     print(f"JSON 저장: {json_path}")
 
-    # 2. results/vision_analysis.json 저장 (분석 결과)
-    analysis_path = results_dir / "vision_analysis.json"
+    # 2. results/vision/vision_analysis.json 저장 (분석 결과)
+    vision_dir = results_dir / "vision"
+    vision_dir.mkdir(parents=True, exist_ok=True)
+    analysis_path = vision_dir / "vision_analysis.json"
     save_json(output_data, analysis_path)
     print(f"Vision 분석 결과 저장: {analysis_path}")
 
-    # 3. results/history/ 에 날짜별 저장 (30일 보관)
-    history_dir = results_dir / "history"
+    # 3. results/vision/history/ 에 날짜별 저장 (30일 보관)
+    history_dir = vision_dir / "history"
     history_dir.mkdir(parents=True, exist_ok=True)
     history_path = history_dir / f"vision_{today}.json"
     save_json(output_data, history_path)
