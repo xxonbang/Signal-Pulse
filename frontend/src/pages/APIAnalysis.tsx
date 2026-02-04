@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchKISData, fetchKISAnalysis, fetchKISHistoryIndex } from '@/services/api';
-import type { KISStockData, KISAnalysisResult, MarketType, SignalType, SignalCounts } from '@/services/types';
-import { LoadingSpinner, EmptyState, Button, HistoryButton } from '@/components/common';
+import { fetchKISData, fetchKISAnalysis } from '@/services/api';
+import { useKISHistoryData } from '@/hooks/useKISHistoryData';
+import type { KISStockData, KISAnalysisResult, KISAnalysisData, MarketType, SignalType, SignalCounts } from '@/services/types';
+import { LoadingSpinner, EmptyState, Button, AnimatedNumber } from '@/components/common';
 import { SignalSummary, SignalBadge } from '@/components/signal';
 import { MarketTabs } from '@/components/stock';
 import { NewsSection } from '@/components/news';
@@ -89,6 +90,51 @@ function DataAvailabilityNotice() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// 히스토리 뷰잉 배너
+function ViewingHistoryBanner({ dateTime }: { dateTime: string }) {
+  const { resetToLatest } = useUIStore();
+
+  // "2026-02-04_0700" → "2026-02-04 07:00"
+  const [date, time] = dateTime.split('_');
+  const displayTime = time ? `${time.slice(0, 2)}:${time.slice(2)}` : '';
+
+  return (
+    <div className="flex items-center justify-between gap-2 md:gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 md:px-5 py-2.5 md:py-3 rounded-xl mb-4 md:mb-5">
+      <span className="font-semibold text-xs md:text-base flex items-center gap-2">
+        <span className="text-base md:text-lg">📅</span>
+        <span>
+          {date} {displayTime && <span className="text-white/80">{displayTime}</span>}
+          <span className="text-white/90"> 일시의 데이터 표시 중</span>
+        </span>
+      </span>
+      <button
+        onClick={resetToLatest}
+        className="group flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2
+          bg-white/20 border border-white/30 rounded-lg
+          text-xs md:text-sm font-semibold
+          hover:bg-white/30 hover:border-white/50
+          active:scale-95
+          transition-all duration-200"
+      >
+        <svg
+          className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        <span className="hidden sm:inline">최신으로</span>
+        <span className="sm:hidden">최신</span>
+      </button>
     </div>
   );
 }
@@ -233,13 +279,13 @@ function StockCard({
 }
 
 // 결과 메타 정보
-function ResultsMeta({ collectedAt, totalStocks, analyzedCount }: {
-  collectedAt: string;
+function ResultsMeta({ analysisTime, totalStocks, analyzedCount }: {
+  analysisTime: string;
   totalStocks: number;
   analyzedCount: number;
 }) {
-  const dateOnly = collectedAt?.slice(0, 10) || '-';
-  const timeOnly = collectedAt?.slice(11, 16) || '';
+  const dateOnly = analysisTime?.slice(0, 10) || '-';
+  const timeOnly = analysisTime?.slice(11, 16) || '';
 
   return (
     <div className="grid grid-cols-3 gap-2 md:gap-3 mb-5">
@@ -249,7 +295,7 @@ function ResultsMeta({ collectedAt, totalStocks, analyzedCount }: {
         </div>
         <div className="min-w-0 flex-1">
           <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
-            수집 시각
+            분석 시각
           </div>
           <div className="text-xs md:text-base font-bold text-text-primary">
             {dateOnly}
@@ -267,7 +313,7 @@ function ResultsMeta({ collectedAt, totalStocks, analyzedCount }: {
           <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
             수집 종목
           </div>
-          <div className="text-xs md:text-base font-bold text-text-primary">{totalStocks}개</div>
+          <div className="text-xs md:text-base font-bold text-text-primary"><AnimatedNumber value={totalStocks} duration={500} />개</div>
         </div>
       </div>
       <div className="bg-bg-secondary border border-border rounded-xl px-3 py-2.5 md:px-4 md:py-3 flex items-center gap-2 md:gap-3 shadow-sm">
@@ -278,7 +324,7 @@ function ResultsMeta({ collectedAt, totalStocks, analyzedCount }: {
           <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
             AI 분석
           </div>
-          <div className="text-xs md:text-base font-bold text-text-primary">{analyzedCount}개</div>
+          <div className="text-xs md:text-base font-bold text-text-primary"><AnimatedNumber value={analyzedCount} duration={500} />개</div>
         </div>
       </div>
     </div>
@@ -289,30 +335,38 @@ export function APIAnalysis() {
   const [marketFilter, setMarketFilter] = useState<MarketType>('all');
   const [signalFilter, setSignalFilter] = useState<SignalType | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const { openHistoryPanel } = useUIStore();
+  const { isViewingHistory, viewingHistoryDateTime, isCompactView } = useUIStore();
+
+  // viewingHistoryDateTime: "2026-02-04_0700" → filename: "kis_2026-02-04_0700.json"
+  const historyFilename = viewingHistoryDateTime ? `kis_${viewingHistoryDateTime}.json` : null;
 
   // 필터 변경 시 확장된 카드 초기화
   useEffect(() => {
     setExpandedCards(new Set());
   }, [marketFilter, signalFilter]);
 
-  // KIS 데이터 로드
-  const { data: kisData, isLoading: isLoadingKIS, error: kisError } = useQuery({
+  // KIS 데이터 로드 (최신)
+  const { data: latestKisData, isLoading: isLoadingLatestKIS } = useQuery({
     queryKey: ['kis-data'],
     queryFn: fetchKISData,
   });
 
-  // 분석 결과 로드
-  const { data: analysisData } = useQuery({
+  // 분석 결과 로드 (최신)
+  const { data: latestAnalysisData, isLoading: isLoadingLatestAnalysis } = useQuery({
     queryKey: ['kis-analysis'],
     queryFn: fetchKISAnalysis,
   });
 
-  // KIS 히스토리 인덱스 로드
-  const { data: kisHistoryIndex } = useQuery({
-    queryKey: ['kis-history', 'index'],
-    queryFn: fetchKISHistoryIndex,
-  });
+  // 히스토리 데이터 로드
+  const { data: historyData, isLoading: isLoadingHistory } = useKISHistoryData(
+    isViewingHistory ? historyFilename : null
+  );
+
+  // 실제 사용할 데이터 선택
+  // 히스토리 모드에서는 KIS 분석 결과만 사용 (kis_gemini.json은 히스토리 저장 안 함)
+  const analysisData: KISAnalysisData | null | undefined = isViewingHistory ? historyData : latestAnalysisData;
+  const kisData = isViewingHistory ? null : latestKisData; // 히스토리에서는 주가 데이터 없음
+  const isLoading = isViewingHistory ? isLoadingHistory : (isLoadingLatestKIS || isLoadingLatestAnalysis);
 
   // 분석 결과를 코드별 맵으로 변환
   const analysisMap = useMemo(() => {
@@ -325,6 +379,25 @@ export function APIAnalysis() {
 
   // 필터링된 종목 리스트
   const filteredStocks = useMemo(() => {
+    // 히스토리 모드에서는 분석 결과만 표시
+    if (isViewingHistory) {
+      if (!analysisData?.results) return [];
+      let results = [...analysisData.results];
+
+      // 시장 필터
+      if (marketFilter !== 'all') {
+        results = results.filter(r => r.market?.toLowerCase() === marketFilter);
+      }
+
+      // 시그널 필터
+      if (signalFilter) {
+        results = results.filter(r => r.signal === signalFilter);
+      }
+
+      return results;
+    }
+
+    // 최신 데이터 모드
     if (!kisData?.stocks) return [];
 
     let stocks = Object.values(kisData.stocks);
@@ -344,7 +417,7 @@ export function APIAnalysis() {
 
     // 거래량 순위로 정렬
     return stocks.sort((a, b) => (a.ranking.volume_rank || 999) - (b.ranking.volume_rank || 999));
-  }, [kisData, marketFilter, signalFilter, analysisMap]);
+  }, [kisData, analysisData, isViewingHistory, marketFilter, signalFilter, analysisMap]);
 
   // 시그널 카운트 (SignalCounts 타입에 맞춤)
   const signalCounts: SignalCounts = useMemo(() => {
@@ -363,6 +436,16 @@ export function APIAnalysis() {
 
   // 시장별 카운트
   const marketCounts = useMemo(() => {
+    if (isViewingHistory) {
+      if (!analysisData?.results) return { all: 0, kospi: 0, kosdaq: 0 };
+      const results = analysisData.results;
+      return {
+        all: results.length,
+        kospi: results.filter(r => r.market === 'KOSPI').length,
+        kosdaq: results.filter(r => r.market === 'KOSDAQ').length,
+      };
+    }
+
     if (!kisData?.stocks) return { all: 0, kospi: 0, kosdaq: 0 };
     const stocks = Object.values(kisData.stocks);
     return {
@@ -370,7 +453,7 @@ export function APIAnalysis() {
       kospi: stocks.filter(s => s.market === 'KOSPI').length,
       kosdaq: stocks.filter(s => s.market === 'KOSDAQ').length,
     };
-  }, [kisData]);
+  }, [kisData, analysisData, isViewingHistory]);
 
   // 카드 확장/축소 토글
   const toggleCard = (code: string) => {
@@ -390,7 +473,7 @@ export function APIAnalysis() {
     setSignalFilter(prev => prev === signal ? null : signal);
   };
 
-  if (isLoadingKIS) {
+  if (isLoading) {
     return (
       <section id="api-analysis" className="mb-10">
         <LoadingSpinner message="KIS 데이터 로딩 중..." />
@@ -398,7 +481,28 @@ export function APIAnalysis() {
     );
   }
 
-  if (kisError || !kisData) {
+  // 히스토리 모드에서 데이터 없음
+  if (isViewingHistory && !analysisData) {
+    return (
+      <section id="api-analysis" className="mb-10">
+        <div className="flex justify-between items-center mb-4 md:mb-5 flex-wrap gap-2 md:gap-3">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">한국투자증권 API 분석</h2>
+            <p className="text-xs md:text-sm text-text-muted">실시간 API 기반 주식 데이터 분석</p>
+          </div>
+        </div>
+        {isViewingHistory && viewingHistoryDateTime && <ViewingHistoryBanner dateTime={viewingHistoryDateTime} />}
+        <EmptyState
+          icon="📡"
+          title="해당 시점의 KIS 분석 데이터가 없습니다"
+          description="이 시점에는 KIS API 분석이 실행되지 않았습니다."
+        />
+      </section>
+    );
+  }
+
+  // 최신 모드에서 데이터 없음
+  if (!isViewingHistory && !kisData) {
     return (
       <section id="api-analysis" className="mb-10">
         <EmptyState
@@ -411,30 +515,32 @@ export function APIAnalysis() {
   }
 
   const hasAnalysis = analysisData && analysisData.results.length > 0;
+  const totalStocks = isViewingHistory ? (analysisData?.total_analyzed || 0) : (kisData?.meta.total_stocks || 0);
 
   return (
     <section id="api-analysis" className="mb-10">
       {/* 헤더 */}
-      <div className="flex justify-between items-center mb-5 flex-wrap gap-3">
-        <div className="flex-1">
-          <h2 className="text-xl font-bold text-text-primary mb-1">한국투자증권 API 분석</h2>
-          <p className="text-sm text-text-muted">실시간 API 기반 주식 데이터 분석</p>
+      <div className="flex justify-between items-center mb-4 md:mb-5 flex-wrap gap-2 md:gap-3">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">한국투자증권 API 분석</h2>
+          <p className="text-xs md:text-sm text-text-muted">실시간 API 기반 주식 데이터 분석</p>
         </div>
-        <HistoryButton
-          onClick={() => openHistoryPanel('kis')}
-          count={kisHistoryIndex?.total_records}
-        />
       </div>
+
+      {/* 히스토리 배너 */}
+      {isViewingHistory && viewingHistoryDateTime && (
+        <ViewingHistoryBanner dateTime={viewingHistoryDateTime} />
+      )}
 
       {/* 메타 정보 */}
       <ResultsMeta
-        collectedAt={kisData.meta.original_collected_at}
-        totalStocks={kisData.meta.total_stocks}
+        analysisTime={analysisData?.analysis_time || kisData?.meta.original_collected_at || ''}
+        totalStocks={totalStocks}
         analyzedCount={analysisData?.total_analyzed || 0}
       />
 
-      {/* 데이터 제공 현황 안내 */}
-      <DataAvailabilityNotice />
+      {/* 데이터 제공 현황 안내 - 최신 모드에서만 */}
+      {!isViewingHistory && <DataAvailabilityNotice />}
 
       {/* 시그널 요약 - Vision AI와 동일한 컴포넌트 사용 */}
       {hasAnalysis && (
@@ -480,20 +586,77 @@ export function APIAnalysis() {
       {/* 종목 그리드 */}
       {filteredStocks.length > 0 ? (
         <>
-          <TipText>
-            종목명을 클릭하면 네이버 금융으로 이동합니다
-          </TipText>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
-            {filteredStocks.map(stock => (
-              <StockCard
-                key={stock.code}
-                stock={stock}
-                analysis={analysisMap[stock.code]}
-                isExpanded={expandedCards.has(stock.code)}
-                onToggle={() => toggleCard(stock.code)}
-              />
-            ))}
-          </div>
+          {!isCompactView && (
+            <TipText>
+              종목명을 클릭하면 네이버 금융으로 이동합니다
+            </TipText>
+          )}
+          {isCompactView ? (
+            // Compact 보기
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+              {isViewingHistory ? (
+                (filteredStocks as KISAnalysisResult[]).map(analysis => (
+                  <a
+                    key={analysis.code}
+                    href={`https://m.stock.naver.com/domestic/stock/${analysis.code}/total`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-sm text-text-primary truncate">{analysis.name}</div>
+                      <div className="text-xs text-text-muted font-mono">{analysis.code}</div>
+                    </div>
+                    <SignalBadge signal={analysis.signal} size="sm" />
+                  </a>
+                ))
+              ) : (
+                (filteredStocks as KISStockData[]).map(stock => (
+                  <a
+                    key={stock.code}
+                    href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
+                      <div className="text-xs text-text-muted font-mono">{stock.code}</div>
+                    </div>
+                    {analysisMap[stock.code] && (
+                      <SignalBadge signal={analysisMap[stock.code].signal} size="sm" />
+                    )}
+                  </a>
+                ))
+              )}
+            </div>
+          ) : (
+            // 일반 보기
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+              {isViewingHistory ? (
+                // 히스토리 모드: 분석 결과만 표시
+                (filteredStocks as KISAnalysisResult[]).map(analysis => (
+                  <HistoryStockCard
+                    key={analysis.code}
+                    analysis={analysis}
+                    isExpanded={expandedCards.has(analysis.code)}
+                    onToggle={() => toggleCard(analysis.code)}
+                  />
+                ))
+              ) : (
+                // 최신 모드: 주가 데이터 + 분석 결과
+                (filteredStocks as KISStockData[]).map(stock => (
+                  <StockCard
+                    key={stock.code}
+                    stock={stock}
+                    analysis={analysisMap[stock.code]}
+                    isExpanded={expandedCards.has(stock.code)}
+                    onToggle={() => toggleCard(stock.code)}
+                  />
+                ))
+              )}
+            </div>
+          )}
         </>
       ) : (
         <EmptyState
@@ -503,5 +666,94 @@ export function APIAnalysis() {
         />
       )}
     </section>
+  );
+}
+
+// 히스토리 모드 전용 카드 (주가 데이터 없이 분석 결과만)
+function HistoryStockCard({
+  analysis,
+  isExpanded,
+  onToggle
+}: {
+  analysis: KISAnalysisResult;
+  isExpanded: boolean;
+  onToggle: () => void;
+}) {
+  const changeRate = analysis.change_rate ?? 0;
+  const priceChangeColor = changeRate > 0 ? 'text-red-500' : changeRate < 0 ? 'text-blue-500' : 'text-text-secondary';
+
+  return (
+    <div className="bg-bg-secondary border border-border rounded-xl p-3 md:p-4 hover:border-accent-primary transition-all">
+      {/* 헤더 */}
+      <div className="flex justify-between items-start mb-2 md:mb-3">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 md:gap-2 mb-1 flex-wrap">
+            <a
+              href={`https://m.stock.naver.com/domestic/stock/${analysis.code}/total`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-base md:text-lg text-text-primary hover:text-accent-primary transition-colors truncate"
+            >
+              {analysis.name}
+            </a>
+            {analysis.market && (
+              <span className={`text-[0.65rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${analysis.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+                {analysis.market}
+              </span>
+            )}
+          </div>
+          {analysis.current_price != null && (
+            <div className="flex items-baseline gap-1.5 md:gap-2">
+              <span className="text-base md:text-lg font-bold">{analysis.current_price.toLocaleString()}원</span>
+              <span className={`text-xs md:text-sm font-medium ${priceChangeColor}`}>
+                {changeRate > 0 ? '+' : ''}{changeRate.toFixed(2)}%
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="text-right flex-shrink-0 ml-2">
+          <SignalBadge signal={analysis.signal} />
+        </div>
+      </div>
+
+      {/* 분석 근거 */}
+      <div
+        className="cursor-pointer"
+        onClick={onToggle}
+      >
+        <div className="flex items-center justify-between text-[0.65rem] md:text-xs text-text-muted mb-1">
+          <span>AI 분석 근거</span>
+          <span className="transition-transform duration-200" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+        </div>
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+        >
+          <div className="bg-bg-primary rounded-lg p-2 md:p-3 text-xs md:text-sm">
+            <p className="text-text-secondary mb-2">{analysis.reason}</p>
+            {analysis.key_factors && (
+              <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.65rem] md:text-xs">
+                <div><span className="text-text-muted">추세:</span> {analysis.key_factors.price_trend}</div>
+                <div><span className="text-text-muted">거래량:</span> {analysis.key_factors.volume_signal}</div>
+                <div><span className="text-text-muted">외인:</span> {analysis.key_factors.foreign_flow}</div>
+                <div><span className="text-text-muted">밸류:</span> {analysis.key_factors.valuation}</div>
+              </div>
+            )}
+            {analysis.confidence != null && (
+              <div className="mt-2 text-[0.65rem] md:text-xs text-text-muted">
+                신뢰도: {((analysis.confidence ?? 0) * 100).toFixed(0)}% | 위험도: {analysis.risk_level || '-'}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 뉴스 섹션 */}
+      <div className="md:hidden">
+        <NewsSection news={analysis?.news} isMobile={true} />
+      </div>
+      <div className="hidden md:block">
+        <NewsSection news={analysis?.news} isMobile={false} />
+      </div>
+    </div>
   );
 }

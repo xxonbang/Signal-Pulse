@@ -5,3 +5,5 @@ export { Button } from './Button';
 export { LoadingSpinner } from './LoadingSpinner';
 export { EmptyState } from './EmptyState';
 export { HistoryButton } from './HistoryButton';
+export { Toast } from './Toast';
+export { AnimatedNumber } from './AnimatedNumber';

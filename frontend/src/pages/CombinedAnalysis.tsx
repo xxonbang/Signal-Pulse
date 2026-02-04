@@ -1,7 +1,7 @@
 import { useState, useMemo, memo } from 'react';
-import { useCombinedData, useCombinedHistoryData, useCombinedHistoryIndex } from '@/hooks/useCombinedData';
+import { useCombinedData, useCombinedHistoryData } from '@/hooks/useCombinedData';
 import type { CombinedStock, CombinedAnalysisData, MarketType, SignalType, MatchStatus } from '@/services/types';
-import { LoadingSpinner, EmptyState, HistoryButton } from '@/components/common';
+import { LoadingSpinner, EmptyState, AnimatedNumber } from '@/components/common';
 import { SignalBadge } from '@/components/signal';
 import { MarketTabs } from '@/components/stock';
 import { NewsSection } from '@/components/news';
@@ -181,7 +181,7 @@ function StatCard({ icon, label, value, subValue, colorClass }: {
           {label}
         </div>
         <div className="text-sm md:text-base font-bold text-text-primary">
-          {value}
+          {typeof value === 'number' ? <AnimatedNumber value={value} duration={500} /> : value}
           {subValue && <span className="text-[0.65rem] md:text-sm text-text-muted font-medium ml-0.5 md:ml-1">({subValue})</span>}
         </div>
       </div>
@@ -202,31 +202,72 @@ function TipText({ children }: { children: React.ReactNode }) {
 }
 
 
+// 히스토리 뷰잉 배너
+function ViewingHistoryBanner({ dateTime }: { dateTime: string }) {
+  const { resetToLatest } = useUIStore();
+
+  // "2026-02-04_0700" → "2026-02-04 07:00"
+  const [date, time] = dateTime.split('_');
+  const displayTime = time ? `${time.slice(0, 2)}:${time.slice(2)}` : '';
+
+  return (
+    <div className="flex items-center justify-between gap-2 md:gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 md:px-5 py-2.5 md:py-3 rounded-xl mb-4 md:mb-5">
+      <span className="font-semibold text-xs md:text-base flex items-center gap-2">
+        <span className="text-base md:text-lg">📅</span>
+        <span>
+          {date} {displayTime && <span className="text-white/80">{displayTime}</span>}
+          <span className="text-white/90"> 일시의 데이터 표시 중</span>
+        </span>
+      </span>
+      <button
+        onClick={resetToLatest}
+        className="group flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2
+          bg-white/20 border border-white/30 rounded-lg
+          text-xs md:text-sm font-semibold
+          hover:bg-white/30 hover:border-white/50
+          active:scale-95
+          transition-all duration-200"
+      >
+        <svg
+          className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        <span className="hidden sm:inline">최신으로</span>
+        <span className="sm:hidden">최신</span>
+      </button>
+    </div>
+  );
+}
+
 export function CombinedAnalysis() {
   const [marketFilter, setMarketFilter] = useState<MarketType>('all');
   // 멀티셀렉트: 빈 Set = 전체 선택
   const [matchFilters, setMatchFilters] = useState<Set<MatchStatus>>(new Set());
   const [signalFilters, setSignalFilters] = useState<Set<SignalType>>(new Set());
-  const { openHistoryPanel, isViewingHistory, viewingHistoryFile, historyType } = useUIStore();
+  const { isViewingHistory, viewingHistoryDateTime, isCompactView } = useUIStore();
 
-  // 종합분석 히스토리 인덱스
-  const { data: combinedHistoryIndex } = useCombinedHistoryIndex();
-
-  // 히스토리 카운트
-  const historyCount = combinedHistoryIndex?.total_records || 0;
+  // viewingHistoryDateTime: "2026-02-04_0700" → filename: "combined_2026-02-04_0700.json"
+  const historyFilename = viewingHistoryDateTime ? `combined_${viewingHistoryDateTime}.json` : null;
 
   // 최신 데이터
   const { data: latestData, isLoading: isLoadingLatest } = useCombinedData();
 
-  // 히스토리 데이터 (종합분석 히스토리를 볼 때만)
-  const isCombinedHistory = isViewingHistory && historyType === 'combined';
+  // 히스토리 데이터
   const { data: historyData, isLoading: isLoadingHistory } = useCombinedHistoryData(
-    isCombinedHistory ? viewingHistoryFile : null
+    isViewingHistory ? historyFilename : null
   );
 
   // 실제 사용할 데이터 선택
-  const data: CombinedAnalysisData | null | undefined = isCombinedHistory ? historyData : latestData;
-  const isLoading = isCombinedHistory ? isLoadingHistory : isLoadingLatest;
+  const data: CombinedAnalysisData | null | undefined = isViewingHistory ? historyData : latestData;
+  const isLoading = isViewingHistory ? isLoadingHistory : isLoadingLatest;
 
   // 필터 토글 함수
   const toggleMatchFilter = (status: MatchStatus) => {
@@ -335,23 +376,17 @@ export function CombinedAnalysis() {
   return (
     <section id="combined-analysis" className="mb-10">
       {/* 헤더 */}
-      <div className="flex justify-between items-center mb-5 flex-wrap gap-3">
-        <div className="flex-1">
-          <h2 className="text-xl font-bold text-text-primary mb-1">분석 종합</h2>
-          <p className="text-sm text-text-muted">
-            Vision AI와 한투 API 분석 결과 비교 검증
-            {isCombinedHistory && viewingHistoryFile && (
-              <span className="ml-2 text-indigo-600">
-                (히스토리: {data.date} {data.time})
-              </span>
-            )}
-          </p>
+      <div className="flex justify-between items-center mb-4 md:mb-5 flex-wrap gap-2 md:gap-3">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">분석 종합</h2>
+          <p className="text-xs md:text-sm text-text-muted">Vision AI와 한투 API 분석 결과 비교 검증</p>
         </div>
-        <HistoryButton
-          onClick={() => openHistoryPanel('combined')}
-          count={historyCount}
-        />
       </div>
+
+      {/* 히스토리 배너 */}
+      {isViewingHistory && viewingHistoryDateTime && (
+        <ViewingHistoryBanner dateTime={viewingHistoryDateTime} />
+      )}
 
       {/* 통계 요약 */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
@@ -482,11 +517,46 @@ export function CombinedAnalysis() {
 
       {/* 종목 그리드 */}
       {filteredStocks.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredStocks.map(stock => (
-            <CombinedStockCard key={stock.code} stock={stock} />
-          ))}
-        </div>
+        isCompactView ? (
+          // Compact 보기
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {filteredStocks.map(stock => (
+              <a
+                key={stock.code}
+                href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'flex items-center justify-between gap-2 px-3 py-2 border rounded-lg hover:border-accent-primary transition-all no-underline',
+                  stock.match_status === 'match' ? 'bg-emerald-50/50 border-emerald-200' :
+                  stock.match_status === 'mismatch' ? 'bg-red-50/50 border-red-200' :
+                  'bg-bg-secondary border-border'
+                )}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
+                  <div className="text-xs text-text-muted font-mono">{stock.code}</div>
+                </div>
+                <div className="flex flex-col items-end gap-0.5">
+                  {stock.vision_signal && stock.api_signal && stock.vision_signal === stock.api_signal ? (
+                    <SignalBadge signal={stock.vision_signal} size="sm" />
+                  ) : (
+                    <span className="text-[0.6rem] text-text-muted">
+                      {stock.match_status === 'match' ? '✓' : stock.match_status === 'mismatch' ? '✗' : '~'}
+                    </span>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          // 일반 보기
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredStocks.map(stock => (
+              <CombinedStockCard key={stock.code} stock={stock} />
+            ))}
+          </div>
+        )
       ) : (
         <EmptyState
           icon="🔍"

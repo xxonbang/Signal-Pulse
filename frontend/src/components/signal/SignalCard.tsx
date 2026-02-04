@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { AnimatedNumber } from '@/components/common';
 import type { SignalType } from '@/services/types';
 
 interface SignalCardProps {
@@ -140,7 +141,7 @@ export function SignalCard({ signal, count, active = false, onClick }: SignalCar
 
       {/* Count */}
       <div className={cn('text-lg md:text-4xl font-extrabold mb-0.5 md:mb-1 tracking-tight', styles.text)}>
-        {count}
+        <AnimatedNumber value={count} duration={500} />
       </div>
 
       {/* Label */}

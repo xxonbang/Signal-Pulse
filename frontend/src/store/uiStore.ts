@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import type { SignalType, MarketType, AnalysisTab } from '@/services/types';
 
-// 히스토리 타입: vision, kis, combined
-export type HistoryType = 'vision' | 'kis' | 'combined';
+interface ToastState {
+  isVisible: boolean;
+  message: string;
+}
 
 interface UIStore {
   // 현재 활성 탭
@@ -12,11 +14,16 @@ interface UIStore {
   activeMarket: MarketType;
   activeSignal: SignalType | null;
 
-  // 히스토리
+  // 히스토리 (통합 - workflow 회차 기준 동기화)
   isHistoryPanelOpen: boolean;
-  historyType: HistoryType;  // 어떤 분석의 히스토리인지
   isViewingHistory: boolean;
-  viewingHistoryFile: string | null;
+  viewingHistoryDateTime: string | null;  // "2026-02-04_0700" 형식 (날짜_시간)
+
+  // Compact 보기
+  isCompactView: boolean;
+
+  // Toast
+  toast: ToastState;
 
   // Actions
   setActiveTab: (tab: AnalysisTab) => void;
@@ -24,21 +31,24 @@ interface UIStore {
   setSignalFilter: (signal: SignalType | null) => void;
   toggleSignalFilter: (signal: SignalType) => void;
   clearSignalFilter: () => void;
-  toggleHistoryPanel: () => void;
-  openHistoryPanel: (type?: HistoryType) => void;
+  openHistoryPanel: () => void;
   closeHistoryPanel: () => void;
-  setViewingHistory: (filename: string | null) => void;
+  setViewingHistory: (dateTime: string | null) => void;
   resetToLatest: () => void;
+  showToast: (message: string, duration?: number) => void;
+  hideToast: () => void;
+  toggleCompactView: () => void;
 }
 
-export const useUIStore = create<UIStore>((set) => ({
+export const useUIStore = create<UIStore>((set, get) => ({
   activeTab: 'vision',
   activeMarket: 'all',
   activeSignal: null,
   isHistoryPanelOpen: false,
-  historyType: 'vision',
   isViewingHistory: false,
-  viewingHistoryFile: null,
+  viewingHistoryDateTime: null,
+  isCompactView: false,
+  toast: { isVisible: false, message: '' },
 
   setActiveTab: (tab) => set({ activeTab: tab }),
 
@@ -55,27 +65,36 @@ export const useUIStore = create<UIStore>((set) => ({
 
   clearSignalFilter: () => set({ activeSignal: null }),
 
-  toggleHistoryPanel: () => set((state) => ({
-    isHistoryPanelOpen: !state.isHistoryPanelOpen
-  })),
-
-  openHistoryPanel: (type = 'vision') => set({
-    isHistoryPanelOpen: true,
-    historyType: type,
-  }),
+  openHistoryPanel: () => set({ isHistoryPanelOpen: true }),
 
   closeHistoryPanel: () => set({ isHistoryPanelOpen: false }),
 
-  setViewingHistory: (filename) => set({
-    isViewingHistory: filename !== null,
-    viewingHistoryFile: filename,
+  // dateTime: "2026-02-04_0700" 형식
+  setViewingHistory: (dateTime) => set({
+    isViewingHistory: dateTime !== null,
+    viewingHistoryDateTime: dateTime,
   }),
 
-  resetToLatest: () => set({
-    isViewingHistory: false,
-    viewingHistoryFile: null,
-    isHistoryPanelOpen: false,
-    activeMarket: 'all',
-    activeSignal: null,
-  }),
+  resetToLatest: () => {
+    set({
+      isViewingHistory: false,
+      viewingHistoryDateTime: null,
+      isHistoryPanelOpen: false,
+      activeMarket: 'all',
+      activeSignal: null,
+    });
+    get().showToast('가장 최신의 데이터를 표시합니다', 2000);
+  },
+
+  showToast: (message, duration = 2000) => {
+    set({ toast: { isVisible: true, message } });
+    setTimeout(() => {
+      // message는 유지하고 isVisible만 false로 (애니메이션 중 쪼그라듦 방지)
+      set((state) => ({ toast: { ...state.toast, isVisible: false } }));
+    }, duration);
+  },
+
+  hideToast: () => set((state) => ({ toast: { ...state.toast, isVisible: false } })),
+
+  toggleCompactView: () => set((state) => ({ isCompactView: !state.isCompactView })),
 }));

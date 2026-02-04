@@ -5,9 +5,34 @@ import type { StockResult } from '@/services/types';
 
 interface StockTableProps {
   stocks: StockResult[];
+  isCompact?: boolean;
 }
 
-export function StockTable({ stocks }: StockTableProps) {
+export function StockTable({ stocks, isCompact = false }: StockTableProps) {
+  if (isCompact) {
+    // Compact 보기: 그리드 형태로 간단하게 표시
+    return (
+      <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+        {stocks.map((stock) => (
+          <a
+            key={stock.code}
+            href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary hover:bg-bg-primary transition-all no-underline"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
+              <div className="text-xs text-text-muted font-mono">{stock.code}</div>
+            </div>
+            <SignalBadge signal={stock.signal} size="sm" />
+          </a>
+        ))}
+      </div>
+    );
+  }
+
+  // 일반 보기: 테이블 형태
   return (
     <div className="bg-bg-secondary border border-border rounded-2xl overflow-hidden shadow-sm hidden md:block">
       <table className="w-full border-collapse">

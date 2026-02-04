@@ -1,8 +1,7 @@
 import { useVisionData } from '@/hooks/useVisionData';
 import { useHistoryData } from '@/hooks/useHistoryData';
-import { useHistoryIndex } from '@/hooks/useHistoryIndex';
 import { useUIStore } from '@/store/uiStore';
-import { LoadingSpinner, EmptyState, HistoryButton, Button } from '@/components/common';
+import { LoadingSpinner, EmptyState, Button, AnimatedNumber } from '@/components/common';
 import { SignalSummary } from '@/components/signal';
 import { MarketTabs, StockList } from '@/components/stock';
 import { getSignalCounts, getFilteredStocks, categorizeStocks, getLatestAnalysisTime, formatTimeOnly } from '@/lib/utils';
@@ -40,21 +39,44 @@ function FilterIndicator({
   );
 }
 
-function ViewingHistoryBanner() {
-  const { isViewingHistory, resetToLatest } = useUIStore();
-  const { viewingHistoryFile } = useUIStore();
-  const { data } = useHistoryData(viewingHistoryFile);
+function ViewingHistoryBanner({ dateTime }: { dateTime: string }) {
+  const { resetToLatest } = useUIStore();
 
-  if (!isViewingHistory || !data) return null;
+  // "2026-02-04_0700" → "2026-02-04 07:00"
+  const [date, time] = dateTime.split('_');
+  const displayTime = time ? `${time.slice(0, 2)}:${time.slice(2)}` : '';
 
   return (
-    <div className="flex items-center justify-between gap-2 md:gap-3 bg-gradient-to-r from-accent-primary to-accent-secondary text-white px-3 md:px-5 py-2.5 md:py-3 rounded-xl mb-4 md:mb-5">
-      <span className="font-semibold text-xs md:text-base">📅 {data.date} <span className="hidden sm:inline">분석 결과 </span>보는 중</span>
+    <div className="flex items-center justify-between gap-2 md:gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-3 md:px-5 py-2.5 md:py-3 rounded-xl mb-4 md:mb-5">
+      <span className="font-semibold text-xs md:text-base flex items-center gap-2">
+        <span className="text-base md:text-lg">📅</span>
+        <span>
+          {date} {displayTime && <span className="text-white/80">{displayTime}</span>}
+          <span className="text-white/90"> 일시의 데이터 표시 중</span>
+        </span>
+      </span>
       <button
         onClick={resetToLatest}
-        className="px-3 md:px-4 py-1.5 md:py-2 bg-white/20 border border-white/30 rounded-lg text-xs md:text-sm font-semibold hover:bg-white/30 transition-colors whitespace-nowrap"
+        className="group flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2
+          bg-white/20 border border-white/30 rounded-lg
+          text-xs md:text-sm font-semibold
+          hover:bg-white/30 hover:border-white/50
+          active:scale-95
+          transition-all duration-200"
       >
-        <span className="hidden sm:inline">최신으로 돌아가기</span>
+        <svg
+          className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        <span className="hidden sm:inline">최신으로</span>
         <span className="sm:hidden">최신</span>
       </button>
     </div>
@@ -91,7 +113,7 @@ function ResultsMeta({ data }: { data: AnalysisData }) {
           <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
             분석 종목
           </div>
-          <div className="text-sm md:text-base font-bold text-text-primary">{data.total_stocks}개</div>
+          <div className="text-sm md:text-base font-bold text-text-primary"><AnimatedNumber value={data.total_stocks} duration={500} />개</div>
         </div>
       </div>
     </div>
@@ -152,11 +174,13 @@ function AnalysisContent({ data }: { data: AnalysisData }) {
 }
 
 export function VisionAnalysis() {
-  const { isViewingHistory, viewingHistoryFile, openHistoryPanel } = useUIStore();
+  const { isViewingHistory, viewingHistoryDateTime } = useUIStore();
+
+  // viewingHistoryDateTime: "2026-02-04_0700" → filename: "vision_2026-02-04_0700.json"
+  const historyFilename = viewingHistoryDateTime ? `vision_${viewingHistoryDateTime}.json` : null;
 
   const { data: latestData, isLoading: latestLoading, error: latestError } = useVisionData();
-  const { data: historyData, isLoading: historyLoading } = useHistoryData(viewingHistoryFile);
-  const { data: historyIndex } = useHistoryIndex();
+  const { data: historyData, isLoading: historyLoading } = useHistoryData(historyFilename);
 
   const isLoading = isViewingHistory ? historyLoading : latestLoading;
   const data = isViewingHistory ? historyData : latestData;
@@ -166,16 +190,14 @@ export function VisionAnalysis() {
     <section id="results" className="mb-8 md:mb-10">
       <div className="flex justify-between items-center mb-4 md:mb-5 flex-wrap gap-2 md:gap-3">
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">최신 분석 결과</h2>
-          <p className="text-xs md:text-sm text-text-muted">거래량 상위 종목 AI 시그널 분석</p>
+          <h2 className="text-lg md:text-xl font-bold text-text-primary mb-0.5 md:mb-1">Vision AI 분석</h2>
+          <p className="text-xs md:text-sm text-text-muted">네이버 금융 스크린샷 + Gemini Vision 분석</p>
         </div>
-        <HistoryButton
-          onClick={openHistoryPanel}
-          count={historyIndex?.total_records}
-        />
       </div>
 
-      <ViewingHistoryBanner />
+      {isViewingHistory && viewingHistoryDateTime && (
+        <ViewingHistoryBanner dateTime={viewingHistoryDateTime} />
+      )}
 
       {isLoading && <LoadingSpinner message="분석 결과를 불러오는 중..." />}
 

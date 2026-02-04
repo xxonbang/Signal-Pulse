@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { AnimatedNumber } from '@/components/common';
 import type { MarketType } from '@/services/types';
 
 interface MarketTabsProps {
@@ -40,7 +41,7 @@ export function MarketTabs({ active, counts, onChange }: MarketTabsProps) {
                 : 'bg-bg-primary'
             )}
           >
-            {counts[tab.key]}
+            <AnimatedNumber value={counts[tab.key]} duration={400} />
           </span>
         </button>
       ))}

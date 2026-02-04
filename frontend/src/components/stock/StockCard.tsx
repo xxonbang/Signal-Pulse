@@ -5,9 +5,29 @@ import type { StockResult } from '@/services/types';
 
 interface StockCardProps {
   stock: StockResult;
+  isCompact?: boolean;
 }
 
-export function StockCard({ stock }: StockCardProps) {
+export function StockCard({ stock, isCompact = false }: StockCardProps) {
+  if (isCompact) {
+    // Compact 보기: 간단한 한 줄 형태
+    return (
+      <a
+        href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between gap-2 px-3 py-2.5 bg-bg-secondary border border-border rounded-lg mb-1.5 hover:border-accent-primary transition-all no-underline"
+      >
+        <div className="min-w-0 flex-1">
+          <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
+          <div className="text-xs text-text-muted font-mono">{stock.code}</div>
+        </div>
+        <SignalBadge signal={stock.signal} size="sm" />
+      </a>
+    );
+  }
+
+  // 일반 보기: 상세 카드 형태
   return (
     <div className="bg-bg-secondary border border-border rounded-xl p-3 md:p-4 mb-2.5 md:mb-3">
       <div className="flex justify-between items-start mb-2.5 md:mb-3">
