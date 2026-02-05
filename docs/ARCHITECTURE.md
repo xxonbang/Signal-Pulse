@@ -1,4 +1,4 @@
-# System Architecture: AI Vision Stock Signal Analyzer (AVSSA)
+# System Architecture: SignalPulse - AI Stock Signal Analyzer
 
 ## 1. Overview
 이 시스템은 네이버 증권의 실시간 시장 데이터를 브라우저 자동화(Playwright)를 통해 시각적으로 수집하고, Gemini 2.5 Flash의 대규모 컨텍스트 및 Vision 기능을 활용하여 국내 주식 상위 100개 종목에 대한 투자 시그널을 도출하는 자동화 파이프라인이다.

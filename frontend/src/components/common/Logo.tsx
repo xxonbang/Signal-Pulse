@@ -17,10 +17,10 @@ export function Logo() {
       </div>
       <div className="flex flex-col leading-tight">
         <span className="text-lg font-extrabold tracking-tight bg-gradient-to-br from-[#1e3a5f] via-accent-primary to-accent-secondary bg-clip-text text-transparent">
-          avssa
+          SignalPulse
         </span>
         <span className="text-[0.6rem] font-medium text-text-muted uppercase tracking-wider">
-          AI Vision Stock Signal
+          AI Stock Signal Analyzer
         </span>
       </div>
     </a>

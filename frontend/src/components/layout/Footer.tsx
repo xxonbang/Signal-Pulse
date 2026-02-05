@@ -2,8 +2,8 @@ export function Footer() {
   return (
     <footer className="border-t border-border py-5 md:py-7 px-4 md:px-6 text-center text-text-muted text-xs md:text-sm bg-bg-secondary">
       <p className="leading-relaxed">
-        <span className="hidden sm:inline">AI Vision Stock Signal Analyzer (AVSSA) | </span>
-        <span className="sm:hidden">AVSSA | </span>
+        <span className="hidden sm:inline">SignalPulse - AI Stock Signal Analyzer | </span>
+        <span className="sm:hidden">SignalPulse | </span>
         Powered by Gemini 2.5 Flash Vision API
       </p>
       <p className="mt-1.5 text-[0.65rem] md:text-xs">

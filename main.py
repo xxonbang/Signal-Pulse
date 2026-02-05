@@ -1,5 +1,5 @@
 """
-AI Vision Stock Signal Analyzer - 메인 실행 파일
+SignalPulse - AI Stock Signal Analyzer 메인 실행 파일
 """
 import asyncio
 import shutil
@@ -120,7 +120,7 @@ async def main():
     now_kst = datetime.now(KST)
 
     print("=" * 60)
-    print("  AI Vision Stock Signal Analyzer (AVSSA)")
+    print("  SignalPulse - AI Stock Signal Analyzer")
     print(f"  실행 시간: {now_kst.strftime('%Y-%m-%d %H:%M:%S')} KST")
     print("=" * 60)
 
