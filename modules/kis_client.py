@@ -91,27 +91,35 @@ class KISClient:
             raise ValueError("KIS_APP_SECRET 환경변수가 설정되지 않았습니다.")
 
     def _load_cached_token(self) -> bool:
-        """캐시된 토큰 로드 (Supabase → 로컬 파일 Fallback)"""
-        # 1. Supabase에서 토큰 조회 시도
+        """캐시된 토큰 로드 (Supabase 유효토큰 → Supabase 전체 → 로컬 파일 Fallback)"""
         if self._supabase.is_available():
+            # 1순위: Supabase에서 유효 토큰 조회 (DB 레벨 expires_at 필터링)
+            token_data = self._supabase.get_kis_valid_token()
+            if token_data and token_data.get('access_token'):
+                try:
+                    self._access_token = token_data.get('access_token')
+                    self._token_expires_at = datetime.fromisoformat(token_data['expires_at'])
+                    self._token_issued_at = datetime.fromisoformat(token_data['issued_at'])
+                    remaining = self._token_expires_at - datetime.now()
+                    hours = remaining.total_seconds() / 3600
+                    print(f"[KIS] Supabase에서 유효 토큰 로드 (잔여: {hours:.1f}시간)")
+                    return True
+                except (KeyError, ValueError) as e:
+                    print(f"[KIS] Supabase 유효 토큰 파싱 실패: {e}")
+
+            # 2순위: 만료 토큰 포함 조회 (KIS API가 만료 직후 허용하는 경우 대응)
             token_data = self._supabase.get_kis_token()
             if token_data and token_data.get('access_token'):
                 try:
                     self._access_token = token_data.get('access_token')
                     self._token_expires_at = datetime.fromisoformat(token_data['expires_at'])
                     self._token_issued_at = datetime.fromisoformat(token_data['issued_at'])
-
-                    remaining = self._token_expires_at - datetime.now()
-                    if remaining.total_seconds() > 0:
-                        hours = remaining.total_seconds() / 3600
-                        print(f"[KIS] Supabase에서 토큰 로드 (유효시간: {hours:.1f}시간 남음)")
-                    else:
-                        print(f"[KIS] Supabase 토큰 로드 (만료됨, API 호출 시 재발급 시도)")
+                    print(f"[KIS] Supabase 토큰 로드 (만료됨, API 호출 시 재발급 시도)")
                     return True
                 except (KeyError, ValueError) as e:
                     print(f"[KIS] Supabase 토큰 파싱 실패: {e}")
 
-        # 2. 로컬 파일 캐시 Fallback
+        # 3순위: 로컬 파일 캐시 Fallback
         if not self._token_cache_path.exists():
             return False
 

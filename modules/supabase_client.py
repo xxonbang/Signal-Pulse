@@ -171,6 +171,43 @@ class SupabaseCredentialManager:
             print(f"[Supabase] KIS 토큰 조회 실패: {e}")
             return None
 
+    def get_kis_valid_token(self) -> Optional[Dict[str, Any]]:
+        """만료되지 않은 KIS 토큰만 조회 (DB 레벨 만료 필터링)
+
+        expires_at DB 컬럼을 활용하여 쿼리 단계에서 만료 토큰을 제외합니다.
+        기존 토큰에 expires_at 컬럼이 NULL이면 조회되지 않으므로,
+        그 경우 get_kis_token()으로 폴백해야 합니다.
+
+        Returns:
+            {"access_token": "...", "expires_at": "...", "issued_at": "..."} 또는 None
+        """
+        client = self._get_client()
+        if not client:
+            return None
+
+        try:
+            now = datetime.now(timezone.utc).isoformat()
+            response = client.table("api_credentials").select(
+                "credential_type, credential_value"
+            ).eq("service_name", "kis_token").eq(
+                "is_active", True
+            ).gt("expires_at", now).execute()
+
+            if not response.data:
+                return None
+
+            result = {}
+            for row in response.data:
+                result[row["credential_type"]] = row["credential_value"]
+
+            if "access_token" in result:
+                return result
+            return None
+
+        except Exception as e:
+            print(f"[Supabase] KIS 유효 토큰 조회 실패: {e}")
+            return None
+
     def save_kis_token(
         self,
         access_token: str,
@@ -195,6 +232,7 @@ class SupabaseCredentialManager:
             now = datetime.now(timezone.utc).isoformat()
 
             # 각 토큰 정보를 개별 행으로 저장
+            # expires_at DB 컬럼: 모든 행에 설정하여 DB 레벨 만료 필터링 지원
             for cred_type, cred_value in [
                 ("access_token", access_token),
                 ("expires_at", expires_at),
@@ -204,6 +242,7 @@ class SupabaseCredentialManager:
                     "service_name": "kis_token",
                     "credential_type": cred_type,
                     "credential_value": cred_value,
+                    "expires_at": expires_at,
                     "environment": "production",
                     "is_active": True,
                     "updated_at": now,
