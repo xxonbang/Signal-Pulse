@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 export function ScrollToTop() {
   const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -18,16 +19,21 @@ export function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       aria-label="페이지 최상단으로 이동"
+      style={{
+        background: hovered
+          ? 'linear-gradient(135deg, rgba(37,99,235,0.75), rgba(8,145,178,0.75))'
+          : 'linear-gradient(135deg, rgba(37,99,235,0.4), rgba(8,145,178,0.4))',
+      }}
       className={`
         fixed bottom-6 right-6 z-50
         w-11 h-11 rounded-full
-        bg-gradient-to-br from-blue-600/50 to-cyan-600/50
         backdrop-blur-md
         shadow-lg shadow-blue-500/15
         flex items-center justify-center
         transition-all duration-300 ease-out
-        hover:from-blue-600/80 hover:to-cyan-600/80
         hover:shadow-xl hover:shadow-blue-500/30 hover:scale-110
         active:scale-95
         ${visible
