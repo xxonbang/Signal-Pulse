@@ -15,6 +15,7 @@ from datetime import datetime, timedelta, timezone
 KST = timezone(timedelta(hours=9))
 
 from modules.kis_client import KISClient
+from modules.market_calendar import is_market_hours
 
 
 def safe_int(value, default: int = 0) -> int:
@@ -187,6 +188,66 @@ class KISStockDetailAPI:
             "stock_code": stock_code,
             "daily_investor_trend": daily_data,
         }
+
+    def get_investor_trend_estimate(self, stock_code: str) -> Dict[str, Any]:
+        """종목별 외인기관 추정가집계 (장중 추정 데이터)
+
+        Returns:
+            외국인/기관 추정 순매수 데이터
+        """
+        path = "/uapi/domestic-stock/v1/quotations/investor-trend-estimate"
+        tr_id = "HHPTJ04160200"
+
+        params = {
+            "MKSC_SHRN_ISCD": stock_code,
+        }
+
+        try:
+            result = self.client.request("GET", path, tr_id, params=params)
+
+            if result.get("rt_cd") != "0":
+                return {"error": result.get("msg1", "Unknown error")}
+
+            output2 = result.get("output2", [])
+
+            # 시간대별 상세 데이터
+            time_details = []
+            total_foreign_net = 0
+            total_institution_net = 0
+            total_net = 0
+
+            for item in output2:
+                frgn_qty = safe_int(item.get("frgn_fake_ntby_qty", 0))
+                orgn_qty = safe_int(item.get("orgn_fake_ntby_qty", 0))
+                sum_qty = safe_int(item.get("sum_fake_ntby_qty", 0))
+
+                time_details.append({
+                    "time_group": item.get("bsop_hour_gb", ""),
+                    "foreign_net": frgn_qty,
+                    "institution_net": orgn_qty,
+                    "total_net": sum_qty,
+                })
+
+            # 가장 최근(마지막 집계) 데이터의 누적값 사용
+            # output2의 첫 번째 항목이 가장 최근 누적값
+            if output2:
+                latest = output2[0]
+                total_foreign_net = safe_int(latest.get("frgn_fake_ntby_qty", 0))
+                total_institution_net = safe_int(latest.get("orgn_fake_ntby_qty", 0))
+                total_net = safe_int(latest.get("sum_fake_ntby_qty", 0))
+
+            return {
+                "stock_code": stock_code,
+                "is_estimated": True,
+                "estimated_data": {
+                    "foreign_net": total_foreign_net,
+                    "institution_net": total_institution_net,
+                    "total_net": total_net,
+                },
+                "time_details": time_details,
+            }
+        except Exception as e:
+            return {"error": str(e)}
 
     def get_member_trading(self, stock_code: str) -> Dict[str, Any]:
         """주식현재가 회원사 조회 (증권사별 매매현황)
@@ -601,6 +662,11 @@ class KISStockDetailAPI:
         # 3. 투자자 동향 (30일)
         data["investor_trend"] = self.get_investor_trend(stock_code)
         time.sleep(0.1)
+
+        # 3-1. 장중이면 추정 수급 데이터 추가 수집
+        if is_market_hours():
+            data["investor_trend_estimate"] = self.get_investor_trend_estimate(stock_code)
+            time.sleep(0.1)
 
         # 4. 회원사 매매현황
         data["member_trading"] = self.get_member_trading(stock_code)

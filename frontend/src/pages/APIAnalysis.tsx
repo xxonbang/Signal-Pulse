@@ -22,11 +22,20 @@ function formatPercent(num: number | null | undefined): string {
 }
 
 // 투자자 동향 뱃지
-function FlowBadge({ value, label }: { value: number | null | undefined; label: string }) {
+function FlowBadge({ value, label, isEstimated }: { value: number | null | undefined; label: string; isEstimated?: boolean }) {
+  // null이면 추정 모드에서 개인 데이터 없음
+  if (value === null && isEstimated) {
+    return (
+      <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium bg-gray-100 text-gray-400">
+        {label}: 추정불가
+      </span>
+    );
+  }
+
   if (value === null || value === undefined) return null;
 
-  // 값이 0이면 "장중" 표시 (장중에는 투자자 순매수 데이터 미확정)
-  if (value === 0) {
+  // 값이 0이고 추정 모드가 아니면 "장중" 표시
+  if (value === 0 && !isEstimated) {
     return (
       <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium bg-gray-100 text-gray-500">
         {label}: 장중
@@ -35,14 +44,18 @@ function FlowBadge({ value, label }: { value: number | null | undefined; label: 
   }
 
   const isPositive = value > 0;
-  const bgColor = isPositive ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700';
+  // 추정 데이터는 amber 계열 배경
+  const bgColor = isEstimated
+    ? (isPositive ? 'bg-amber-100 text-amber-800' : 'bg-amber-50 text-amber-700')
+    : (isPositive ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700');
   // 모바일에서는 숫자를 간략화
   const displayValue = Math.abs(value) >= 10000
     ? `${(value / 10000).toFixed(0)}만`
     : formatNumber(value);
+  const estimateLabel = isEstimated ? '(추정)' : '';
   return (
     <span className={`inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium ${bgColor}`}>
-      {label}: {isPositive ? '+' : ''}{displayValue}
+      {label}: {isPositive ? '+' : ''}{displayValue}{estimateLabel}
     </span>
   );
 }
@@ -73,7 +86,7 @@ function DataAvailabilityNotice() {
         </div>
       </div>
       <div className="px-3 md:px-4 py-2.5 md:py-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 text-[0.65rem] md:text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 text-[0.65rem] md:text-xs">
           <div className="flex items-start gap-2">
             <span className="text-green-500 font-bold mt-0.5">✓</span>
             <div>
@@ -86,6 +99,13 @@ function DataAvailabilityNotice() {
             <div>
               <span className="font-medium text-gray-700">장 마감 후 확정</span>
               <p className="text-gray-500 mt-0.5">외인/기관/개인 순매수 (장중 "장중" 표시)</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <span className="text-amber-500 font-bold mt-0.5">~</span>
+            <div>
+              <span className="font-medium text-gray-700">장중 추정 제공</span>
+              <p className="text-gray-500 mt-0.5">외인/기관 추정 순매수 (장중 실시간 추정치)</p>
             </div>
           </div>
         </div>
@@ -229,9 +249,9 @@ function StockCard({
 
       {/* 투자자 동향 */}
       <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
-        <FlowBadge value={stock.investor_flow?.today?.foreign_net} label="외인" />
-        <FlowBadge value={stock.investor_flow?.today?.institution_net} label="기관" />
-        <FlowBadge value={stock.investor_flow?.today?.individual_net} label="개인" />
+        <FlowBadge value={stock.investor_flow?.today?.foreign_net} label="외인" isEstimated={stock.investor_flow?.is_estimated} />
+        <FlowBadge value={stock.investor_flow?.today?.institution_net} label="기관" isEstimated={stock.investor_flow?.is_estimated} />
+        <FlowBadge value={stock.investor_flow?.today?.individual_net} label="개인" isEstimated={stock.investor_flow?.is_estimated} />
       </div>
 
       {/* 분석 근거 (있는 경우) */}

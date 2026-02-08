@@ -93,10 +93,11 @@ export interface KISStockData {
     bps: number;
   };
   investor_flow: {
+    is_estimated?: boolean;
     today: {
-      foreign_net: number;
-      institution_net: number;
-      individual_net: number;
+      foreign_net: number | null;
+      institution_net: number | null;
+      individual_net: number | null;
     };
     sum_5_days: {
       foreign_net: number;

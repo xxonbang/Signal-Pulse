@@ -2,8 +2,11 @@
 한국 주식시장 휴장일 체크 모듈
 KRX(한국거래소) 휴장일 기준
 """
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, timezone
 import sys
+
+# KST 시간대 (UTC+9)
+KST = timezone(timedelta(hours=9))
 
 # 한국 주식시장 정기 휴장일 (2024-2026)
 # 출처: 한국거래소(KRX) 휴장일 공지
@@ -104,6 +107,16 @@ def is_market_open(check_date: date = None) -> bool:
         return False
 
     return True
+
+
+def is_market_hours() -> bool:
+    """현재 시각이 장중(09:00~15:30 KST)인지 확인"""
+    now_kst = datetime.now(KST)
+    if not is_market_open(now_kst.date()):
+        return False
+    market_open = now_kst.replace(hour=9, minute=0, second=0, microsecond=0)
+    market_close = now_kst.replace(hour=15, minute=30, second=0, microsecond=0)
+    return market_open <= now_kst <= market_close
 
 
 def get_market_status(check_date: date = None) -> dict:

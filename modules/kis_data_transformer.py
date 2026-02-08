@@ -139,6 +139,7 @@ class KISDataTransformer:
         current_price = details.get("current_price", {})
         asking_price = details.get("asking_price", {})
         investor_trend = details.get("investor_trend", {})
+        investor_trend_estimate = details.get("investor_trend_estimate", {})
         daily_chart = details.get("daily_chart", {})
         foreign_inst = details.get("foreign_institution_summary", {})
 
@@ -204,7 +205,7 @@ class KISDataTransformer:
             "order_book": self._transform_order_book(asking_price),
 
             # === 투자자별 매매동향 ===
-            "investor_flow": self._transform_investor_trend(investor_trend),
+            "investor_flow": self._transform_investor_trend(investor_trend, investor_trend_estimate),
 
             # === 외인/기관 동향 요약 ===
             "foreign_institution": self._transform_foreign_institution(foreign_inst),
@@ -235,7 +236,11 @@ class KISDataTransformer:
             "description": "bid_ask_ratio > 100: 매수세 우위, < 100: 매도세 우위",
         }
 
-    def _transform_investor_trend(self, investor_trend: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_investor_trend(
+        self,
+        investor_trend: Dict[str, Any],
+        investor_trend_estimate: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
         """투자자별 매매동향 변환 (일자별 투자자 동향 데이터)"""
         if not investor_trend:
             return {}
@@ -253,13 +258,27 @@ class KISDataTransformer:
         organ_5d = sum(d.get("organ_net", 0) for d in recent_days)
         individual_5d = sum(d.get("individual_net", 0) for d in recent_days)
 
-        return {
-            "today": {
+        # 추정 데이터가 있으면 today 필드를 추정 데이터로 대체
+        is_estimated = False
+        if investor_trend_estimate and not investor_trend_estimate.get("error") and investor_trend_estimate.get("is_estimated"):
+            estimated = investor_trend_estimate.get("estimated_data", {})
+            is_estimated = True
+            today_data = {
+                "date": today.get("date"),
+                "foreign_net": estimated.get("foreign_net"),
+                "institution_net": estimated.get("institution_net"),
+                "individual_net": None,  # 개인은 추정 불가
+            }
+        else:
+            today_data = {
                 "date": today.get("date"),
                 "foreign_net": today.get("foreign_net"),
                 "institution_net": today.get("organ_net"),
                 "individual_net": today.get("individual_net"),
-            },
+            }
+
+        result = {
+            "today": today_data,
             "sum_5_days": {
                 "foreign_net": foreign_5d,
                 "institution_net": organ_5d,
@@ -276,6 +295,11 @@ class KISDataTransformer:
             ],
             "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
         }
+
+        if is_estimated:
+            result["is_estimated"] = True
+
+        return result
 
     def _transform_foreign_institution(self, foreign_inst: Dict[str, Any]) -> Dict[str, Any]:
         """외인/기관 동향 요약 변환"""
