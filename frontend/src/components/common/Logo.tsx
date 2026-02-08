@@ -1,6 +1,10 @@
 export function Logo() {
   return (
-    <a href="#" className="flex items-center gap-2.5 no-underline">
+    <a
+      href="#"
+      onClick={(e) => { e.preventDefault(); window.location.reload(); }}
+      className="flex items-center gap-2.5 no-underline cursor-pointer"
+    >
       <div className="w-9 h-9 relative flex items-center justify-center">
         <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
           <defs>
