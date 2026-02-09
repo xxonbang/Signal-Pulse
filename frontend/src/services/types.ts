@@ -13,6 +13,13 @@ export interface NewsItem {
   originallink?: string;
 }
 
+// AI 재료분석 결과 타입
+export interface NewsAnalysis {
+  sentiment: string;      // "긍정" | "중립" | "부정"
+  key_news: string[];     // 주요 뉴스 1줄 요약 리스트
+  catalyst: string;       // 핵심 재료 요약
+}
+
 export interface StockResult {
   code: string;
   name: string;
@@ -33,6 +40,7 @@ export interface StockResult {
   capture_time?: string;
   analysis_time?: string;
   news?: NewsItem[];
+  news_analysis?: NewsAnalysis;
 }
 
 export interface AnalysisData {
@@ -138,6 +146,7 @@ export interface KISAnalysisResult {
   confidence?: number;
   analysis_time?: string;
   news?: NewsItem[];
+  news_analysis?: NewsAnalysis;
 }
 
 export interface KISAnalysisData {
@@ -172,6 +181,8 @@ export interface CombinedStock {
       pbr: number;
     };
   } | null;
+  vision_news_analysis?: NewsAnalysis;
+  api_news_analysis?: NewsAnalysis;
   match_status: MatchStatus;
   confidence: number;
 }

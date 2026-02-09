@@ -5,7 +5,7 @@ import { useKISHistoryData } from '@/hooks/useKISHistoryData';
 import type { KISStockData, KISAnalysisResult, KISAnalysisData, MarketType, SignalType, SignalCounts } from '@/services/types';
 import { LoadingSpinner, EmptyState, Button, AnimatedNumber } from '@/components/common';
 import { SignalSummary, SignalBadge } from '@/components/signal';
-import { MarketTabs } from '@/components/stock';
+import { MarketTabs, NewsAnalysisSection } from '@/components/stock';
 import { NewsSection } from '@/components/news';
 import { useUIStore } from '@/store/uiStore';
 
@@ -282,6 +282,7 @@ function StockCard({
                   신뢰도: {((analysis.confidence ?? 0) * 100).toFixed(0)}% | 위험도: {analysis.risk_level || '-'}
                 </div>
               )}
+              <NewsAnalysisSection newsAnalysis={analysis.news_analysis} />
             </div>
           </div>
         </div>
@@ -763,6 +764,7 @@ function HistoryStockCard({
                 신뢰도: {((analysis.confidence ?? 0) * 100).toFixed(0)}% | 위험도: {analysis.risk_level || '-'}
               </div>
             )}
+            <NewsAnalysisSection newsAnalysis={analysis.news_analysis} />
           </div>
         </div>
       </div>

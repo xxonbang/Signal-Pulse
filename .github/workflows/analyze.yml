@@ -513,9 +513,11 @@ jobs:
                   'vision_signal': stock.get('signal'),
                   'vision_reason': stock.get('reason'),
                   'vision_news': stock.get('news', []),
+                  'vision_news_analysis': stock.get('news_analysis'),
                   'api_signal': None,
                   'api_reason': None,
                   'api_news': [],
+                  'api_news_analysis': None,
                   'api_data': None,
               }
 
@@ -527,6 +529,7 @@ jobs:
                   combined_stocks[code]['api_signal'] = kis_result.get('signal')
                   combined_stocks[code]['api_reason'] = kis_result.get('reason')
                   combined_stocks[code]['api_news'] = kis_result.get('news', [])
+                  combined_stocks[code]['api_news_analysis'] = kis_result.get('news_analysis')
                   combined_stocks[code]['api_data'] = {
                       'price': kis_stock.get('price'),
                       'ranking': kis_stock.get('ranking'),
@@ -541,9 +544,11 @@ jobs:
                       'vision_signal': None,
                       'vision_reason': None,
                       'vision_news': [],
+                      'vision_news_analysis': None,
                       'api_signal': kis_result.get('signal'),
                       'api_reason': kis_result.get('reason'),
                       'api_news': kis_result.get('news', []),
+                      'api_news_analysis': kis_result.get('news_analysis'),
                       'api_data': {
                           'price': kis_stock.get('price'),
                           'ranking': kis_stock.get('ranking'),

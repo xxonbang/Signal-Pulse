@@ -1,5 +1,6 @@
 import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
+import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { formatTimeOnly } from '@/lib/utils';
 import type { StockResult } from '@/services/types';
 
@@ -73,6 +74,7 @@ export function StockTable({ stocks, isCompact = false }: StockTableProps) {
                 <div className="text-sm text-text-secondary leading-relaxed">
                   {stock.reason || '-'}
                 </div>
+                <NewsAnalysisSection newsAnalysis={stock.news_analysis} />
                 {/* 데스크톱용 뉴스 섹션 */}
                 <NewsSection news={stock.news} isMobile={false} />
               </td>

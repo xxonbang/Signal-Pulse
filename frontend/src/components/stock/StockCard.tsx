@@ -1,5 +1,6 @@
 import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
+import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { formatTimeOnly } from '@/lib/utils';
 import type { StockResult } from '@/services/types';
 
@@ -45,6 +46,7 @@ export function StockCard({ stock, isCompact = false }: StockCardProps) {
       <div className="text-xs md:text-sm text-text-secondary leading-relaxed pt-2.5 md:pt-3 border-t border-border-light">
         {stock.reason || '-'}
       </div>
+      <NewsAnalysisSection newsAnalysis={stock.news_analysis} />
       <div className="text-[0.65rem] md:text-xs text-text-muted mt-2 md:mt-2.5 flex gap-2 md:gap-3">
         {stock.capture_time && <span>캡처 {formatTimeOnly(stock.capture_time)}</span>}
         {stock.analysis_time && <span>분석 {formatTimeOnly(stock.analysis_time)}</span>}
