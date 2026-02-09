@@ -19,9 +19,10 @@ GEMINI_API_KEYS = [
 ]
 GEMINI_API_KEYS = [k for k in GEMINI_API_KEYS if k]  # None 제거
 
-# 타겟 URL (모바일 버전 m.stock.naver.com - 더 많은 정보 표시)
-KOSPI_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSPI&orderType=quantTop&startIdx=0&pageSize=50"
-KOSDAQ_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSDAQ&orderType=quantTop&startIdx=0&pageSize=70"
+# 타겟 URL (네이버 API - 거래대금 상위)
+# priceTop = 거래대금(accAmount) 기준 정렬 (구 amountTop의 후속)
+KOSPI_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSPI&orderType=priceTop&startIdx=0&pageSize=100"
+KOSDAQ_API_URL = "https://stock.naver.com/api/domestic/market/stock/default?tradeType=KRX&marketType=KOSDAQ&orderType=priceTop&startIdx=0&pageSize=100"
 STOCK_DETAIL_URL = "https://m.stock.naver.com/domestic/stock/{code}/total"
 
 # 스크래핑 설정 (태블릿 뷰포트 - iPad Pro 11")

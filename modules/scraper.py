@@ -26,7 +26,7 @@ from modules.utils import get_today_capture_dir
 
 
 async def fetch_stock_list_from_api(page: Page, api_url: str, market: str, max_stocks: int) -> list[dict]:
-    """신버전 API에서 거래량 상위 종목 리스트 추출"""
+    """네이버 API에서 거래대금 상위 종목 리스트 추출 (orderType=priceTop)"""
     print(f"[{market}] API 호출: {api_url[:80]}...")
 
     response = await page.goto(api_url)
@@ -45,7 +45,7 @@ async def fetch_stock_list_from_api(page: Page, api_url: str, market: str, max_s
             "market": market
         })
 
-    print(f"[{market}] {len(stocks)}개 종목 수집 완료")
+    print(f"[{market}] {len(stocks)}개 종목 수집 완료 (거래대금 상위)")
     return stocks
 
 
