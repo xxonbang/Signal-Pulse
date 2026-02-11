@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 
 type AuthMode = 'login' | 'signup';
@@ -10,6 +11,7 @@ export function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,6 +19,7 @@ export function AuthPage() {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setInviteCode('');
     setError('');
   };
 
@@ -35,6 +38,10 @@ export function AuthPage() {
     }
 
     if (mode === 'signup') {
+      if (!inviteCode.trim()) {
+        setError('가입코드를 입력해주세요.');
+        return;
+      }
       if (password.length < 6) {
         setError('비밀번호는 최소 6자 이상이어야 합니다.');
         return;
@@ -55,6 +62,19 @@ export function AuthPage() {
           : authError.message);
       }
     } else {
+      // 초대 코드 검증
+      const { data: codes } = await supabase
+        .from('invite_codes')
+        .select('code')
+        .eq('code', inviteCode.trim())
+        .limit(1);
+
+      if (!codes || codes.length === 0) {
+        setError('유효하지 않은 가입코드입니다.');
+        setIsSubmitting(false);
+        return;
+      }
+
       const { error: authError } = await signUp(email, password);
       if (authError) {
         setError(authError.message);
@@ -138,23 +158,42 @@ export function AuthPage() {
           </div>
 
           {mode === 'signup' && (
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-secondary mb-1">
-                비밀번호 확인
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="비밀번호 재입력"
-                autoComplete="new-password"
-                className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm
-                  text-text-primary placeholder:text-text-tertiary
-                  focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary
-                  transition-all"
-              />
-            </div>
+            <>
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-secondary mb-1">
+                  비밀번호 확인
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="비밀번호 재입력"
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm
+                    text-text-primary placeholder:text-text-tertiary
+                    focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary
+                    transition-all"
+                />
+              </div>
+              <div>
+                <label htmlFor="inviteCode" className="block text-sm font-medium text-text-secondary mb-1">
+                  가입코드
+                </label>
+                <input
+                  id="inviteCode"
+                  type="text"
+                  value={inviteCode}
+                  onChange={(e) => setInviteCode(e.target.value)}
+                  placeholder="가입코드 입력"
+                  autoComplete="off"
+                  className="w-full px-3 py-2 bg-white border border-border rounded-lg text-sm
+                    text-text-primary placeholder:text-text-tertiary
+                    focus:outline-none focus:ring-2 focus:ring-accent-primary/20 focus:border-accent-primary
+                    transition-all"
+                />
+              </div>
+            </>
           )}
 
           {/* Error */}
