@@ -9,6 +9,11 @@ on:
         required: false
         default: false
         type: boolean
+      rebuild:
+        description: '기존 날짜 포함 전체 재수집 (스키마 변경 반영)'
+        required: false
+        default: false
+        type: boolean
       date:
         description: '특정 날짜 수집 (YYYY-MM-DD)'
         required: false
@@ -52,7 +57,9 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          if [ "${{ github.event.inputs.backfill }}" == "true" ]; then
+          if [ "${{ github.event.inputs.rebuild }}" == "true" ]; then
+            python simulation_main.py --rebuild
+          elif [ "${{ github.event.inputs.backfill }}" == "true" ]; then
             python simulation_main.py --backfill
           elif [ -n "${{ github.event.inputs.date }}" ]; then
             python simulation_main.py --date "${{ github.event.inputs.date }}"

@@ -121,7 +121,7 @@ def backfill():
             print("[Simulation] 수집할 새로운 날짜가 없습니다.")
             return 0
 
-        print(f"[Simulation] 수집 대상: {len(new_dates)}일")
+        print(f"[Simulation] 수집 대상: {len(new_dates)}일 (신규)")
         for date in new_dates:
             print(f"  - {date}")
 
@@ -138,6 +138,61 @@ def backfill():
             time.sleep(0.5)  # API rate limit
 
         print(f"\n[Simulation] 백필 완료: {success}/{len(new_dates)}일 수집")
+
+    except TokenRefreshLimitError as e:
+        print(f"\n[토큰 제한] {e}")
+        return 1
+    except Exception as e:
+        print(f"\n[실패] {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
+
+    return 0
+
+
+def rebuild():
+    """기존 날짜 포함 전체 재수집 (all_prices 등 스키마 변경 반영용)"""
+    import json
+
+    print("\n[Simulation] 리빌드 모드 (전체 재수집)")
+    print("=" * 60)
+
+    try:
+        collector = SimulationCollector()
+        results_dir = Path(__file__).parent / "results"
+
+        # 히스토리 인덱스에서 모든 날짜 수집
+        all_dates = set()
+        for source in ["vision", "kis", "combined"]:
+            index_path = results_dir / source / "history_index.json"
+            if index_path.exists():
+                with open(index_path, "r", encoding="utf-8") as f:
+                    index = json.load(f)
+                for item in index.get("history", []):
+                    all_dates.add(item["date"])
+
+        target_dates = sorted(all_dates)
+        if not target_dates:
+            print("[Simulation] 히스토리에 날짜가 없습니다.")
+            return 0
+
+        print(f"[Simulation] 재수집 대상: {len(target_dates)}일 (기존 포함)")
+        for date in target_dates:
+            print(f"  - {date}")
+
+        success = 0
+        for i, date in enumerate(target_dates, 1):
+            print(f"\n--- [{i}/{len(target_dates)}] {date} ---")
+            try:
+                collector.collect_backfill(date)
+                success += 1
+            except Exception as e:
+                print(f"[실패] {date}: {e}")
+            import time
+            time.sleep(0.5)
+
+        print(f"\n[Simulation] 리빌드 완료: {success}/{len(target_dates)}일 수집")
 
     except TokenRefreshLimitError as e:
         print(f"\n[토큰 제한] {e}")
@@ -192,6 +247,11 @@ def main():
         help="특정 날짜 수집 (YYYY-MM-DD)",
     )
     parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="기존 날짜 포함 전체 재수집 (스키마 변경 반영)",
+    )
+    parser.add_argument(
         "--test",
         action="store_true",
         help="적극매수 종목 목록만 확인 (가격 수집 없음)",
@@ -201,6 +261,8 @@ def main():
 
     if args.test:
         return test_stocks()
+    elif args.rebuild:
+        return rebuild()
     elif args.backfill:
         return backfill()
     elif args.date:
