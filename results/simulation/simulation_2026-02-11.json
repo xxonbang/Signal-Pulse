@@ -1,0 +1,61 @@
+{
+  "date": "2026-02-11",
+  "collected_at": "2026-02-11T16:37:21.967713+09:00",
+  "categories": {
+    "vision": [
+      {
+        "code": "068270",
+        "name": "셀트리온",
+        "market": "KOSPI",
+        "open_price": 232000,
+        "close_price": 239500,
+        "high_price": 243500,
+        "return_pct": 3.23,
+        "high_return_pct": 4.96
+      },
+      {
+        "code": "000390",
+        "name": "삼화페인트",
+        "market": "KOSPI",
+        "open_price": 13990,
+        "close_price": 10610,
+        "high_price": 14300,
+        "return_pct": -24.16,
+        "high_return_pct": 2.22
+      },
+      {
+        "code": "389140",
+        "name": "포바이포",
+        "market": "KOSDAQ",
+        "open_price": 9520,
+        "close_price": 10360,
+        "high_price": 11670,
+        "return_pct": 8.82,
+        "high_return_pct": 22.58
+      }
+    ],
+    "kis": [
+      {
+        "code": "008600",
+        "name": "윌비스",
+        "market": "KOSPI",
+        "open_price": 333,
+        "close_price": 325,
+        "high_price": 334,
+        "return_pct": -2.4,
+        "high_return_pct": 0.3
+      },
+      {
+        "code": "038880",
+        "name": "아이에이",
+        "market": "KOSDAQ",
+        "open_price": 144,
+        "close_price": 142,
+        "high_price": 145,
+        "return_pct": -1.39,
+        "high_return_pct": 0.69
+      }
+    ],
+    "combined": []
+  }
+}
