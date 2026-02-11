@@ -61,7 +61,7 @@ export function StockBadge({ stock, category, date }: StockBadgeProps) {
           {stock.open_price !== null ? (
             sellPrice !== null && sellPrice !== undefined ? (
               <>
-                <span>{stock.open_price.toLocaleString()}</span>
+                <span>시가 {stock.open_price.toLocaleString()}</span>
                 <span>→</span>
                 <span>{sellLabel} {sellPrice.toLocaleString()}</span>
               </>
