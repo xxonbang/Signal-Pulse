@@ -135,7 +135,7 @@ export function useAnalysisTimeOverride(
   const overriddenData = useMemo<SimulationData | null>(() => {
     if (!needsOverride || !simulationData || isLoading) return null;
 
-    // 기존 시뮬레이션 데이터에서 code → 가격 맵 구축
+    // code → 가격 맵 구축 (all_prices 우선, 카테고리 데이터 보충)
     const priceMap = new Map<
       string,
       {
@@ -146,6 +146,28 @@ export function useAnalysisTimeOverride(
         high_return_pct: number | null;
       }
     >();
+
+    // 1) all_prices에서 먼저 로드 (모든 시간대 유니온 가격)
+    if (simulationData.all_prices) {
+      for (const [code, p] of Object.entries(simulationData.all_prices)) {
+        const open = p.open_price;
+        const close = p.close_price;
+        const high = p.high_price;
+        priceMap.set(code, {
+          open,
+          close,
+          high,
+          return_pct: open && close && open > 0
+            ? Math.round((close - open) / open * 10000) / 100
+            : null,
+          high_return_pct: open && high && open > 0
+            ? Math.round((high - open) / open * 10000) / 100
+            : null,
+        });
+      }
+    }
+
+    // 2) 카테고리 데이터로 보충 (이미 계산된 return_pct 활용)
     for (const cat of ['vision', 'kis', 'combined'] as SimulationCategory[]) {
       for (const stock of simulationData.categories[cat] || []) {
         if (!priceMap.has(stock.code)) {

@@ -224,10 +224,17 @@ export interface SimulationStock {
 
 export type SimulationCategory = 'vision' | 'kis' | 'combined';
 
+export interface SimulationPriceEntry {
+  open_price: number;
+  close_price: number | null;
+  high_price: number | null;
+}
+
 export interface SimulationData {
   date: string;
   collected_at: string;
   categories: Record<SimulationCategory, SimulationStock[]>;
+  all_prices?: Record<string, SimulationPriceEntry>;
 }
 
 export interface SimulationIndexItem {

@@ -274,15 +274,22 @@ class SimulationCollector:
 
         categories = self._get_earliest_today_stocks(today_str)
 
-        # 전체 종목코드 중복 제거 (API 호출 최소화)
+        # 모든 시간대 적극매수 유니온 종목코드
+        union_codes = self._get_all_date_stock_codes(today_str)
+
+        # 카테고리 종목코드 + 유니온 코드 병합 (API 호출 최소화)
         all_codes: dict[str, dict] = {}
         for cat, stocks in categories.items():
             for stock in stocks:
                 code = stock["code"]
                 if code not in all_codes:
                     all_codes[code] = stock
+        # 유니온에만 있는 추가 종목 (이름 없이 코드만)
+        for code in union_codes:
+            if code not in all_codes:
+                all_codes[code] = {"code": code, "name": code, "market": ""}
 
-        print(f"\n[Simulation] 중복 제거 후 총 {len(all_codes)}개 종목 가격 수집")
+        print(f"\n[Simulation] 중복 제거 후 총 {len(all_codes)}개 종목 가격 수집 (유니온 포함)")
 
         # 가격 수집
         prices: dict[str, Optional[dict]] = {}
@@ -324,10 +331,22 @@ class SimulationCollector:
                 cat_results.append(entry)
             result_categories[cat] = cat_results
 
+        # all_prices: 모든 시간대 적극매수 종목의 가격 (시간대 오버라이드용)
+        all_prices = {}
+        for code in union_codes:
+            price = prices.get(code)
+            if price:
+                all_prices[code] = {
+                    "open_price": price["open_price"],
+                    "close_price": price["close_price"],
+                    "high_price": price["high_price"],
+                }
+
         simulation_data = {
             "date": today_str,
             "collected_at": now.isoformat(),
             "categories": result_categories,
+            "all_prices": all_prices,
         }
 
         return self._save_simulation(simulation_data)
@@ -349,15 +368,21 @@ class SimulationCollector:
         # 해당 날짜의 히스토리 파일에서 적극매수 종목 추출
         categories = self._get_strong_buy_from_history(target_date)
 
-        # 전체 종목코드 중복 제거
+        # 모든 시간대 적극매수 유니온 종목코드
+        union_codes = self._get_all_date_stock_codes(target_date)
+
+        # 카테고리 종목코드 + 유니온 코드 병합
         all_codes: dict[str, dict] = {}
         for cat, stocks in categories.items():
             for stock in stocks:
                 code = stock["code"]
                 if code not in all_codes:
                     all_codes[code] = stock
+        for code in union_codes:
+            if code not in all_codes:
+                all_codes[code] = {"code": code, "name": code, "market": ""}
 
-        print(f"\n[Simulation] 중복 제거 후 총 {len(all_codes)}개 종목 일봉 조회")
+        print(f"\n[Simulation] 중복 제거 후 총 {len(all_codes)}개 종목 일봉 조회 (유니온 포함)")
 
         # 일봉 데이터에서 해당 날짜의 시가/종가 추출
         prices: dict[str, Optional[dict]] = {}
@@ -399,10 +424,22 @@ class SimulationCollector:
                 cat_results.append(entry)
             result_categories[cat] = cat_results
 
+        # all_prices: 모든 시간대 적극매수 종목의 가격 (시간대 오버라이드용)
+        all_prices = {}
+        for code in union_codes:
+            price = prices.get(code)
+            if price:
+                all_prices[code] = {
+                    "open_price": price["open_price"],
+                    "close_price": price["close_price"],
+                    "high_price": price["high_price"],
+                }
+
         simulation_data = {
             "date": target_date,
             "collected_at": now.isoformat(),
             "categories": result_categories,
+            "all_prices": all_prices,
         }
 
         return self._save_simulation(simulation_data)
@@ -490,6 +527,60 @@ class SimulationCollector:
             print(f"[Simulation] {cat} 적극매수 ({target_date}, 최초 분석 기준): {len(stocks)}개")
 
         return categories
+
+    def _get_all_date_stock_codes(self, target_date: str) -> set[str]:
+        """해당 날짜의 모든 시간대 적극매수 종목코드 유니온 추출
+
+        최초 분석뿐 아니라 이후 분석 시간대의 적극매수 종목도 포함하여
+        all_prices에 가격을 저장하기 위한 전체 종목코드 세트를 반환.
+        """
+        all_codes: set[str] = set()
+
+        # Vision 히스토리 — 모든 시간대
+        vision_index = self._load_json(self.RESULTS_DIR / "vision" / "history_index.json")
+        if vision_index:
+            for h in vision_index.get("history", []):
+                if h.get("date") != target_date:
+                    continue
+                data = self._load_json(
+                    self.RESULTS_DIR / "vision" / "history" / h["filename"]
+                )
+                if data:
+                    for stock in data.get("results", []):
+                        if stock.get("signal") == "적극매수":
+                            all_codes.add(stock["code"])
+
+        # KIS 히스토리 — 모든 시간대
+        kis_index = self._load_json(self.RESULTS_DIR / "kis" / "history_index.json")
+        if kis_index:
+            for h in kis_index.get("history", []):
+                if h.get("date") != target_date:
+                    continue
+                data = self._load_json(
+                    self.RESULTS_DIR / "kis" / "history" / h["filename"]
+                )
+                if data:
+                    for stock in data.get("results", []):
+                        if stock.get("signal") == "적극매수":
+                            all_codes.add(stock["code"])
+
+        # Combined 히스토리 — 모든 시간대
+        combined_index = self._load_json(self.RESULTS_DIR / "combined" / "history_index.json")
+        if combined_index:
+            for h in combined_index.get("history", []):
+                if h.get("date") != target_date:
+                    continue
+                data = self._load_json(
+                    self.RESULTS_DIR / "combined" / "history" / h["filename"]
+                )
+                if data:
+                    for stock in data.get("stocks", []):
+                        if (stock.get("match_status") == "match"
+                                and stock.get("vision_signal") == "적극매수"):
+                            all_codes.add(stock["code"])
+
+        print(f"[Simulation] 모든 시간대 적극매수 유니온: {len(all_codes)}개 종목")
+        return all_codes
 
     def _save_simulation(self, data: dict) -> dict:
         """시뮬레이션 결과 저장 & 인덱스 갱신"""
