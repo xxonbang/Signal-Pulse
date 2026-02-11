@@ -1,9 +1,7 @@
 name: Simulation Data Collection
 
 on:
-  schedule:
-    # KST 15:40 (UTC 06:40) - 장 마감 후, 평일만
-    - cron: '40 6 * * 1-5'
+  # 외부 cron-job 서비스에서 workflow_dispatch API로 정시 트리거
   workflow_dispatch:
     inputs:
       backfill:
