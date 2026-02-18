@@ -67,7 +67,7 @@ jobs:
           python -c "
           import sys
           sys.path.insert(0, '.')
-          from modules.market_calendar import get_market_status
+          from modules.market_calendar import get_market_status, is_pre_market_evening
           from datetime import datetime
           import pytz
 
@@ -76,18 +76,19 @@ jobs:
           today = now_kst.date()
           status = get_market_status(today)
 
-          # 일요일 저녁(18시 이후)은 월요일 장 준비를 위해 분석 허용
-          is_sunday_evening = (today.weekday() == 6 and now_kst.hour >= 18)
-          should_run = status['is_market_open'] or is_sunday_evening
+          # 휴장일 마지막 날 저녁(18시 이후) — 다음 날이 개장일이면 장 준비 허용
+          # (일요일 저녁, 공휴일 마지막 날 저녁 등)
+          pre_market_eve = is_pre_market_evening(now_kst)
+          should_run = status['is_market_open'] or pre_market_eve
 
-          if is_sunday_evening:
-              status['reason'] = '일요일 저녁 (월요일 장 준비)'
+          if pre_market_eve:
+              status['reason'] = f\"휴장일 저녁 (다음 개장일 준비)\"
 
           print(f\"날짜: {status['date']} ({status['weekday']})\")
           print(f\"현재 시각: {now_kst.strftime('%H:%M')} KST\")
           print(f\"상태: {status['reason']}\")
-          if is_sunday_evening:
-              print(f\"일요일 저녁 분석 허용: True\")
+          if pre_market_eve:
+              print(f\"장 준비 저녁 분석 허용: True\")
 
           # GitHub Actions 출력 설정
           import os

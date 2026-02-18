@@ -8,7 +8,7 @@ import sys
 # KST 시간대 (UTC+9)
 KST = timezone(timedelta(hours=9))
 
-# 한국 주식시장 정기 휴장일 (2024-2026)
+# 한국 주식시장 정기 휴장일 (2024-2027)
 # 출처: 한국거래소(KRX) 휴장일 공지
 KRX_HOLIDAYS = {
     # 2024년
@@ -75,6 +75,31 @@ KRX_HOLIDAYS = {
     "2026-10-09",  # 한글날
     "2026-12-25",  # 크리스마스
     "2026-12-31",  # 연말휴장
+
+    # 2027년
+    "2027-01-01",  # 신정
+    "2027-02-06",  # 설날 연휴
+    "2027-02-07",  # 설날
+    "2027-02-08",  # 설날 연휴
+    "2027-02-09",  # 설날 대체휴일
+    "2027-03-01",  # 삼일절
+    "2027-05-01",  # 근로자의날
+    "2027-05-05",  # 어린이날
+    "2027-05-13",  # 부처님오신날
+    "2027-06-06",  # 현충일
+    "2027-06-07",  # 현충일 대체휴일
+    "2027-08-15",  # 광복절
+    "2027-08-16",  # 광복절 대체휴일
+    "2027-09-14",  # 추석 연휴
+    "2027-09-15",  # 추석
+    "2027-09-16",  # 추석 연휴
+    "2027-10-03",  # 개천절
+    "2027-10-04",  # 개천절 대체휴일
+    "2027-10-09",  # 한글날
+    "2027-10-11",  # 한글날 대체휴일
+    "2027-12-25",  # 크리스마스
+    "2027-12-27",  # 크리스마스 대체휴일
+    "2027-12-31",  # 연말휴장
 }
 
 
@@ -117,6 +142,30 @@ def is_market_hours() -> bool:
     market_open = now_kst.replace(hour=9, minute=0, second=0, microsecond=0)
     market_close = now_kst.replace(hour=15, minute=30, second=0, microsecond=0)
     return market_open <= now_kst <= market_close
+
+
+def is_pre_market_evening(now_kst: datetime = None) -> bool:
+    """다음 날이 개장일인 휴장일의 저녁(18시 이후) 여부
+
+    일요일 저녁, 공휴일 마지막 날 저녁 등에 True 반환.
+    다음 날 장 준비를 위해 분석을 미리 실행할 때 사용.
+    """
+    if now_kst is None:
+        now_kst = datetime.now(KST)
+
+    today = now_kst.date() if isinstance(now_kst, datetime) else now_kst
+
+    # 18시 이전이면 False
+    if isinstance(now_kst, datetime) and now_kst.hour < 18:
+        return False
+
+    # 오늘이 개장일이면 False (정상 스케줄로 동작)
+    if is_market_open(today):
+        return False
+
+    # 내일이 개장일이면 True
+    tomorrow = today + timedelta(days=1)
+    return is_market_open(tomorrow)
 
 
 def get_market_status(check_date: date = None) -> dict:
