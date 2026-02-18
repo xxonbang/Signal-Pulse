@@ -232,6 +232,8 @@ class CriteriaEvaluator:
         institution_net: float,
     ) -> dict:
         """5. 외국인/기관 동시 순매수"""
+        foreign_net = foreign_net or 0
+        institution_net = institution_net or 0
         foreign_buy = foreign_net > 0
         institution_buy = institution_net > 0
         met = foreign_buy and institution_buy
@@ -247,6 +249,7 @@ class CriteriaEvaluator:
 
     def check_program_trading(self, program_net_buy_qty: float) -> dict:
         """6. 프로그램 순매수"""
+        program_net_buy_qty = program_net_buy_qty or 0
         met = program_net_buy_qty > 0
         return {
             "met": met,
@@ -273,29 +276,29 @@ class CriteriaEvaluator:
         prev_close = cp_data.get("prev_close", 0)
 
         # 외국인/기관 수급 (추정치 우선)
-        estimate = details.get("investor_trend_estimate", {})
+        estimate = details.get("investor_trend_estimate") or {}
         if estimate.get("is_estimated"):
-            est_data = estimate.get("estimated_data", {})
-            foreign_net = est_data.get("foreign_net", 0)
-            institution_net = est_data.get("institution_net", 0)
+            est_data = estimate.get("estimated_data") or {}
+            foreign_net = est_data.get("foreign_net") or 0
+            institution_net = est_data.get("institution_net") or 0
         else:
-            trend = details.get("investor_trend", {}).get("daily_investor_trend", [])
+            trend = (details.get("investor_trend") or {}).get("daily_investor_trend") or []
             today = trend[0] if trend else {}
-            foreign_net = today.get("foreign_net", 0)
-            institution_net = today.get("organ_net", 0)
+            foreign_net = today.get("foreign_net") or 0
+            institution_net = today.get("organ_net") or 0
 
         # 프로그램 매매 순매수량 (일별 데이터 우선, 없으면 체결 데이터 fallback)
-        prog_daily = details.get("program_trading_daily", {})
-        prog_daily_list = prog_daily.get("program_trading_daily", [])
+        prog_daily = details.get("program_trading_daily") or {}
+        prog_daily_list = prog_daily.get("program_trading_daily") or []
         if prog_daily_list:
             # 일별 데이터: 최신일(첫 번째) 기준
             today_prog = prog_daily_list[0]
-            program_net = today_prog.get("net_volume", 0)
+            program_net = today_prog.get("net_volume") or 0
         else:
             # fallback: 체결(실시간) 데이터 합산
-            prog_data = details.get("program_trading", {})
-            prog_list = prog_data.get("program_trading", [])
-            program_net = sum(p.get("net_volume", 0) for p in prog_list)
+            prog_data = details.get("program_trading") or {}
+            prog_list = prog_data.get("program_trading") or []
+            program_net = sum((p.get("net_volume") or 0) for p in prog_list)
 
         criteria = {
             "high_breakout": self.check_high_breakout(current_price, ohlcv, w52_high),

@@ -345,11 +345,10 @@ class KISStockDetailAPI:
                 "FID_ORG_ADJ_PRC": "0",  # 수정주가 적용
             }
 
-            # 첫 페이지는 tr_cont 없음, 이후 페이지는 "N"
-            tr_cont = "" if page == 0 else "N"
-
-            result, resp_headers = self.client.request_raw(
-                "GET", path, tr_id, params=params, tr_cont=tr_cont,
+            # 날짜 범위 기반 페이지네이션: 매 요청마다 tr_cont="" 사용
+            # (tr_cont="N" + 날짜 변경 혼용 시 API가 새 쿼리로 인식하여 실패)
+            result = self.client.request(
+                "GET", path, tr_id, params=params,
             )
 
             if result.get("rt_cd") != "0":
@@ -381,9 +380,8 @@ class KISStockDetailAPI:
                     "change_rate": safe_float(item.get("prdy_ctrt", 0)),
                 })
 
-            # 연속 조회 여부 확인: 응답 헤더 tr_cont가 "M"이면 다음 페이지 존재
-            next_cont = resp_headers.get("tr_cont", "").strip()
-            if next_cont not in ("M", "F"):
+            # 100건 미만이면 더 이상 페이지 없음
+            if len(output2) < 100:
                 break
 
             # 다음 페이지: 현재 결과의 마지막 날짜 전날을 새 end_date로 설정
@@ -391,7 +389,6 @@ class KISStockDetailAPI:
             if not last_date or last_date <= start_date:
                 break
 
-            # 마지막 날짜 하루 전을 end_date로 (중복 방지)
             try:
                 last_dt = datetime.strptime(last_date, "%Y%m%d")
                 current_end = (last_dt - timedelta(days=1)).strftime("%Y%m%d")
