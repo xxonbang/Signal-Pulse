@@ -62,22 +62,26 @@ class CriteriaEvaluator:
         daily_prices: list[dict],
         w52_high: float,
     ) -> dict:
-        """1. 전고점 돌파: 6개월(120영업일) 고가 또는 52주 신고가 돌파"""
+        """1. 전고점 돌파: 6개월(120영업일) 고가 또는 52주 신고가 돌파
+
+        ohlcv[0]은 당일 데이터이므로 당일 장중 고가가 포함되면
+        종가 < 고가인 경우 전고점을 돌파했는데도 미돌파로 판정되는 오류가 발생한다.
+        따라서 ohlcv[1:]부터 (전일 이전) 고가만 비교 대상으로 한다.
+        """
         if not current_price or current_price <= 0:
             return {"met": False, "reason": "현재가 데이터 없음"}
 
-        # 최근 120일 고가 max (ohlcv는 최신순)
-        recent_highs = [d.get("high", 0) for d in daily_prices[:120] if d.get("high")]
-        six_mo_high = max(recent_highs) if recent_highs else 0
-
-        is_52w = False
+        # 52주 신고가 먼저 확인
         if w52_high and w52_high > 0 and current_price >= w52_high:
-            is_52w = True
             return {
                 "met": True,
                 "is_52w_high": True,
                 "reason": f"52주 신고가 돌파 (현재가 {current_price:,.0f} >= 52주고가 {w52_high:,.0f})",
             }
+
+        # 6개월 고가: 당일(ohlcv[0]) 제외, ohlcv[1:]부터 120일
+        past_highs = [d.get("high", 0) for d in daily_prices[1:121] if d.get("high")]
+        six_mo_high = max(past_highs) if past_highs else 0
 
         if six_mo_high > 0 and current_price >= six_mo_high:
             return {
@@ -93,17 +97,25 @@ class CriteriaEvaluator:
         }
 
     def check_momentum_history(self, daily_prices: list[dict]) -> dict:
-        """2. 끼 보유: 과거 상한가(>=29%) 또는 급등(>=15%) 이력"""
+        """2. 끼 보유: 과거 상한가(>=29%) 또는 급등(>=15%) 이력
+
+        ohlcv의 change_rate 필드가 0으로 내려오는 경우가 대부분이므로,
+        전일종가 대비 등락률을 직접 계산한다.
+        ohlcv는 최신순 정렬이므로 [i+1]이 전일 데이터.
+        """
         had_limit_up = False
         had_15pct_rise = False
 
-        for d in daily_prices:
-            cr = d.get("change_rate", 0)
-            if cr is None:
-                continue
-            # change_rate가 0으로 들어오는 경우 직접 계산
-            if cr == 0 and d.get("close") and d.get("open") and d["open"] > 0:
-                cr = ((d["close"] - d["open"]) / d["open"]) * 100
+        for i in range(len(daily_prices)):
+            d = daily_prices[i]
+            cr = d.get("change_rate", 0) or 0
+
+            # change_rate가 0이면 전일종가 대비 등락률 직접 계산
+            if cr == 0 and i + 1 < len(daily_prices):
+                prev_close = daily_prices[i + 1].get("close", 0)
+                cur_close = d.get("close", 0)
+                if prev_close and prev_close > 0 and cur_close:
+                    cr = ((cur_close - prev_close) / prev_close) * 100
 
             if cr >= 29:
                 had_limit_up = True
