@@ -19,25 +19,29 @@ interface CriteriaIndicatorProps {
 }
 
 export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndicatorProps) {
-  const [activePopup, setActivePopup] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const metCriteria = CRITERIA_CONFIG.filter(
     (c) => (criteria[c.key as keyof StockCriteria] as CriterionResult)?.met
   );
 
+  const unmetCriteria = CRITERIA_CONFIG.filter(
+    (c) => !(criteria[c.key as keyof StockCriteria] as CriterionResult)?.met
+  );
+
   if (metCriteria.length === 0) return null;
 
-  const handleClick = (e: React.MouseEvent, key: string) => {
+  const handleClick = (e: React.MouseEvent) => {
     if (isCompact) return;
     e.preventDefault();
     e.stopPropagation();
-    setActivePopup(activePopup === key ? null : key);
+    setShowPopup(!showPopup);
   };
 
   const handleClose = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setActivePopup(null);
+    setShowPopup(false);
   };
 
   return (
@@ -47,7 +51,7 @@ export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndic
         const is52w = config.key === 'high_breakout' && result.is_52w_high;
 
         return (
-          <div key={config.key} className="relative">
+          <div key={config.key}>
             {/* Compact: 작은 도트만 */}
             {isCompact ? (
               <span className={cn('inline-block w-1.5 h-1.5 rounded-full', config.dotColor)} />
@@ -55,7 +59,7 @@ export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndic
               <>
                 {/* 모바일: 도트 */}
                 <button
-                  onClick={(e) => handleClick(e, config.key)}
+                  onClick={handleClick}
                   className={cn(
                     'sm:hidden inline-block w-2.5 h-2.5 rounded-full',
                     config.dotColor,
@@ -63,7 +67,7 @@ export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndic
                 />
                 {/* PC: 뱃지 */}
                 <button
-                  onClick={(e) => handleClick(e, config.key)}
+                  onClick={handleClick}
                   className={cn(
                     'hidden sm:inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-none',
                     config.badgeBg, config.badgeText,
@@ -74,33 +78,73 @@ export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndic
                 </button>
               </>
             )}
-
-            {/* 팝업 */}
-            {!isCompact && activePopup === config.key && (
-              <div
-                className="absolute top-full left-0 mt-1 z-50 w-64 sm:w-72 bg-white border border-border rounded-lg shadow-lg p-3"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5">
-                    <span className={cn('inline-block w-2.5 h-2.5 rounded-full', config.dotColor)} />
-                    <span className="text-xs font-semibold text-text-primary">{config.fullLabel}</span>
-                  </div>
-                  <button
-                    onClick={handleClose}
-                    className="text-text-muted hover:text-text-primary text-xs"
-                  >
-                    X
-                  </button>
-                </div>
-                <p className="text-[11px] text-text-secondary leading-relaxed">
-                  {result.reason || '근거 없음'}
-                </p>
-              </div>
-            )}
           </div>
         );
       })}
+
+      {/* 통합 팝업: 충족 + 미충족 기준 */}
+      {!isCompact && showPopup && (
+        <div
+          className="absolute top-full left-0 mt-1 z-50 w-72 sm:w-80 bg-white border border-border rounded-lg shadow-lg p-3 max-h-80 overflow-y-auto"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-text-primary">종목 기준 평가</span>
+            <button
+              onClick={handleClose}
+              className="text-text-muted hover:text-text-primary text-xs"
+            >
+              X
+            </button>
+          </div>
+
+          {/* 충족 기준 */}
+          <p className="text-[10px] font-medium text-green-600 mb-1.5">충족 ({metCriteria.length})</p>
+          <div className="space-y-1.5">
+            {metCriteria.map((config) => {
+              const result = criteria[config.key as keyof StockCriteria] as CriterionResult;
+              const is52w = config.key === 'high_breakout' && result.is_52w_high;
+              return (
+                <div key={config.key}>
+                  <div className="flex items-center gap-1.5">
+                    <span className={cn('inline-block w-2 h-2 rounded-full flex-shrink-0', config.dotColor)} />
+                    <span className="text-[11px] font-medium text-text-primary">
+                      {is52w ? '52주 신고가 돌파' : config.fullLabel}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-text-secondary leading-relaxed ml-3.5">
+                    {result.reason || '근거 없음'}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 미충족 기준 */}
+          {unmetCriteria.length > 0 && (
+            <>
+              <div className="border-t border-border my-2" />
+              <p className="text-[10px] font-medium text-gray-400 mb-1.5">미충족 ({unmetCriteria.length})</p>
+              <div className="space-y-1.5">
+                {unmetCriteria.map((config) => {
+                  const result = criteria[config.key as keyof StockCriteria] as CriterionResult | undefined;
+                  return (
+                    <div key={config.key}>
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-block w-2 h-2 rounded-full flex-shrink-0 bg-gray-300" />
+                        <span className="text-[11px] font-medium text-text-muted">{config.fullLabel}</span>
+                      </div>
+                      <p className="text-[10px] text-text-muted leading-relaxed ml-3.5">
+                        {result?.reason || '데이터 없음'}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
