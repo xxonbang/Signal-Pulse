@@ -345,26 +345,56 @@ export function CombinedAnalysis() {
   // 통계 데이터 (pre-calculated에서 가져옴)
   const stats = data?.stats || { total: 0, match: 0, partial: 0, mismatch: 0, vision_only: 0, api_only: 0, no_data: 0, avg_confidence: 0 };
 
-  // 시장별 카운트 + 시그널별 카운트
-  const { marketCounts, signalCounts } = useMemo(() => {
+  // Faceted counts: 각 필터 차원은 다른 필터가 적용된 상태에서 자신의 카운트를 계산
+  const { marketCounts, signalCounts, matchCounts } = useMemo(() => {
+    const emptySignal = { '적극매수': 0, '매수': 0, '중립': 0, '매도': 0, '적극매도': 0 } as Record<SignalType, number>;
+    const emptyMatch = { match: 0, partial: 0, mismatch: 0, 'vision-only': 0, 'api-only': 0, no_data: 0 } as Record<MatchStatus, number>;
     if (!data?.stocks) {
       return {
         marketCounts: { all: 0, kospi: 0, kosdaq: 0 },
-        signalCounts: { '적극매수': 0, '매수': 0, '중립': 0, '매도': 0, '적극매도': 0 } as Record<SignalType, number>,
+        signalCounts: emptySignal,
+        matchCounts: emptyMatch,
       };
     }
 
-    let kospi = 0, kosdaq = 0;
-    for (const s of data.stocks) {
-      if (s.market === 'KOSPI') kospi++;
-      else if (s.market === 'KOSDAQ') kosdaq++;
+    const allStocks = data.stocks;
+    const hasSignal = (s: CombinedStock) =>
+      (s.vision_signal && signalFilters.has(s.vision_signal)) || (s.api_signal && signalFilters.has(s.api_signal));
+    const hasMatch = (s: CombinedStock) => matchFilters.has(s.match_status);
+
+    // 시장 필터 적용된 베이스
+    const afterMarket = marketFilter !== 'all'
+      ? allStocks.filter(s => s.market.toLowerCase() === marketFilter)
+      : allStocks;
+
+    // 일치상태 카운트: 시장 + 시그널 필터 적용, 일치상태 필터 미적용
+    const forMatch = signalFilters.size > 0 ? afterMarket.filter(hasSignal) : afterMarket;
+    const mc = { ...emptyMatch };
+    for (const s of forMatch) mc[s.match_status]++;
+
+    // 시그널 카운트: 시장 + 일치상태 필터 적용, 시그널 필터 미적용
+    const forSignal = matchFilters.size > 0 ? afterMarket.filter(hasMatch) : afterMarket;
+    const sc = { ...emptySignal };
+    for (const s of forSignal) {
+      if (s.vision_signal && s.vision_signal in sc) sc[s.vision_signal as SignalType]++;
+      if (s.api_signal && s.api_signal in sc) sc[s.api_signal as SignalType]++;
     }
 
+    // 시장 카운트: 일치상태 + 시그널 필터 적용, 시장 필터 미적용
+    let forMarket = [...allStocks];
+    if (matchFilters.size > 0) forMarket = forMarket.filter(hasMatch);
+    if (signalFilters.size > 0) forMarket = forMarket.filter(hasSignal);
+
     return {
-      marketCounts: { all: filteredStocks.length, kospi, kosdaq },
-      signalCounts: data.signal_counts || { '적극매수': 0, '매수': 0, '중립': 0, '매도': 0, '적극매도': 0 },
+      marketCounts: {
+        all: forMarket.length,
+        kospi: forMarket.filter(s => s.market === 'KOSPI').length,
+        kosdaq: forMarket.filter(s => s.market === 'KOSDAQ').length,
+      },
+      signalCounts: sc,
+      matchCounts: mc,
     };
-  }, [data, filteredStocks]);
+  }, [data, marketFilter, matchFilters, signalFilters]);
 
   if (isLoading) {
     return (
@@ -446,12 +476,12 @@ export function CombinedAnalysis() {
           <div className="text-xs text-text-muted mb-2">일치 상태 (복수 선택 가능)</div>
           <div className="flex flex-wrap gap-2">
             {[
-              { value: 'match' as MatchStatus, label: '완전 일치', icon: '✓', count: stats.match },
-              { value: 'partial' as MatchStatus, label: '유사', icon: '≈', count: stats.partial },
-              { value: 'mismatch' as MatchStatus, label: '불일치', icon: '✗', count: stats.mismatch },
-              { value: 'vision-only' as MatchStatus, label: 'Vision만', icon: '👁', count: stats.vision_only },
-              { value: 'api-only' as MatchStatus, label: 'API만', icon: '📡', count: stats.api_only },
-              { value: 'no_data' as MatchStatus, label: '데이터 없음', icon: '—', count: stats.no_data },
+              { value: 'match' as MatchStatus, label: '완전 일치', icon: '✓', count: matchCounts['match'] },
+              { value: 'partial' as MatchStatus, label: '유사', icon: '≈', count: matchCounts['partial'] },
+              { value: 'mismatch' as MatchStatus, label: '불일치', icon: '✗', count: matchCounts['mismatch'] },
+              { value: 'vision-only' as MatchStatus, label: 'Vision만', icon: '👁', count: matchCounts['vision-only'] },
+              { value: 'api-only' as MatchStatus, label: 'API만', icon: '📡', count: matchCounts['api-only'] },
+              { value: 'no_data' as MatchStatus, label: '데이터 없음', icon: '—', count: matchCounts['no_data'] },
             ].map(({ value, label, icon, count }) => (
               <button
                 key={value}
