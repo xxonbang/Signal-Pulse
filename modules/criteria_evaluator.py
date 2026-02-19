@@ -271,9 +271,9 @@ class CriteriaEvaluator:
         daily_chart = details.get("daily_chart", {})
         ohlcv = daily_chart.get("ohlcv", [])
 
-        current_price = cp_data.get("current_price", 0)
-        w52_high = cp_data.get("high_52week", 0)
-        prev_close = cp_data.get("prev_close", 0)
+        current_price = cp_data.get("current_price") or 0
+        w52_high = cp_data.get("high_52week") or 0
+        prev_close = cp_data.get("prev_close") or 0
 
         # 외국인/기관 수급 (추정치 우선)
         estimate = details.get("investor_trend_estimate") or {}
