@@ -206,15 +206,19 @@ class CriteriaEvaluator:
                 "ma_values": {},
             }
 
-        def sma(data: list, period: int) -> float | None:
+        def ema(data: list, period: int) -> float | None:
             if len(data) < period:
                 return None
-            return sum(data[-period:]) / period
+            k = 2 / (period + 1)
+            result = sum(data[:period]) / period
+            for price in data[period:]:
+                result = price * k + result * (1 - k)
+            return result
 
         all_periods = [5, 10, 20, 60, 120]
         ma_values: dict[str, float | None] = {}
         for p in all_periods:
-            ma_values[f"MA{p}"] = sma(closes, p)
+            ma_values[f"MA{p}"] = ema(closes, p)
 
         # 계산 가능한 MA만 추출 (순서 유지)
         available_periods = [p for p in all_periods if ma_values[f"MA{p}"] is not None]

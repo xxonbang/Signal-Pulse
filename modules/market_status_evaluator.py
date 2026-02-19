@@ -105,15 +105,19 @@ def evaluate_kosdaq_alignment(ohlcv: list[dict]) -> dict:
             "ma_values": {},
         }
 
-    def sma(data: list, period: int) -> float | None:
+    def ema(data: list, period: int) -> float | None:
         if len(data) < period:
             return None
-        return sum(data[-period:]) / period
+        k = 2 / (period + 1)
+        result = sum(data[:period]) / period
+        for price in data[period:]:
+            result = price * k + result * (1 - k)
+        return result
 
     periods = [5, 10, 20, 60, 120]
     ma_values: dict[str, float | None] = {}
     for p in periods:
-        ma_values[f"MA{p}"] = sma(closes, p)
+        ma_values[f"MA{p}"] = ema(closes, p)
 
     available = [(p, ma_values[f"MA{p}"]) for p in periods if ma_values[f"MA{p}"] is not None]
     ma_display = {f"MA{p}": round(v, 2) for p, v in available}
