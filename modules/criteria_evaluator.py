@@ -102,42 +102,52 @@ class CriteriaEvaluator:
         }
 
     def check_momentum_history(self, daily_prices: list[dict]) -> dict:
-        """2. 끼 보유: 과거 상한가(>=29%) 또는 급등(>=15%) 이력
+        """2. 끼 보유: 과거 이력 기반 판단
 
-        ohlcv의 change_rate 필드가 0으로 내려오는 경우가 대부분이므로,
-        전일종가 대비 등락률을 직접 계산한다.
+        조건 (OR):
+          1) 거래대금 1,000억 이상 + 시초가 대비 종가 10% 이상 상승
+          2) 상한가 도달 이력 (전일종가 대비 29% 이상)
+
+        ohlcv 필드: open, close, trading_value, change_rate
         ohlcv는 최신순 정렬이므로 [i+1]이 전일 데이터.
         """
+        MIN_TRADING_VALUE = 100_000_000_000  # 1,000억원
         had_limit_up = False
-        had_15pct_rise = False
+        had_momentum = False
 
         for i in range(len(daily_prices)):
             d = daily_prices[i]
-            cr = d.get("change_rate", 0) or 0
 
-            # change_rate가 0이면 전일종가 대비 등락률 직접 계산
+            # 상한가 판정: 전일종가 대비 29% 이상
+            cr = d.get("change_rate", 0) or 0
             if cr == 0 and i + 1 < len(daily_prices):
                 prev_close = daily_prices[i + 1].get("close", 0)
                 cur_close = d.get("close", 0)
                 if prev_close and prev_close > 0 and cur_close:
                     cr = ((cur_close - prev_close) / prev_close) * 100
-
             if cr >= 29:
                 had_limit_up = True
-            if cr >= 15:
-                had_15pct_rise = True
 
-        met = had_limit_up or had_15pct_rise
+            # 끼 판정: 거래대금 1,000억 이상 + 시초가 대비 종가 10% 이상
+            open_price = d.get("open", 0) or 0
+            close_price = d.get("close", 0) or 0
+            trading_value = d.get("trading_value", 0) or 0
+            if open_price > 0 and close_price > 0 and trading_value >= MIN_TRADING_VALUE:
+                open_to_close_rate = ((close_price - open_price) / open_price) * 100
+                if open_to_close_rate >= 10:
+                    had_momentum = True
+
+        met = had_limit_up or had_momentum
         reasons = []
         if had_limit_up:
             reasons.append("상한가 이력 있음(>=29%)")
-        if had_15pct_rise:
-            reasons.append("급등 이력 있음(>=15%)")
+        if had_momentum:
+            reasons.append("급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)")
 
         return {
             "met": met,
             "had_limit_up": had_limit_up,
-            "had_15pct_rise": had_15pct_rise,
+            "had_momentum": had_momentum,
             "reason": ", ".join(reasons) if reasons else "급등 이력 없음",
         }
 

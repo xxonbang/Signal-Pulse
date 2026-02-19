@@ -538,7 +538,7 @@ jobs:
 
           def calculate_match_status(vision_signal, api_signal):
               if not vision_signal and not api_signal:
-                  return 'mismatch'
+                  return 'no_data'
               if not vision_signal:
                   return 'api-only'
               if not api_signal:
@@ -549,7 +549,7 @@ jobs:
               return 'partial' if diff <= 1 else 'mismatch'
 
           def calculate_confidence(match_status):
-              return {'match': 1.0, 'partial': 0.7, 'vision-only': 0.5, 'api-only': 0.5, 'mismatch': 0.3}.get(match_status, 0)
+              return {'match': 1.0, 'partial': 0.7, 'vision-only': 0.5, 'api-only': 0.5, 'mismatch': 0.3, 'no_data': 0.0}.get(match_status, 0)
 
           # 데이터 로드
           vision_data = {}
@@ -654,7 +654,7 @@ jobs:
               stock['confidence'] = calculate_confidence(stock['match_status'])
 
           # 통계 계산
-          stats = {'total': 0, 'match': 0, 'partial': 0, 'mismatch': 0, 'vision_only': 0, 'api_only': 0}
+          stats = {'total': 0, 'match': 0, 'partial': 0, 'mismatch': 0, 'vision_only': 0, 'api_only': 0, 'no_data': 0}
           total_confidence = 0
           signal_counts = {'적극매수': 0, '매수': 0, '중립': 0, '매도': 0, '적극매도': 0}
 
@@ -665,11 +665,13 @@ jobs:
                   stats[status_key] += 1
               total_confidence += stock['confidence']
 
-              # 시그널 카운트 (일치하는 시그널만)
+              # 시그널 카운트 (각 종목의 vision/api 시그널 모두 집계, 중복 제외)
               vision_sig = stock.get('vision_signal')
               api_sig = stock.get('api_signal')
-              if vision_sig and api_sig and vision_sig == api_sig:
+              if vision_sig and vision_sig in signal_counts:
                   signal_counts[vision_sig] += 1
+              if api_sig and api_sig in signal_counts and api_sig != vision_sig:
+                  signal_counts[api_sig] += 1
 
           stats['avg_confidence'] = total_confidence / stats['total'] if stats['total'] > 0 else 0
 

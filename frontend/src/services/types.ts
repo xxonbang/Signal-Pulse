@@ -161,7 +161,7 @@ export interface CriterionResult {
   reason?: string | null;
   is_52w_high?: boolean;
   had_limit_up?: boolean;
-  had_15pct_rise?: boolean;
+  had_momentum?: boolean;
   ma_values?: Record<string, number | null>;
 }
 
@@ -180,7 +180,7 @@ export interface StockCriteria {
 }
 
 // Combined 분석 타입
-export type MatchStatus = 'match' | 'partial' | 'mismatch' | 'vision-only' | 'api-only';
+export type MatchStatus = 'match' | 'partial' | 'mismatch' | 'vision-only' | 'api-only' | 'no_data';
 
 export interface CombinedStock {
   code: string;
@@ -227,6 +227,7 @@ export interface CombinedAnalysisStats {
   mismatch: number;
   vision_only: number;
   api_only: number;
+  no_data: number;
   avg_confidence: number;
 }
 

@@ -23,6 +23,7 @@ function MatchStatusBadge({ status }: { status: MatchStatus }) {
     'mismatch': { label: '불일치', shortLabel: '불일치', className: 'bg-red-100 text-red-700 border-red-200', icon: '✗' },
     'vision-only': { label: 'Vision만', shortLabel: 'V', className: 'bg-purple-100 text-purple-700 border-purple-200', icon: '👁' },
     'api-only': { label: 'API만', shortLabel: 'A', className: 'bg-cyan-100 text-cyan-700 border-cyan-200', icon: '📡' },
+    'no_data': { label: '데이터 없음', shortLabel: '—', className: 'bg-gray-100 text-gray-500 border-gray-200', icon: '—' },
   };
 
   const { label, shortLabel, className, icon } = config[status];
@@ -400,7 +401,7 @@ export function CombinedAnalysis() {
   }, [data, marketFilter, matchFilters, signalFilters]);
 
   // 통계 데이터 (pre-calculated에서 가져옴)
-  const stats = data?.stats || { total: 0, match: 0, partial: 0, mismatch: 0, vision_only: 0, api_only: 0, avg_confidence: 0 };
+  const stats = data?.stats || { total: 0, match: 0, partial: 0, mismatch: 0, vision_only: 0, api_only: 0, no_data: 0, avg_confidence: 0 };
 
   // 시장별 카운트 + 시그널별 카운트
   const { marketCounts, signalCounts } = useMemo(() => {
@@ -508,6 +509,7 @@ export function CombinedAnalysis() {
               { value: 'mismatch' as MatchStatus, label: '불일치', icon: '✗', count: stats.mismatch },
               { value: 'vision-only' as MatchStatus, label: 'Vision만', icon: '👁', count: stats.vision_only },
               { value: 'api-only' as MatchStatus, label: 'API만', icon: '📡', count: stats.api_only },
+              { value: 'no_data' as MatchStatus, label: '데이터 없음', icon: '—', count: stats.no_data },
             ].map(({ value, label, icon, count }) => (
               <button
                 key={value}
@@ -566,7 +568,7 @@ export function CombinedAnalysis() {
                   {Array.from(matchFilters).map(m => {
                     const labels: Record<MatchStatus, string> = {
                       'match': '완전 일치', 'partial': '유사', 'mismatch': '불일치',
-                      'vision-only': 'Vision만', 'api-only': 'API만'
+                      'vision-only': 'Vision만', 'api-only': 'API만', 'no_data': '데이터 없음'
                     };
                     return labels[m];
                   }).join(', ')}
