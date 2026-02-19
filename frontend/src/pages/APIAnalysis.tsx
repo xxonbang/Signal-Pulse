@@ -11,6 +11,7 @@ import { CriteriaIndicator } from '@/components/stock/CriteriaIndicator';
 import { NewsSection } from '@/components/news';
 import { useUIStore } from '@/store/uiStore';
 import { useAuthStore } from '@/store/authStore';
+import { cn } from '@/lib/utils';
 
 // 숫자 포맷
 function formatNumber(num: number | null | undefined): string {
@@ -123,7 +124,14 @@ function StockCard({
   const priceChangeColor = changeRate > 0 ? 'text-red-500' : changeRate < 0 ? 'text-blue-500' : 'text-text-secondary';
 
   return (
-    <div className="bg-bg-secondary border border-border rounded-xl p-3 md:p-4 hover:border-accent-primary transition-all">
+    <div className={cn(
+      'bg-bg-secondary border border-border rounded-xl p-3 md:p-4 hover:border-accent-primary transition-all',
+      criteria?.short_selling_alert?.met
+        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+        : criteria?.all_met
+          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+          : '',
+    )}>
       {/* 헤더 */}
       <div className="flex justify-between items-start mb-2 md:mb-3">
         <div className="flex-1 min-w-0">
@@ -562,7 +570,14 @@ export function APIAnalysis() {
                     href={`https://m.stock.naver.com/domestic/stock/${analysis.code}/total`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline"
+                    className={cn(
+                      'flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline',
+                      isAdmin && criteriaData?.[analysis.code]?.short_selling_alert?.met
+                        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+                        : isAdmin && criteriaData?.[analysis.code]?.all_met
+                          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+                          : '',
+                    )}
                   >
                     <div className="min-w-0 flex-1">
                       <div className="font-medium text-sm text-text-primary truncate">{analysis.name}</div>
@@ -581,7 +596,14 @@ export function APIAnalysis() {
                     href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline"
+                    className={cn(
+                      'flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary transition-all no-underline',
+                      isAdmin && criteriaData?.[stock.code]?.short_selling_alert?.met
+                        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+                        : isAdmin && criteriaData?.[stock.code]?.all_met
+                          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+                          : '',
+                    )}
                   >
                     <div className="min-w-0 flex-1">
                       <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
@@ -654,7 +676,14 @@ function HistoryStockCard({
   const priceChangeColor = changeRate > 0 ? 'text-red-500' : changeRate < 0 ? 'text-blue-500' : 'text-text-secondary';
 
   return (
-    <div className="bg-bg-secondary border border-border rounded-xl p-3 md:p-4 hover:border-accent-primary transition-all">
+    <div className={cn(
+      'bg-bg-secondary border border-border rounded-xl p-3 md:p-4 hover:border-accent-primary transition-all',
+      criteria?.short_selling_alert?.met
+        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+        : criteria?.all_met
+          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+          : '',
+    )}>
       {/* 헤더 */}
       <div className="flex justify-between items-start mb-2 md:mb-3">
         <div className="flex-1 min-w-0">

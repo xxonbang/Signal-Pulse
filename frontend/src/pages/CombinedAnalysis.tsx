@@ -549,7 +549,12 @@ export function CombinedAnalysis() {
                   'flex items-center justify-between gap-2 px-3 py-2 border rounded-lg hover:border-accent-primary transition-all no-underline',
                   stock.match_status === 'match' ? 'bg-emerald-50/50 border-emerald-200' :
                   stock.match_status === 'mismatch' ? 'bg-red-50/50 border-red-200' :
-                  'bg-bg-secondary border-border'
+                  'bg-bg-secondary border-border',
+                  isAdmin && criteriaData?.[stock.code]?.short_selling_alert?.met
+                    ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+                    : isAdmin && criteriaData?.[stock.code]?.all_met
+                      ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+                      : '',
                 )}
               >
                 <div className="min-w-0 flex-1">

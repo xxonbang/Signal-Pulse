@@ -2,7 +2,7 @@ import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
 import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { CriteriaIndicator } from './CriteriaIndicator';
-import { formatTimeOnly } from '@/lib/utils';
+import { formatTimeOnly, cn } from '@/lib/utils';
 import type { StockResult, StockCriteria } from '@/services/types';
 
 interface StockCardProps {
@@ -19,7 +19,14 @@ export function StockCard({ stock, isCompact = false, criteria }: StockCardProps
         href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between gap-2 px-3 py-2.5 bg-bg-secondary border border-border rounded-lg mb-1.5 hover:border-accent-primary transition-all no-underline"
+        className={cn(
+          'flex items-center justify-between gap-2 px-3 py-2.5 bg-bg-secondary border border-border rounded-lg mb-1.5 hover:border-accent-primary transition-all no-underline',
+          criteria?.short_selling_alert?.met
+            ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+            : criteria?.all_met
+              ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+              : '',
+        )}
       >
         <div className="min-w-0 flex-1">
           <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
@@ -33,7 +40,14 @@ export function StockCard({ stock, isCompact = false, criteria }: StockCardProps
 
   // 일반 보기: 상세 카드 형태
   return (
-    <div className="bg-bg-secondary border border-border rounded-xl p-3 md:p-4 mb-2.5 md:mb-3">
+    <div className={cn(
+      'bg-bg-secondary border border-border rounded-xl p-3 md:p-4 mb-2.5 md:mb-3',
+      criteria?.short_selling_alert?.met
+        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+        : criteria?.all_met
+          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+          : '',
+    )}>
       <div className="flex justify-between items-start mb-2.5 md:mb-3">
         <a
           href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}

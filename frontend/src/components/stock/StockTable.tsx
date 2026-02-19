@@ -2,7 +2,7 @@ import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
 import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { CriteriaIndicator } from './CriteriaIndicator';
-import { formatTimeOnly } from '@/lib/utils';
+import { formatTimeOnly, cn } from '@/lib/utils';
 import type { StockResult, StockCriteria } from '@/services/types';
 
 interface StockTableProps {
@@ -22,7 +22,14 @@ export function StockTable({ stocks, isCompact = false, criteriaData }: StockTab
             href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary hover:bg-bg-primary transition-all no-underline"
+            className={cn(
+              'flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary hover:bg-bg-primary transition-all no-underline',
+              criteriaData?.[stock.code]?.short_selling_alert?.met
+                ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
+                : criteriaData?.[stock.code]?.all_met
+                  ? 'ring-2 ring-yellow-400/70 animate-shimmer'
+                  : '',
+            )}
           >
             <div className="min-w-0 flex-1">
               <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
@@ -60,7 +67,14 @@ export function StockTable({ stocks, isCompact = false, criteriaData }: StockTab
         </thead>
         <tbody>
           {stocks.map((stock) => (
-            <tr key={stock.code} className="hover:bg-bg-primary group">
+            <tr key={stock.code} className={cn(
+              'hover:bg-bg-primary group',
+              criteriaData?.[stock.code]?.short_selling_alert?.met
+                ? 'ring-2 ring-inset ring-red-500/70 animate-danger-shimmer'
+                : criteriaData?.[stock.code]?.all_met
+                  ? 'ring-2 ring-inset ring-yellow-400/70 animate-shimmer'
+                  : '',
+            )}>
               <td className="px-4 py-3.5 border-b border-border-light align-top whitespace-nowrap">
                 <a
                   href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
