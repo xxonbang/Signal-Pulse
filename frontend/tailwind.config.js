@@ -53,10 +53,20 @@ export default {
           '0%, 100%': { boxShadow: '0 0 6px 1px rgba(239, 68, 68, 0.25)' },
           '50%': { boxShadow: '0 0 20px 4px rgba(239, 68, 68, 0.5)' },
         },
+        'overheat-shimmer': {
+          '0%, 100%': { boxShadow: '0 0 6px 1px rgba(249, 115, 22, 0.25)' },
+          '50%': { boxShadow: '0 0 20px 4px rgba(249, 115, 22, 0.5)' },
+        },
+        'reverse-shimmer': {
+          '0%, 100%': { boxShadow: '0 0 6px 1px rgba(139, 92, 246, 0.25)' },
+          '50%': { boxShadow: '0 0 20px 4px rgba(139, 92, 246, 0.5)' },
+        },
       },
       animation: {
         shimmer: 'shimmer 3s ease-in-out infinite',
         'danger-shimmer': 'danger-shimmer 2s ease-in-out infinite',
+        'overheat-shimmer': 'overheat-shimmer 2s ease-in-out infinite',
+        'reverse-shimmer': 'reverse-shimmer 2.5s ease-in-out infinite',
       },
     },
   },

@@ -176,6 +176,8 @@ export interface StockCriteria {
   top30_trading_value: CriterionResult;
   market_cap_range: CriterionResult;
   short_selling_alert?: CriterionResult;
+  overheating_alert?: CriterionResult;
+  reverse_ma_alert?: CriterionResult;
   all_met: boolean;
 }
 

@@ -2,7 +2,8 @@ import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
 import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { CriteriaIndicator } from './CriteriaIndicator';
-import { formatTimeOnly, cn } from '@/lib/utils';
+import { WarningDot } from './WarningDot';
+import { formatTimeOnly, cn, getWarningRingClass } from '@/lib/utils';
 import type { StockResult, StockCriteria } from '@/services/types';
 
 interface StockTableProps {
@@ -23,14 +24,11 @@ export function StockTable({ stocks, isCompact = false, criteriaData }: StockTab
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              'flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary hover:bg-bg-primary transition-all no-underline',
-              criteriaData?.[stock.code]?.short_selling_alert?.met
-                ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
-                : criteriaData?.[stock.code]?.all_met
-                  ? 'ring-2 ring-yellow-400/70 animate-shimmer'
-                  : '',
+              'relative flex items-center justify-between gap-2 px-3 py-2 bg-bg-secondary border border-border rounded-lg hover:border-accent-primary hover:bg-bg-primary transition-all no-underline',
+              getWarningRingClass(criteriaData?.[stock.code]),
             )}
           >
+            <WarningDot criteria={criteriaData?.[stock.code]} />
             <div className="min-w-0 flex-1">
               <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
               <div className="text-xs text-text-muted font-mono">{stock.code}</div>
@@ -69,13 +67,10 @@ export function StockTable({ stocks, isCompact = false, criteriaData }: StockTab
           {stocks.map((stock) => (
             <tr key={stock.code} className={cn(
               'hover:bg-bg-primary group',
-              criteriaData?.[stock.code]?.short_selling_alert?.met
-                ? 'ring-2 ring-inset ring-red-500/70 animate-danger-shimmer'
-                : criteriaData?.[stock.code]?.all_met
-                  ? 'ring-2 ring-inset ring-yellow-400/70 animate-shimmer'
-                  : '',
+              getWarningRingClass(criteriaData?.[stock.code], true),
             )}>
-              <td className="px-4 py-3.5 border-b border-border-light align-top whitespace-nowrap">
+              <td className="relative px-4 py-3.5 border-b border-border-light align-top whitespace-nowrap">
+                <WarningDot criteria={criteriaData?.[stock.code]} className="top-1 right-1" />
                 <a
                   href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}
                   target="_blank"

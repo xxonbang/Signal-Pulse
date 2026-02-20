@@ -10,7 +10,8 @@ import { CriteriaLegend } from '@/components/stock/CriteriaLegend';
 import { NewsSection } from '@/components/news';
 import { useUIStore } from '@/store/uiStore';
 import { useAuthStore } from '@/store/authStore';
-import { cn } from '@/lib/utils';
+import { WarningDot } from '@/components/stock/WarningDot';
+import { cn, getWarningRingClass } from '@/lib/utils';
 
 // 시그널 타입 리스트
 const SIGNAL_TYPES: SignalType[] = ['적극매수', '매수', '중립', '매도', '적극매도'];
@@ -63,16 +64,13 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
 
   return (
     <div className={cn(
-      'bg-bg-secondary border rounded-xl p-3 md:p-4',
+      'relative bg-bg-secondary border rounded-xl p-3 md:p-4',
       stock.match_status === 'match' ? 'border-emerald-300 bg-emerald-50/30' :
       stock.match_status === 'mismatch' ? 'border-red-300 bg-red-50/30' :
       'border-border',
-      isAdmin && criteria?.short_selling_alert?.met
-        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
-        : isAdmin && criteria?.all_met
-          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
-          : '',
+      isAdmin && getWarningRingClass(criteria),
     )}>
+      {isAdmin && <WarningDot criteria={criteria} />}
       {/* 헤더 */}
       <div className="flex justify-between items-start mb-2 md:mb-3">
         <div className="flex-1 min-w-0">
@@ -108,6 +106,16 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
           {criteria.short_selling_alert?.met && (
             <span className="text-[9px] text-red-600 font-medium">
               공매도 주의 ({criteria.short_selling_alert.reason})
+            </span>
+          )}
+          {criteria.overheating_alert?.met && (
+            <span className="text-[9px] text-orange-600 font-medium">
+              과열 주의 ({criteria.overheating_alert.reason})
+            </span>
+          )}
+          {criteria.reverse_ma_alert?.met && (
+            <span className="text-[9px] text-violet-600 font-medium">
+              역배열 주의 ({criteria.reverse_ma_alert.reason})
             </span>
           )}
         </>
@@ -580,17 +588,14 @@ export function CombinedAnalysis() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'flex items-center justify-between gap-2 px-3 py-2 border rounded-lg hover:border-accent-primary transition-all no-underline',
+                  'relative flex items-center justify-between gap-2 px-3 py-2 border rounded-lg hover:border-accent-primary transition-all no-underline',
                   stock.match_status === 'match' ? 'bg-emerald-50/50 border-emerald-200' :
                   stock.match_status === 'mismatch' ? 'bg-red-50/50 border-red-200' :
                   'bg-bg-secondary border-border',
-                  isAdmin && criteriaData?.[stock.code]?.short_selling_alert?.met
-                    ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
-                    : isAdmin && criteriaData?.[stock.code]?.all_met
-                      ? 'ring-2 ring-yellow-400/70 animate-shimmer'
-                      : '',
+                  isAdmin && getWarningRingClass(criteriaData?.[stock.code]),
                 )}
               >
+                {isAdmin && <WarningDot criteria={criteriaData?.[stock.code]} />}
                 <div className="min-w-0 flex-1">
                   <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
                   <div className="text-xs text-text-muted font-mono">{stock.code}</div>

@@ -1,4 +1,4 @@
-"""종목 선정 기준 평가 모듈 (8-Criteria + Short Selling Alert)
+"""종목 선정 기준 평가 모듈 (8-Criteria + Alerts)
 
 KIS API로 수집된 kis_latest.json 데이터를 기반으로
 모든 종목을 8개 독립 기준으로 평가한다.
@@ -15,6 +15,8 @@ KIS API로 수집된 kis_latest.json 데이터를 기반으로
 
 경고 (all_met 제외):
   - 공매도 비중 경고 (5% 이상: 경고, 10% 이상: 극단)
+  - 과열 경고 (RSI-14 기준: 70~80 주의, 80 이상 위험)
+  - 역배열 경고 (현재가 < MA5 < MA10 < MA20 < MA60)
 """
 
 from __future__ import annotations
@@ -321,6 +323,124 @@ class CriteriaEvaluator:
             reason = f"공매도 {short_ratio:.1f}% (정상)"
         return {"met": met, "reason": reason}
 
+    @staticmethod
+    def _calculate_rsi(close_prices: list, period: int = 14) -> float | None:
+        """Wilder's smoothed RSI 계산
+
+        Args:
+            close_prices: 시간순(오래된→최근) close 가격 리스트
+            period: RSI 기간 (기본 14)
+
+        Returns:
+            RSI 값 (0~100) 또는 데이터 부족 시 None
+        """
+        if not close_prices or len(close_prices) < period + 1:
+            return None
+
+        deltas = [close_prices[i] - close_prices[i - 1] for i in range(1, len(close_prices))]
+
+        gains = [d if d > 0 else 0 for d in deltas[:period]]
+        losses = [-d if d < 0 else 0 for d in deltas[:period]]
+
+        avg_gain = sum(gains) / period
+        avg_loss = sum(losses) / period
+
+        for d in deltas[period:]:
+            gain = d if d > 0 else 0
+            loss = -d if d < 0 else 0
+            avg_gain = (avg_gain * (period - 1) + gain) / period
+            avg_loss = (avg_loss * (period - 1) + loss) / period
+
+        if avg_loss == 0:
+            return 100.0
+
+        rs = avg_gain / avg_loss
+        rsi = 100 - (100 / (1 + rs))
+        return round(rsi, 2)
+
+    def check_overheating(
+        self,
+        current_price: float,
+        daily_prices: list[dict],
+        w52_high: float,
+    ) -> dict:
+        """과열 경고: RSI-14 기반
+
+        주의: RSI 70~80 (과매수 구간 진입)
+        위험: RSI > 80 (과매수 극단)
+        """
+        if not current_price or current_price <= 0:
+            return {"met": False, "reason": "현재가 데이터 없음"}
+
+        closes = []
+        for d in reversed(daily_prices):
+            c = d.get("close")
+            if c and c > 0:
+                closes.append(c)
+
+        rsi = self._calculate_rsi(closes, period=14)
+        if rsi is None:
+            return {"met": False, "reason": "RSI 계산 불가 (데이터 부족)"}
+
+        if rsi > 80:
+            return {"met": True, "reason": f"RSI {rsi:.1f} (위험: 과매수 극단)"}
+        if rsi >= 70:
+            return {"met": True, "reason": f"RSI {rsi:.1f} (주의: 과매수 구간)"}
+
+        return {"met": False, "reason": f"RSI {rsi:.1f} (정상)"}
+
+    def check_reverse_ma_alignment(
+        self,
+        current_price: float,
+        daily_prices: list[dict],
+    ) -> dict:
+        """역배열 경고: 현재가 < MA5 < MA10 < MA20 < MA60
+
+        check_ma_alignment()과 동일한 EMA 계산 로직 사용.
+        최소 60일 데이터 필요 (MA60까지 확인).
+        """
+        if not current_price or current_price <= 0:
+            return {"met": False, "reason": "현재가 데이터 없음"}
+
+        closes = []
+        for d in reversed(daily_prices):
+            c = d.get("close")
+            if c and c > 0:
+                closes.append(c)
+
+        if len(closes) < 60:
+            return {"met": False, "reason": f"데이터 부족 (최소 60일 필요, 현재 {len(closes)}일)"}
+
+        def ema(data: list, period: int) -> float | None:
+            if len(data) < period:
+                return None
+            k = 2 / (period + 1)
+            result = sum(data[:period]) / period
+            for price in data[period:]:
+                result = price * k + result * (1 - k)
+            return result
+
+        periods = [5, 10, 20, 60]
+        ma_values = {}
+        for p in periods:
+            val = ema(closes, p)
+            if val is None:
+                return {"met": False, "reason": f"MA{p} 계산 불가"}
+            ma_values[p] = val
+
+        # 역배열: 현재가 < MA5 < MA10 < MA20 < MA60
+        vals = [current_price, ma_values[5], ma_values[10], ma_values[20], ma_values[60]]
+        is_reverse = all(vals[i] < vals[i + 1] for i in range(len(vals) - 1))
+
+        if is_reverse:
+            ma_str = ", ".join(f"MA{p}={ma_values[p]:,.0f}" for p in periods)
+            return {
+                "met": True,
+                "reason": f"역배열 (현재가 {current_price:,.0f} < {ma_str})",
+            }
+
+        return {"met": False, "reason": "역배열 아님"}
+
     def evaluate_stock(self, code: str) -> dict:
         """단일 종목 7개 기준 평가"""
         details = self.stock_details.get(code, {})
@@ -376,8 +496,12 @@ class CriteriaEvaluator:
         if ss and ss.get("short_ratio", 0) > 0:
             criteria["short_selling_alert"] = self.check_short_selling(ss["short_ratio"])
 
+        # 과열 경고 / 역배열 경고
+        criteria["overheating_alert"] = self.check_overheating(current_price, ohlcv, w52_high)
+        criteria["reverse_ma_alert"] = self.check_reverse_ma_alignment(current_price, ohlcv)
+
         # all_met에서 제외할 키 (부정적 지표, 메타 키)
-        exclude_from_all_met = {"all_met", "short_selling_alert"}
+        exclude_from_all_met = {"all_met", "short_selling_alert", "overheating_alert", "reverse_ma_alert"}
         criteria["all_met"] = all(
             c["met"] for key, c in criteria.items()
             if key not in exclude_from_all_met and isinstance(c, dict)
@@ -452,11 +576,17 @@ if __name__ == "__main__":
     met_counts: dict[str, int] = {}
     all_met_count = 0
     short_alert_count = 0
+    overheat_alert_count = 0
+    reverse_ma_alert_count = 0
     for code, c in result.items():
         if c.get("all_met"):
             all_met_count += 1
         if c.get("short_selling_alert", {}).get("met"):
             short_alert_count += 1
+        if c.get("overheating_alert", {}).get("met"):
+            overheat_alert_count += 1
+        if c.get("reverse_ma_alert", {}).get("met"):
+            reverse_ma_alert_count += 1
         for key in [
             "high_breakout", "momentum_history", "resistance_breakout",
             "ma_alignment", "supply_demand", "program_trading", "top30_trading_value",
@@ -469,5 +599,7 @@ if __name__ == "__main__":
     for key, count in met_counts.items():
         print(f"  {key}: {count}/{total}")
     print(f"  short_selling_alert: {short_alert_count}/{total}")
+    print(f"  overheating_alert: {overheat_alert_count}/{total}")
+    print(f"  reverse_ma_alert: {reverse_ma_alert_count}/{total}")
     print(f"  ALL MET: {all_met_count}/{total}")
     print(f"저장: {output_path}")

@@ -2,7 +2,8 @@ import { SignalBadge } from '@/components/signal';
 import { NewsSection } from '@/components/news';
 import { NewsAnalysisSection } from './NewsAnalysisSection';
 import { CriteriaIndicator } from './CriteriaIndicator';
-import { formatTimeOnly, cn } from '@/lib/utils';
+import { WarningDot } from './WarningDot';
+import { formatTimeOnly, cn, getWarningRingClass } from '@/lib/utils';
 import type { StockResult, StockCriteria } from '@/services/types';
 
 interface StockCardProps {
@@ -20,14 +21,11 @@ export function StockCard({ stock, isCompact = false, criteria }: StockCardProps
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          'flex items-center justify-between gap-2 px-3 py-2.5 bg-bg-secondary border border-border rounded-lg mb-1.5 hover:border-accent-primary transition-all no-underline',
-          criteria?.short_selling_alert?.met
-            ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
-            : criteria?.all_met
-              ? 'ring-2 ring-yellow-400/70 animate-shimmer'
-              : '',
+          'relative flex items-center justify-between gap-2 px-3 py-2.5 bg-bg-secondary border border-border rounded-lg mb-1.5 hover:border-accent-primary transition-all no-underline',
+          getWarningRingClass(criteria),
         )}
       >
+        <WarningDot criteria={criteria} />
         <div className="min-w-0 flex-1">
           <div className="font-medium text-sm text-text-primary truncate">{stock.name}</div>
           <div className="text-xs text-text-muted font-mono">{stock.code}</div>
@@ -41,13 +39,10 @@ export function StockCard({ stock, isCompact = false, criteria }: StockCardProps
   // 일반 보기: 상세 카드 형태
   return (
     <div className={cn(
-      'bg-bg-secondary border border-border rounded-xl p-3 md:p-4 mb-2.5 md:mb-3',
-      criteria?.short_selling_alert?.met
-        ? 'ring-2 ring-red-500/70 animate-danger-shimmer'
-        : criteria?.all_met
-          ? 'ring-2 ring-yellow-400/70 animate-shimmer'
-          : '',
+      'relative bg-bg-secondary border border-border rounded-xl p-3 md:p-4 mb-2.5 md:mb-3',
+      getWarningRingClass(criteria),
     )}>
+      <WarningDot criteria={criteria} />
       <div className="flex justify-between items-start mb-2.5 md:mb-3">
         <a
           href={`https://m.stock.naver.com/domestic/stock/${stock.code}/total`}

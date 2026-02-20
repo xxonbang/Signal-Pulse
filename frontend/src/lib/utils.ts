@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import type { SignalCounts, StockResult, SignalType } from '@/services/types';
+import type { SignalCounts, StockResult, SignalType, StockCriteria } from '@/services/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -80,4 +80,10 @@ export function formatTimeOnly(datetime: string | undefined): string {
   if (!datetime) return '';
   const parts = datetime.split(' ');
   return parts[1] || datetime;
+}
+
+export function getWarningRingClass(criteria: StockCriteria | null | undefined, isInset = false): string {
+  if (!criteria?.all_met) return '';
+  const ring = isInset ? 'ring-2 ring-inset' : 'ring-2';
+  return `${ring} ring-yellow-400/70 animate-shimmer`;
 }
