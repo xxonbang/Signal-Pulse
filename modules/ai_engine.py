@@ -56,6 +56,8 @@ def rotate_to_next_key():
 # Vision AI 분석 프롬프트
 VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 전문 퀀트 애널리스트입니다.
 
+오늘 날짜: {today}
+
 아래에 {count}개의 네이버 증권 종목 상세 페이지 스크린샷이 첨부되어 있습니다.
 각 이미지에 대해 다음 작업을 수행하세요:
 
@@ -86,7 +88,7 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
 - 외인소진율 변화
 
 ### 2-3. 밸류에이션 분석 (가중치 20%)
-- PER/PBR 수준 평가
+- PER/PBR 수준 평가 (동일 업종/섹터 평균 대비 상대적으로 평가하세요. 절대 수치만으로 판단하지 마세요.)
 - 추정EPS 대비 현재 PER (PEG 개념)
 - 목표주가 대비 괴리율
 
@@ -97,6 +99,7 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
 - 호재/악재 여부 및 시장 심리 판단
 - 실적, M&A, 신사업, 규제, 소송 등 주요 재료 파악
 - 테마 및 섹터 모멘텀 평가
+- 뉴스 시의성: 오늘 날짜 기준 1주일 이내를 '최근'으로 간주하세요.
 
 ## 3. 계산 지표 활용
 다음 지표들을 계산하여 분석에 반영하세요:
@@ -116,10 +119,18 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
 | **매도** | 기술적 하락 신호 + 수급 매도 우위 + 부정적 재료 중 1가지 이상 |
 | **적극매도** | 기술적 강한 하락 신호 + 수급 매도 우위 + 고평가 + 부정적 재료 (3가지 이상 충족) |
 
-## 5. 분석 대상 종목
+## 5. 신뢰도(confidence) 산정 기준
+| 조건 | confidence |
+|------|-----------|
+| 4개 분석 축(기술/수급/밸류/재료)이 같은 방향 | 0.8~1.0 |
+| 3개 축 일치, 1개 상충 | 0.6~0.8 |
+| 2개 축 일치, 혼조세 | 0.4~0.6 |
+| 데이터 부족 또는 판단 근거 불충분 | 0.2~0.4 |
+
+## 6. 분석 대상 종목
 {stock_list}
 
-## 6. 출력 형식
+## 7. 출력 형식
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요:
 ```json
 {{
@@ -131,7 +142,7 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
       "current_price": 현재가(숫자),
       "change_rate": 등락률(숫자, 예: 2.5),
       "signal": "시그널",
-      "reason": "분석 근거 (2~3문장)",
+      "reason": "분석 근거 (2~3문장, 반드시 구체적 수치를 인용. 예: RSI 72, PER 8.3, 외인 순매수 +150억 등)",
       "key_factors": {{
         "price_trend": "상승/횡보/하락",
         "volume_signal": "급증/증가/보통/감소",
@@ -156,6 +167,7 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
 2. 종목과 해당 종목에 대한 분석 결과가 정확히 매칭되도록 주의하세요.
 3. 이미지 순서와 종목 목록 순서가 동일합니다.
 4. 각 종목에 대해 반드시 google_search로 뉴스를 검색하고 news_analysis 필드를 포함하세요.
+5. news_analysis는 반드시 google_search 검색 결과를 기반으로 작성하세요. 검색 결과에 없는 내용을 추측하여 포함하지 마세요.
 """
 
 
@@ -207,9 +219,11 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
     ])
 
     # 프롬프트 생성
+    today = datetime.now(KST).strftime("%Y-%m-%d")
     prompt = VISION_ANALYSIS_PROMPT.format(
         count=len(valid_stocks),
-        stock_list=stock_list_str
+        stock_list=stock_list_str,
+        today=today
     )
 
     # API 호출 시도
@@ -461,6 +475,8 @@ def reduce_kis_data(stocks: dict) -> dict:
 # KIS API 데이터 분석용 프롬프트
 KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 전문 퀀트 애널리스트입니다.
 
+오늘 날짜: {today}
+
 아래에 한국투자증권 OpenAPI에서 수집한 {count}개 종목의 실시간 데이터가 JSON 형식으로 제공됩니다.
 
 ## 1. 데이터 설명
@@ -498,8 +514,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 - 외인/기관 20일 누적 순매수 추세
 
 ### 2-3. 밸류에이션 분석 (가중치 20%)
-- PER 수준 (업종 평균 대비 고려)
-- PBR 수준
+- PER/PBR 수준 (동일 업종/섹터 평균 대비 상대적으로 평가하세요. 절대 수치만으로 판단하지 마세요.)
 - 시가총액 대비 거래대금 비율
 - PEG 비율: <1 저평가, 1~2 적정, >2 고평가 (null이면 생략)
 - ROE: 10% 이상 양호, 15% 이상 우수 (fundamental 필드 있을 때)
@@ -513,6 +528,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 - 호재/악재 여부 및 시장 심리 판단
 - 실적, M&A, 신사업, 규제, 소송 등 주요 재료 파악
 - 테마 및 섹터 모멘텀 평가
+- 뉴스 시의성: 오늘 날짜 기준 1주일 이내를 '최근'으로 간주하세요.
 
 ## 3. 계산 지표 활용
 다음 지표들을 직접 계산하여 분석에 반영하세요:
@@ -538,12 +554,20 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 | **매도** | 기술적 하락 신호 + 수급 매도 우위 + 부정적 재료 중 1가지 이상 |
 | **적극매도** | 기술적 강한 하락 신호 + 수급 매도 우위 + 고평가 + 부정적 재료 (3가지 이상 충족) |
 
-## 5. 분석 대상 종목 데이터
+## 5. 신뢰도(confidence) 산정 기준
+| 조건 | confidence |
+|------|-----------|
+| 4개 분석 축(기술/수급/밸류/재료)이 같은 방향 | 0.8~1.0 |
+| 3개 축 일치, 1개 상충 | 0.6~0.8 |
+| 2개 축 일치, 혼조세 | 0.4~0.6 |
+| 데이터 부족 또는 판단 근거 불충분 | 0.2~0.4 |
+
+## 6. 분석 대상 종목 데이터
 ```json
 {stock_data}
 ```
 
-## 6. 출력 형식
+## 7. 출력 형식
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요:
 ```json
 {{
@@ -556,7 +580,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
       "current_price": 현재가(숫자),
       "change_rate": 등락률(숫자),
       "signal": "시그널",
-      "reason": "분석 근거 (2~3문장)",
+      "reason": "분석 근거 (2~3문장, 반드시 구체적 수치를 인용. 예: RSI 72, PER 8.3, 외인 순매수 +150억 등)",
       "key_factors": {{
         "price_trend": "상승/횡보/하락",
         "volume_signal": "급증/증가/보통/감소",
@@ -581,6 +605,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 2. 종목과 해당 종목에 대한 분석 결과가 정확히 매칭되도록 주의하세요.
 3. 입력 데이터의 종목 순서와 출력 결과의 순서가 동일해야 합니다.
 4. 각 종목에 대해 반드시 google_search로 뉴스를 검색하고 news_analysis 필드를 포함하세요.
+5. news_analysis는 반드시 google_search 검색 결과를 기반으로 작성하세요. 검색 결과에 없는 내용을 추측하여 포함하지 마세요.
 """
 
 
@@ -628,9 +653,11 @@ def analyze_kis_data(
     print(f"[INFO] 데이터 축소: {len(original_json):,}자 → {len(reduced_json):,}자 ({reduction_rate:.1f}% 감소)")
 
     # 프롬프트 생성
+    today = datetime.now(KST).strftime("%Y-%m-%d")
     prompt = KIS_ANALYSIS_PROMPT.format(
         count=len(reduced_stocks),
-        stock_data=reduced_json
+        stock_data=reduced_json,
+        today=today
     )
     print(f"[INFO] 프롬프트 길이: {len(prompt):,}자\n")
 
