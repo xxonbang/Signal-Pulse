@@ -314,25 +314,30 @@ jobs:
                   print(f'rankings 키: {list(raw_data[\"rankings\"].keys())}')
               exit(1)
 
-          # Gemini 배치 분석 (20개씩 나눠서 분석 - 안정적인 결과 보장)
-          print('\\nGemini AI 배치 분석 시작... (20개씩 분할 처리)')
-          analysis_results = analyze_kis_data_batch(gemini_data, batch_size=20)
+          # 네이버 뉴스 사전 수집
+          stocks = gemini_data.get('stocks', {})
+          stocks_for_news = [{'code': code, 'name': stocks[code].get('name', '')} for code in stocks]
+          print(f'\\n=== 네이버 뉴스 사전 수집 ({len(stocks_for_news)}개 종목) ===')
+          naver_news = collect_news_for_stocks(stocks_for_news, news_count=3)
+          news_collected = len([v for v in naver_news.values() if v])
+          print(f'뉴스 수집 완료: {news_collected}/{len(stocks_for_news)}개 종목')
+
+          # Gemini 배치 분석 (50개씩, 뉴스 포함 + 미수집 종목은 google_search 보완)
+          print('\\nGemini AI 배치 분석 시작... (50개씩 분할 처리)')
+          analysis_results = analyze_kis_data_batch(
+              gemini_data,
+              batch_size=50,
+              news_data=naver_news if naver_news else None,
+          )
           print(f'\\n전체 분석 완료: {len(analysis_results)}개 종목')
 
-          # 뉴스 수집
-          print('\\n=== 종목별 뉴스 수집 ===')
-          stocks_for_news = [{'code': r['code'], 'name': r['name']} for r in analysis_results]
-          news_data = collect_news_for_stocks(stocks_for_news, news_count=3)
-
-          # 분석 결과에 뉴스 데이터 병합
-          if news_data:
+          # 뉴스 데이터를 result['news']에 병합 (프론트엔드 표시용)
+          if naver_news:
               for result in analysis_results:
                   code = result.get('code', '')
-                  if code in news_data:
-                      result['news'] = news_data[code]
-              print(f'뉴스 데이터 병합 완료: {len(news_data)}개 종목')
-          else:
-              print('뉴스 수집 건너뜀 (API 키 미설정)')
+                  if code in naver_news and naver_news[code]:
+                      result['news'] = naver_news[code]
+              print(f'Naver 뉴스 데이터 병합 완료: {news_collected}개 종목')
 
           # 분석 결과 저장 (프론트엔드 타입과 일치)
           output_data = {

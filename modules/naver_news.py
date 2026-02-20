@@ -11,6 +11,15 @@ from html import unescape
 from typing import Dict, List, Any, Optional
 
 
+# 영문 종목명 → 한글 별칭 (뉴스 검색 보완용)
+_KOREAN_ALIASES = {
+    "NAVER": "네이버",
+    "NHN": "엔에이치엔",
+    "NCsoft": "엔씨소프트",
+    "KT&G": "케이티앤지",
+}
+
+
 class NaverNewsAPI:
     """네이버 검색 API를 활용한 뉴스 수집"""
 
@@ -149,8 +158,37 @@ class NaverNewsAPI:
 
         return []
 
+    def _detect_korean_alias(self, stock_name: str, raw_results: List[Dict]) -> Optional[str]:
+        """영문 종목명의 한글 별칭을 검색 결과에서 자동 감지
+
+        "NAVER 주가" 검색 시, 제목에 "NAVER"는 없지만 "네이버"로 시작하는
+        기사들이 존재. 이 패턴에서 한글 별칭을 추출한다.
+        """
+        # 한글이 포함된 종목명은 별칭 불필요
+        if re.search(r'[가-힣]', stock_name):
+            return None
+
+        # 영문 종목명이 없는 제목들에서 첫 한글 단어 추출
+        candidates: Dict[str, int] = {}
+        for n in raw_results:
+            title = n["title"]
+            if stock_name not in title:
+                match = re.match(r'([가-힣]{2,})', title)
+                if match:
+                    word = match.group(1)
+                    candidates[word] = candidates.get(word, 0) + 1
+
+        if not candidates:
+            return None
+
+        # 가장 빈도 높은 한글 단어 (최소 2회 이상)
+        best = max(candidates, key=candidates.get)
+        if candidates[best] >= 2:
+            return best
+        return None
+
     def get_stock_news(self, stock_name: str, count: int = 3) -> List[Dict]:
-        """종목명으로 뉴스 검색
+        """종목명으로 뉴스 검색 (정확도순 수집 → 제목 필터 → 최신순 정렬)
 
         Args:
             stock_name: 종목명 (예: "삼성전자")
@@ -159,8 +197,37 @@ class NaverNewsAPI:
         Returns:
             뉴스 리스트
         """
-        # 종목명 + "주식" 키워드 추가하여 관련성 높이기
-        return self.search_news(f"{stock_name} 주식", display=count, sort="date")
+        # 1. sim(정확도순)으로 충분한 양 수집
+        raw = self.search_news(f"{stock_name} 주가", display=20, sort="sim")
+
+        # 2. 제목에 종목명 포함 + 봇 기사 제거
+        filtered = [
+            n for n in raw
+            if stock_name in n["title"]
+            and not re.search(r"주가,\s*\d", n["title"])
+        ]
+
+        # 3. 결과 부족 시 한글 별칭으로 재검색 (NAVER→네이버 등)
+        alias = _KOREAN_ALIASES.get(stock_name)
+        if len(filtered) < count and not alias:
+            alias = self._detect_korean_alias(stock_name, raw)
+            if alias:
+                _KOREAN_ALIASES[stock_name] = alias
+                print(f"  [AUTO] 한글 별칭 감지: {stock_name} → {alias}")
+
+        if len(filtered) < count and alias:
+            seen_links = {n["link"] for n in filtered}
+            raw_alias = self.search_news(f"{alias} 주가", display=20, sort="sim")
+            for n in raw_alias:
+                if (alias in n["title"]
+                        and not re.search(r"주가,\s*\d", n["title"])
+                        and n["link"] not in seen_links):
+                    filtered.append(n)
+
+        # 4. 최신순 재정렬 (pubDate: "MM-DD HH:MM" 형식)
+        filtered.sort(key=lambda n: n["pubDate"], reverse=True)
+
+        return filtered[:count]
 
     def get_multiple_stocks_news(
         self,

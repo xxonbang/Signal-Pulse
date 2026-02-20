@@ -27,7 +27,7 @@ STOCK_DETAIL_URL = "https://m.stock.naver.com/domestic/stock/{code}/total"
 
 # 스크래핑 설정 (태블릿 뷰포트 - iPad Pro 11")
 MAX_KOSPI_STOCKS = 50
-MAX_KOSDAQ_STOCKS = 70
+MAX_KOSDAQ_STOCKS = 50
 MAX_STOCKS_PER_MARKET = 50  # 하위 호환성 유지
 VIEWPORT_WIDTH = 834   # iPad Pro 11" 너비
 VIEWPORT_HEIGHT = 1194 # iPad Pro 11" 높이

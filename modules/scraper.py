@@ -54,7 +54,7 @@ async def fetch_stock_list_from_api(page: Page, api_url: str, market: str, max_s
 
 
 async def collect_all_stocks() -> list[dict]:
-    """코스피 50개 + 코스닥 70개 = 총 120개 종목 수집 (API 방식)"""
+    """코스피 50개 + 코스닥 50개 = 총 100개 종목 수집 (API 방식)"""
     print("\n=== Phase 1: 종목 리스트 수집 (신버전 API) ===\n")
 
     async with async_playwright() as p:

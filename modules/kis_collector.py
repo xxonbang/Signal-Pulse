@@ -203,10 +203,7 @@ class KISDataCollector:
         include_extended: bool = True,
         exclude_etf: bool = True,
     ) -> Dict[str, Any]:
-        """코스피/코스닥 거래대금 Top50 + 등락률 Top30 전체 데이터 수집
-
-        같은 API 데이터에서 거래대금/등락률 두 가지 랭킹을 추출하여
-        API 호출을 최소화한다.
+        """코스피/코스닥 거래대금 Top50 전체 데이터 수집
 
         Args:
             include_chart: 차트 데이터 포함 여부
@@ -220,7 +217,6 @@ class KISDataCollector:
                 "rankings": {
                     "kospi": [...],       # 거래대금 Top50
                     "kosdaq": [...],      # 거래대금 Top50
-                    "fluctuation": {...}, # 등락률 Top30
                 },
                 "stock_details": {
                     "005930": {...},
@@ -230,7 +226,7 @@ class KISDataCollector:
         """
         start_time = datetime.now(KST)
         print("\n" + "=" * 60)
-        print(f"[KIS] 거래대금+등락률 종목 수집 시작: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"[KIS] 거래대금 Top50 종목 수집 시작: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"[KIS] ETF 제외: {exclude_etf}, 확장 데이터: {include_extended}")
         print("=" * 60)
 
@@ -251,50 +247,13 @@ class KISDataCollector:
         kospi_top50 = kospi_all[:50]
         kosdaq_top50 = kosdaq_all[:50]
 
-        # 3. 등락률 Top30 (같은 데이터에서 재정렬)
-        def fluctuation_rank(stocks, direction, limit=30):
-            if direction == "UP":
-                filtered = [s for s in stocks if s["change_rate"] > 0]
-                sorted_list = sorted(filtered, key=lambda x: x["change_rate"], reverse=True)
-            else:
-                filtered = [s for s in stocks if s["change_rate"] < 0]
-                sorted_list = sorted(filtered, key=lambda x: x["change_rate"])
-            result = []
-            for idx, stock in enumerate(sorted_list[:limit]):
-                stock_copy = stock.copy()
-                stock_copy["rank"] = idx + 1
-                stock_copy["direction"] = direction
-                result.append(stock_copy)
-            return result
-
-        fluctuation_data = {
-            "kospi_up": fluctuation_rank(kospi_all, "UP"),
-            "kospi_down": fluctuation_rank(kospi_all, "DOWN"),
-            "kosdaq_up": fluctuation_rank(kosdaq_all, "UP"),
-            "kosdaq_down": fluctuation_rank(kosdaq_all, "DOWN"),
-            "collected_at": datetime.now(KST).isoformat(),
-            "category": "fluctuation",
-            "exclude_etf": exclude_etf,
-        }
-
-        # 4. 고유 종목 코드 합산
-        unique_codes = set()
-        for s in kospi_top50 + kosdaq_top50:
-            unique_codes.add(s["code"])
-        fluctuation_count = 0
-        for key in ["kospi_up", "kospi_down", "kosdaq_up", "kosdaq_down"]:
-            for s in fluctuation_data.get(key, []):
-                if s["code"] not in unique_codes:
-                    fluctuation_count += 1
-                unique_codes.add(s["code"])
-
-        unique_codes = list(unique_codes)
+        # 3. 고유 종목 코드 합산
+        unique_codes = list({s["code"] for s in kospi_top50 + kosdaq_top50})
 
         print(f"\n[KIS] 거래대금 Top50: KOSPI {len(kospi_top50)}개 + KOSDAQ {len(kosdaq_top50)}개")
-        print(f"[KIS] 등락률 Top30에서 추가: {fluctuation_count}개")
         print(f"[KIS] 총 고유 종목: {len(unique_codes)}개")
 
-        # 5. 종목별 상세 데이터 수집
+        # 4. 종목별 상세 데이터 수집
         print(f"\n[KIS] 상세 데이터 수집 시작...")
         stock_details = self.collect_stock_details(
             stock_codes=unique_codes,
@@ -303,7 +262,7 @@ class KISDataCollector:
             include_extended=include_extended,
         )
 
-        # 6. 데이터 통합
+        # 5. 데이터 통합
         end_time = datetime.now(KST)
         duration = (end_time - start_time).total_seconds()
 
@@ -314,15 +273,13 @@ class KISDataCollector:
                 "total_unique_stocks": len(unique_codes),
                 "kospi_count": len(kospi_top50),
                 "kosdaq_count": len(kosdaq_top50),
-                "fluctuation_extra_count": fluctuation_count,
                 "exclude_etf": exclude_etf,
                 "include_extended": include_extended,
-                "selection_criteria": "거래대금 Top50 + 등락률 Top30",
+                "selection_criteria": "거래대금 Top50",
             },
             "rankings": {
                 "kospi": kospi_top50,
                 "kosdaq": kosdaq_top50,
-                "fluctuation": fluctuation_data,
             },
             "stock_details": {
                 detail["stock_code"]: detail

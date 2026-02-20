@@ -255,7 +255,7 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
                     }
                 ],
                 config={
-                    "max_output_tokens": 65536,  # 최대 출력 토큰 (120개 종목 분석용)
+                    "max_output_tokens": 65536,  # 최대 출력 토큰 (100개 종목 분석용)
                     "tools": [{"google_search": {}}],
                 }
             )
@@ -522,13 +522,13 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 - 부채비율: 100% 미만 안정적, 200% 초과 주의
 
 ### 2-4. 재료 분석 (가중치 15%)
-각 종목에 대해 google_search 도구를 사용하여 최근 관련 뉴스를 검색하세요.
-검색 키워드: "{{종목명}} 주식 뉴스" 및 "{{종목명}} 실적" (예: "삼성전자 주식 뉴스", "삼성전자 실적")
-검색 결과를 바탕으로:
+아래 제공된 뉴스 데이터를 우선 활용하여 각 종목의 재료를 분석하세요.
 - 호재/악재 여부 및 시장 심리 판단
 - 실적, M&A, 신사업, 규제, 소송 등 주요 재료 파악
 - 테마 및 섹터 모멘텀 평가
 - 뉴스 시의성: 오늘 날짜 기준 1주일 이내를 '최근'으로 간주하세요.
+- 뉴스가 없는 종목만 google_search를 사용하여 "{종목명} 주식 뉴스"로 검색하여 보완하세요.
+- google_search로도 뉴스를 찾지 못한 종목: sentiment="중립", catalyst="관련 뉴스 없음"으로 설정하세요.
 
 ## 3. 계산 지표 활용
 다음 지표들을 직접 계산하여 분석에 반영하세요:
@@ -567,7 +567,10 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 {stock_data}
 ```
 
-## 7. 출력 형식
+## 7. 종목별 뉴스 데이터
+{news_data}
+
+## 8. 출력 형식
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요:
 ```json
 {{
@@ -604,15 +607,16 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 1. 모든 {count}개 종목에 대해 분석 결과를 반드시 포함해야 합니다.
 2. 종목과 해당 종목에 대한 분석 결과가 정확히 매칭되도록 주의하세요.
 3. 입력 데이터의 종목 순서와 출력 결과의 순서가 동일해야 합니다.
-4. 각 종목에 대해 반드시 google_search로 뉴스를 검색하고 news_analysis 필드를 포함하세요.
-5. news_analysis는 반드시 google_search 검색 결과를 기반으로 작성하세요. 검색 결과에 없는 내용을 추측하여 포함하지 마세요.
+4. 뉴스 데이터가 제공된 종목은 해당 데이터를 기반으로 news_analysis를 작성하세요.
+5. 뉴스 데이터가 없는 종목만 google_search로 보완하세요. 뉴스가 이미 제공된 종목은 google_search를 사용하지 마세요.
 """
 
 
 def analyze_kis_data(
     stocks_data: dict,
     stock_codes: list[str] | None = None,
-    max_retries: int = 3
+    max_retries: int = 3,
+    news_data: dict | None = None,
 ) -> list[dict]:
     """KIS API 데이터 기반 종목 분석
 
@@ -620,6 +624,7 @@ def analyze_kis_data(
         stocks_data: 변환된 KIS 데이터 (kis_gemini.json 형식)
         stock_codes: 분석할 종목 코드 리스트 (없으면 전체)
         max_retries: 최대 재시도 횟수
+        news_data: 종목별 뉴스 데이터 {code: [news_list]}
 
     Returns:
         분석 결과 리스트
@@ -652,14 +657,28 @@ def analyze_kis_data(
     reduction_rate = (1 - len(reduced_json) / len(original_json)) * 100
     print(f"[INFO] 데이터 축소: {len(original_json):,}자 → {len(reduced_json):,}자 ({reduction_rate:.1f}% 감소)")
 
+    # 배치 대상 종목의 뉴스 추출
+    batch_news = {}
+    if news_data:
+        for code in reduced_stocks:
+            if code in news_data:
+                batch_news[code] = news_data[code]
+
+    if batch_news:
+        news_section = "```json\n" + json.dumps(batch_news, ensure_ascii=False, indent=2) + "\n```"
+    else:
+        news_section = "뉴스 데이터가 제공되지 않았습니다. 모든 종목에 대해 google_search를 사용하여 \"{종목명} 주식 뉴스\"로 검색하세요."
+
     # 프롬프트 생성
     today = datetime.now(KST).strftime("%Y-%m-%d")
     prompt = KIS_ANALYSIS_PROMPT.format(
         count=len(reduced_stocks),
         stock_data=reduced_json,
+        news_data=news_section,
         today=today
     )
-    print(f"[INFO] 프롬프트 길이: {len(prompt):,}자\n")
+    print(f"[INFO] 프롬프트 길이: {len(prompt):,}자")
+    print(f"[INFO] 뉴스 데이터: {len(batch_news)}개 종목\n")
 
     # API 호출 시도 (429 오류 시에만 재시도, 파싱 실패 시 재시도 안 함)
     for attempt in range(max_retries):
@@ -690,7 +709,7 @@ def analyze_kis_data(
                 ],
                 config={
                     "max_output_tokens": 65536,  # 최대 출력 토큰 (기본값 8K → 64K)
-                    "tools": [{"google_search": {}}],
+                    "tools": [{"google_search": {}}],  # 뉴스 없는 종목 보완용
                 }
             )
 
@@ -805,7 +824,8 @@ def analyze_kis_data(
 def analyze_kis_data_batch(
     stocks_data: dict,
     batch_size: int = 10,
-    max_retries: int = 3
+    max_retries: int = 3,
+    news_data: dict | None = None,
 ) -> list[dict]:
     """KIS API 데이터 배치 분석 (대량 종목용)
 
@@ -813,6 +833,7 @@ def analyze_kis_data_batch(
         stocks_data: 변환된 KIS 데이터
         batch_size: 배치당 종목 수
         max_retries: 최대 재시도 횟수
+        news_data: 종목별 뉴스 데이터 {code: [news_list]}
 
     Returns:
         전체 분석 결과 리스트
@@ -835,7 +856,8 @@ def analyze_kis_data_batch(
         results = analyze_kis_data(
             stocks_data,
             stock_codes=batch_codes,
-            max_retries=max_retries
+            max_retries=max_retries,
+            news_data=news_data,
         )
 
         if results:
