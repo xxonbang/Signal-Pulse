@@ -527,7 +527,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 - 실적, M&A, 신사업, 규제, 소송 등 주요 재료 파악
 - 테마 및 섹터 모멘텀 평가
 - 뉴스 시의성: 오늘 날짜 기준 1주일 이내를 '최근'으로 간주하세요.
-- 뉴스가 없는 종목만 google_search를 사용하여 "{종목명} 주식 뉴스"로 검색하여 보완하세요.
+- 뉴스가 없는 종목만 google_search를 사용하여 "{{종목명}} 주식 뉴스"로 검색하여 보완하세요.
 - google_search로도 뉴스를 찾지 못한 종목: sentiment="중립", catalyst="관련 뉴스 없음"으로 설정하세요.
 
 ## 3. 계산 지표 활용
@@ -667,7 +667,7 @@ def analyze_kis_data(
     if batch_news:
         news_section = "```json\n" + json.dumps(batch_news, ensure_ascii=False, indent=2) + "\n```"
     else:
-        news_section = "뉴스 데이터가 제공되지 않았습니다. 모든 종목에 대해 google_search를 사용하여 \"{종목명} 주식 뉴스\"로 검색하세요."
+        news_section = "뉴스 데이터가 제공되지 않았습니다. 모든 종목에 대해 google_search를 사용하여 \"{{종목명}} 주식 뉴스\"로 검색하세요."
 
     # 프롬프트 생성
     today = datetime.now(KST).strftime("%Y-%m-%d")
