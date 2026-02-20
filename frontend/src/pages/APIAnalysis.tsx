@@ -154,8 +154,12 @@ function StockCard({
           </div>
         </div>
         <div className="text-right flex-shrink-0 ml-2">
-          {analysis && (
+          {analysis ? (
             <SignalBadge signal={analysis.signal} />
+          ) : (
+            <span className="inline-block text-[0.6rem] md:text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 font-medium">
+              AI 분석 실패
+            </span>
           )}
           <div className="text-[0.65rem] md:text-xs text-text-muted mt-1">
             #{stock.ranking?.volume_rank ?? '-'}위
