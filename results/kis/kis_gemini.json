@@ -107,7 +107,8 @@
             "individual_net": 10872
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -2753,7 +2754,8 @@
             "individual_net": -45440
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -24420,8 +24422,8 @@
         "total_bid_volume": 142155,
         "bid_ask_ratio": null,
         "best_ask": {
-          "price": 0,
-          "volume": 0
+          "price": 469,
+          "volume": 24607
         },
         "best_bid": {
           "price": 471,
@@ -24473,7 +24475,8 @@
             "individual_net": 26440
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -24767,7 +24770,8 @@
             "individual_net": -335526
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -25061,7 +25065,8 @@
             "individual_net": -59962
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -26128,6 +26133,1186 @@
         "eps_growth_rate": -644.35,
         "sales_growth": 3.93,
         "op_profit_growth": null,
+        "latest_year": "202509"
+      }
+    },
+    "001450": {
+      "code": "001450",
+      "name": "현대해상",
+      "market": "UNKNOWN",
+      "ranking": {
+        "volume_rank": null,
+        "volume": null,
+        "volume_rate_vs_prev": null,
+        "trading_value": null,
+        "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+      },
+      "price": {
+        "current": 38250,
+        "change": 3150,
+        "change_rate_pct": 8.97,
+        "open": 35100,
+        "high": 40550,
+        "low": 35000,
+        "prev_close": 35100,
+        "high_52week": 45600,
+        "low_52week": 24600
+      },
+      "trading": {
+        "volume": 2019141,
+        "trading_value": 77979784275,
+        "volume_turnover_pct": 2.26
+      },
+      "market_info": {
+        "market_cap_billion": 34196,
+        "shares_outstanding": 89400000,
+        "foreign_holding_pct": 34.56
+      },
+      "valuation": {
+        "per": 4.02,
+        "pbr": 0.63,
+        "eps": 9514.0,
+        "bps": 60491.0,
+        "peg": 0.12
+      },
+      "order_book": {
+        "total_ask_volume": 6885,
+        "total_bid_volume": 7344,
+        "bid_ask_ratio": 106.67,
+        "best_ask": {
+          "price": 38300,
+          "volume": 785
+        },
+        "best_bid": {
+          "price": 38250,
+          "volume": 1272
+        },
+        "description": "bid_ask_ratio > 100: 매수세 우위, < 100: 매도세 우위"
+      },
+      "investor_flow": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": -24000,
+          "institution_net": 93000,
+          "individual_net": null
+        },
+        "sum_5_days": {
+          "foreign_net": -172919,
+          "institution_net": 145929,
+          "individual_net": -20510
+        },
+        "daily_trend": [
+          {
+            "date": "20260220",
+            "foreign_net": 0,
+            "institution_net": 0,
+            "individual_net": 0
+          },
+          {
+            "date": "20260219",
+            "foreign_net": -99017,
+            "institution_net": -45929,
+            "individual_net": 127125
+          },
+          {
+            "date": "20260213",
+            "foreign_net": 95116,
+            "institution_net": 115728,
+            "individual_net": -216456
+          },
+          {
+            "date": "20260212",
+            "foreign_net": 3566,
+            "institution_net": 598,
+            "individual_net": -6922
+          },
+          {
+            "date": "20260211",
+            "foreign_net": -172584,
+            "institution_net": 75532,
+            "individual_net": 75743
+          }
+        ],
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
+      },
+      "foreign_institution": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 0,
+          "institution_net": 0,
+          "individual_net": 0
+        },
+        "sum_5_days": {
+          "foreign_net": -172919,
+          "institution_net": 145929,
+          "individual_net": -20510
+        },
+        "sum_20_days": {
+          "foreign_net": -22614,
+          "institution_net": 463700,
+          "individual_net": -550997
+        },
+        "description": "양수=순매수, 음수=순매도. 5일/20일 누적 합계"
+      },
+      "price_history": {
+        "days": [
+          {
+            "date": "20260220",
+            "open": 35100,
+            "high": 40550,
+            "low": 35000,
+            "close": 38300,
+            "volume": 2019860
+          },
+          {
+            "date": "20260219",
+            "open": 35800,
+            "high": 35850,
+            "low": 34550,
+            "close": 35100,
+            "volume": 758565
+          },
+          {
+            "date": "20260213",
+            "open": 34100,
+            "high": 36600,
+            "low": 34000,
+            "close": 35450,
+            "volume": 1345233
+          },
+          {
+            "date": "20260212",
+            "open": 33000,
+            "high": 34200,
+            "low": 32900,
+            "close": 33500,
+            "volume": 999775
+          },
+          {
+            "date": "20260211",
+            "open": 33350,
+            "high": 33850,
+            "low": 32250,
+            "close": 32800,
+            "volume": 730129
+          },
+          {
+            "date": "20260210",
+            "open": 30950,
+            "high": 33400,
+            "low": 30600,
+            "close": 32950,
+            "volume": 1232385
+          },
+          {
+            "date": "20260209",
+            "open": 30300,
+            "high": 31100,
+            "low": 30250,
+            "close": 30800,
+            "volume": 537444
+          },
+          {
+            "date": "20260206",
+            "open": 29600,
+            "high": 30000,
+            "low": 28950,
+            "close": 29800,
+            "volume": 499396
+          },
+          {
+            "date": "20260205",
+            "open": 29800,
+            "high": 30350,
+            "low": 29650,
+            "close": 30150,
+            "volume": 381591
+          },
+          {
+            "date": "20260204",
+            "open": 28400,
+            "high": 31450,
+            "low": 28250,
+            "close": 30200,
+            "volume": 1194758
+          },
+          {
+            "date": "20260203",
+            "open": 27950,
+            "high": 28500,
+            "low": 27800,
+            "close": 28400,
+            "volume": 523558
+          },
+          {
+            "date": "20260202",
+            "open": 27800,
+            "high": 28350,
+            "low": 27300,
+            "close": 27550,
+            "volume": 465744
+          },
+          {
+            "date": "20260130",
+            "open": 27900,
+            "high": 28600,
+            "low": 27850,
+            "close": 28150,
+            "volume": 528968
+          },
+          {
+            "date": "20260129",
+            "open": 27700,
+            "high": 28250,
+            "low": 27100,
+            "close": 28050,
+            "volume": 528650
+          },
+          {
+            "date": "20260128",
+            "open": 28250,
+            "high": 28450,
+            "low": 27550,
+            "close": 27650,
+            "volume": 518881
+          },
+          {
+            "date": "20260127",
+            "open": 27950,
+            "high": 28450,
+            "low": 27750,
+            "close": 28250,
+            "volume": 353022
+          },
+          {
+            "date": "20260126",
+            "open": 28300,
+            "high": 28800,
+            "low": 27800,
+            "close": 27800,
+            "volume": 436377
+          },
+          {
+            "date": "20260123",
+            "open": 27800,
+            "high": 28100,
+            "low": 27500,
+            "close": 27950,
+            "volume": 415463
+          },
+          {
+            "date": "20260122",
+            "open": 27350,
+            "high": 27900,
+            "low": 27350,
+            "close": 27750,
+            "volume": 473042
+          },
+          {
+            "date": "20260121",
+            "open": 27600,
+            "high": 27850,
+            "low": 27050,
+            "close": 27550,
+            "volume": 600407
+          }
+        ],
+        "count": 20,
+        "rsi_14": 82.62
+      },
+      "fundamental": {
+        "roe": 20.19,
+        "opm": 10.06,
+        "debt_ratio": 892.68,
+        "eps_growth_rate": 33.36,
+        "sales_growth": 10.89,
+        "op_profit_growth": 5.3,
+        "latest_year": "202509"
+      }
+    },
+    "209640": {
+      "code": "209640",
+      "name": "와이제이링크",
+      "market": "UNKNOWN",
+      "ranking": {
+        "volume_rank": null,
+        "volume": null,
+        "volume_rate_vs_prev": null,
+        "trading_value": null,
+        "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+      },
+      "price": {
+        "current": 4595,
+        "change": -325,
+        "change_rate_pct": -6.61,
+        "open": 4955,
+        "high": 5100,
+        "low": 4585,
+        "prev_close": 4920,
+        "high_52week": 6390,
+        "low_52week": 3445
+      },
+      "trading": {
+        "volume": 1692237,
+        "trading_value": 8011599121,
+        "volume_turnover_pct": 5.95
+      },
+      "market_info": {
+        "market_cap_billion": 1307,
+        "shares_outstanding": 28443146,
+        "foreign_holding_pct": 0.93
+      },
+      "valuation": {
+        "per": 270.29,
+        "pbr": 1.67,
+        "eps": 17.0,
+        "bps": 2749.0,
+        "peg": null
+      },
+      "order_book": {
+        "total_ask_volume": 7115,
+        "total_bid_volume": 40106,
+        "bid_ask_ratio": 563.68,
+        "best_ask": {
+          "price": 4595,
+          "volume": 17
+        },
+        "best_bid": {
+          "price": 4590,
+          "volume": 603
+        },
+        "description": "bid_ask_ratio > 100: 매수세 우위, < 100: 매도세 우위"
+      },
+      "investor_flow": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": -29000,
+          "institution_net": 0,
+          "individual_net": null
+        },
+        "sum_5_days": {
+          "foreign_net": -425757,
+          "institution_net": 0,
+          "individual_net": 437396
+        },
+        "daily_trend": [
+          {
+            "date": "20260220",
+            "foreign_net": 0,
+            "institution_net": 0,
+            "individual_net": 0
+          },
+          {
+            "date": "20260219",
+            "foreign_net": -96045,
+            "institution_net": 0,
+            "individual_net": 89749
+          },
+          {
+            "date": "20260213",
+            "foreign_net": 113148,
+            "institution_net": 0,
+            "individual_net": -97018
+          },
+          {
+            "date": "20260212",
+            "foreign_net": -132836,
+            "institution_net": 0,
+            "individual_net": 127296
+          },
+          {
+            "date": "20260211",
+            "foreign_net": -310024,
+            "institution_net": 0,
+            "individual_net": 317369
+          }
+        ],
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
+      },
+      "foreign_institution": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 0,
+          "institution_net": 0,
+          "individual_net": 0
+        },
+        "sum_5_days": {
+          "foreign_net": -425757,
+          "institution_net": 0,
+          "individual_net": 437396
+        },
+        "sum_20_days": {
+          "foreign_net": -582859,
+          "institution_net": -740824,
+          "individual_net": 1315310
+        },
+        "description": "양수=순매수, 음수=순매도. 5일/20일 누적 합계"
+      },
+      "price_history": {
+        "days": [
+          {
+            "date": "20260220",
+            "open": 4955,
+            "high": 5100,
+            "low": 4585,
+            "close": 4590,
+            "volume": 1692242
+          },
+          {
+            "date": "20260219",
+            "open": 5070,
+            "high": 5270,
+            "low": 4850,
+            "close": 4920,
+            "volume": 1767297
+          },
+          {
+            "date": "20260213",
+            "open": 5070,
+            "high": 5250,
+            "low": 4840,
+            "close": 5090,
+            "volume": 1791968
+          },
+          {
+            "date": "20260212",
+            "open": 5110,
+            "high": 5400,
+            "low": 5060,
+            "close": 5090,
+            "volume": 2208989
+          },
+          {
+            "date": "20260211",
+            "open": 5190,
+            "high": 5930,
+            "low": 5000,
+            "close": 5100,
+            "volume": 14251391
+          },
+          {
+            "date": "20260210",
+            "open": 4930,
+            "high": 5670,
+            "low": 4650,
+            "close": 5270,
+            "volume": 18737369
+          },
+          {
+            "date": "20260209",
+            "open": 4295,
+            "high": 5190,
+            "low": 4260,
+            "close": 4850,
+            "volume": 14294470
+          },
+          {
+            "date": "20260206",
+            "open": 4020,
+            "high": 4315,
+            "low": 3875,
+            "close": 4140,
+            "volume": 1425785
+          },
+          {
+            "date": "20260205",
+            "open": 4435,
+            "high": 4440,
+            "low": 4150,
+            "close": 4200,
+            "volume": 978413
+          },
+          {
+            "date": "20260204",
+            "open": 4580,
+            "high": 4625,
+            "low": 4340,
+            "close": 4445,
+            "volume": 1282420
+          },
+          {
+            "date": "20260203",
+            "open": 4220,
+            "high": 4675,
+            "low": 4220,
+            "close": 4510,
+            "volume": 4441343
+          },
+          {
+            "date": "20260202",
+            "open": 4160,
+            "high": 4500,
+            "low": 4070,
+            "close": 4090,
+            "volume": 1377007
+          },
+          {
+            "date": "20260130",
+            "open": 4450,
+            "high": 4480,
+            "low": 4250,
+            "close": 4250,
+            "volume": 1312038
+          },
+          {
+            "date": "20260129",
+            "open": 4245,
+            "high": 4550,
+            "low": 4085,
+            "close": 4510,
+            "volume": 2702480
+          },
+          {
+            "date": "20260128",
+            "open": 4360,
+            "high": 4405,
+            "low": 4190,
+            "close": 4225,
+            "volume": 911273
+          },
+          {
+            "date": "20260127",
+            "open": 4340,
+            "high": 4535,
+            "low": 4230,
+            "close": 4310,
+            "volume": 1429442
+          },
+          {
+            "date": "20260126",
+            "open": 4660,
+            "high": 4670,
+            "low": 4390,
+            "close": 4440,
+            "volume": 1401310
+          },
+          {
+            "date": "20260123",
+            "open": 4560,
+            "high": 5010,
+            "low": 4425,
+            "close": 4625,
+            "volume": 6810590
+          },
+          {
+            "date": "20260122",
+            "open": 4380,
+            "high": 4750,
+            "low": 4050,
+            "close": 4500,
+            "volume": 4968242
+          },
+          {
+            "date": "20260121",
+            "open": 4330,
+            "high": 4360,
+            "low": 4120,
+            "close": 4310,
+            "volume": 1305835
+          }
+        ],
+        "count": 20,
+        "rsi_14": 51.07
+      },
+      "fundamental": {
+        "roe": null,
+        "opm": -14.08,
+        "debt_ratio": 66.45,
+        "eps_growth_rate": -1164.71,
+        "sales_growth": -24.55,
+        "op_profit_growth": null,
+        "latest_year": "202509"
+      }
+    },
+    "077970": {
+      "code": "077970",
+      "name": "STX엔진",
+      "market": "UNKNOWN",
+      "ranking": {
+        "volume_rank": null,
+        "volume": null,
+        "volume_rate_vs_prev": null,
+        "trading_value": null,
+        "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+      },
+      "price": {
+        "current": 36800,
+        "change": 3450,
+        "change_rate_pct": 10.34,
+        "open": 35700,
+        "high": 37750,
+        "low": 35000,
+        "prev_close": 33350,
+        "high_52week": 43350,
+        "low_52week": 23350
+      },
+      "trading": {
+        "volume": 746132,
+        "trading_value": 27042434450,
+        "volume_turnover_pct": 1.86
+      },
+      "market_info": {
+        "market_cap_billion": 14774,
+        "shares_outstanding": 40148063,
+        "foreign_holding_pct": 5.32
+      },
+      "valuation": {
+        "per": 37.4,
+        "pbr": 3.68,
+        "eps": 984.0,
+        "bps": 10004.0,
+        "peg": 0.72
+      },
+      "order_book": {
+        "total_ask_volume": 3200,
+        "total_bid_volume": 7764,
+        "bid_ask_ratio": 242.62,
+        "best_ask": {
+          "price": 36850,
+          "volume": 136
+        },
+        "best_bid": {
+          "price": 36750,
+          "volume": 337
+        },
+        "description": "bid_ask_ratio > 100: 매수세 우위, < 100: 매도세 우위"
+      },
+      "investor_flow": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 49000,
+          "institution_net": 14000,
+          "individual_net": null
+        },
+        "sum_5_days": {
+          "foreign_net": -59843,
+          "institution_net": -21837,
+          "individual_net": 74937
+        },
+        "daily_trend": [
+          {
+            "date": "20260220",
+            "foreign_net": 0,
+            "institution_net": 0,
+            "individual_net": 0
+          },
+          {
+            "date": "20260219",
+            "foreign_net": -48708,
+            "institution_net": 8341,
+            "individual_net": 35489
+          },
+          {
+            "date": "20260213",
+            "foreign_net": -35117,
+            "institution_net": 27527,
+            "individual_net": 8368
+          },
+          {
+            "date": "20260212",
+            "foreign_net": -7120,
+            "institution_net": 12228,
+            "individual_net": -5136
+          },
+          {
+            "date": "20260211",
+            "foreign_net": 31102,
+            "institution_net": -69933,
+            "individual_net": 36216
+          }
+        ],
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
+      },
+      "foreign_institution": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 0,
+          "institution_net": 0,
+          "individual_net": 0
+        },
+        "sum_5_days": {
+          "foreign_net": -59843,
+          "institution_net": -21837,
+          "individual_net": 74937
+        },
+        "sum_20_days": {
+          "foreign_net": -582782,
+          "institution_net": -331735,
+          "individual_net": 893868
+        },
+        "description": "양수=순매수, 음수=순매도. 5일/20일 누적 합계"
+      },
+      "price_history": {
+        "days": [
+          {
+            "date": "20260220",
+            "open": 35700,
+            "high": 37750,
+            "low": 35000,
+            "close": 36800,
+            "volume": 746244
+          },
+          {
+            "date": "20260219",
+            "open": 33300,
+            "high": 33650,
+            "low": 33000,
+            "close": 33350,
+            "volume": 174372
+          },
+          {
+            "date": "20260213",
+            "open": 32700,
+            "high": 33200,
+            "low": 31900,
+            "close": 32750,
+            "volume": 188949
+          },
+          {
+            "date": "20260212",
+            "open": 32950,
+            "high": 33500,
+            "low": 32450,
+            "close": 33050,
+            "volume": 147944
+          },
+          {
+            "date": "20260211",
+            "open": 33000,
+            "high": 33050,
+            "low": 32250,
+            "close": 32500,
+            "volume": 203805
+          },
+          {
+            "date": "20260210",
+            "open": 32450,
+            "high": 32950,
+            "low": 31850,
+            "close": 32650,
+            "volume": 136444
+          },
+          {
+            "date": "20260209",
+            "open": 32000,
+            "high": 32450,
+            "low": 31350,
+            "close": 31650,
+            "volume": 244890
+          },
+          {
+            "date": "20260206",
+            "open": 31150,
+            "high": 31250,
+            "low": 29650,
+            "close": 30800,
+            "volume": 226640
+          },
+          {
+            "date": "20260205",
+            "open": 34700,
+            "high": 34700,
+            "low": 32000,
+            "close": 32150,
+            "volume": 417215
+          },
+          {
+            "date": "20260204",
+            "open": 34600,
+            "high": 35150,
+            "low": 34200,
+            "close": 35000,
+            "volume": 294012
+          },
+          {
+            "date": "20260203",
+            "open": 32900,
+            "high": 34200,
+            "low": 32450,
+            "close": 34100,
+            "volume": 293989
+          },
+          {
+            "date": "20260202",
+            "open": 33900,
+            "high": 34600,
+            "low": 32200,
+            "close": 32300,
+            "volume": 271971
+          },
+          {
+            "date": "20260130",
+            "open": 35450,
+            "high": 35450,
+            "low": 33900,
+            "close": 33900,
+            "volume": 332675
+          },
+          {
+            "date": "20260129",
+            "open": 35900,
+            "high": 35900,
+            "low": 34250,
+            "close": 35100,
+            "volume": 379525
+          },
+          {
+            "date": "20260128",
+            "open": 37150,
+            "high": 37650,
+            "low": 35450,
+            "close": 36050,
+            "volume": 525122
+          },
+          {
+            "date": "20260127",
+            "open": 37800,
+            "high": 38550,
+            "low": 36800,
+            "close": 37150,
+            "volume": 466818
+          },
+          {
+            "date": "20260126",
+            "open": 38200,
+            "high": 38600,
+            "low": 36550,
+            "close": 37200,
+            "volume": 306395
+          },
+          {
+            "date": "20260123",
+            "open": 37000,
+            "high": 38650,
+            "low": 37000,
+            "close": 37900,
+            "volume": 500892
+          },
+          {
+            "date": "20260122",
+            "open": 37800,
+            "high": 38050,
+            "low": 36200,
+            "close": 37000,
+            "volume": 452578
+          },
+          {
+            "date": "20260121",
+            "open": 36350,
+            "high": 38500,
+            "low": 35650,
+            "close": 38000,
+            "volume": 555837
+          }
+        ],
+        "count": 20,
+        "rsi_14": 57.65
+      },
+      "fundamental": {
+        "roe": 20.2,
+        "opm": 11.78,
+        "debt_ratio": 232.05,
+        "eps_growth_rate": 52.03,
+        "sales_growth": 7.5,
+        "op_profit_growth": 88.87,
+        "latest_year": "202509"
+      }
+    },
+    "044490": {
+      "code": "044490",
+      "name": "태웅",
+      "market": "KOSDAQ",
+      "ranking": {
+        "volume_rank": 46,
+        "volume": 1195782,
+        "volume_rate_vs_prev": 323.24,
+        "trading_value": 43563472725,
+        "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+      },
+      "price": {
+        "current": 36550,
+        "change": 3450,
+        "change_rate_pct": 10.42,
+        "open": 34550,
+        "high": 38400,
+        "low": 33500,
+        "prev_close": 33100,
+        "high_52week": 43000,
+        "low_52week": 23200
+      },
+      "trading": {
+        "volume": 1199079,
+        "trading_value": 43683736550,
+        "volume_turnover_pct": 5.99
+      },
+      "market_info": {
+        "market_cap_billion": 7313,
+        "shares_outstanding": 20007381,
+        "foreign_holding_pct": 4.27
+      },
+      "valuation": {
+        "per": 29.62,
+        "pbr": 1.21,
+        "eps": 1234.0,
+        "bps": 30212.0,
+        "peg": null
+      },
+      "order_book": {
+        "total_ask_volume": 13694,
+        "total_bid_volume": 4856,
+        "bid_ask_ratio": 35.46,
+        "best_ask": {
+          "price": 36550,
+          "volume": 320
+        },
+        "best_bid": {
+          "price": 36500,
+          "volume": 78
+        },
+        "description": "bid_ask_ratio > 100: 매수세 우위, < 100: 매도세 우위"
+      },
+      "investor_flow": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 41000,
+          "institution_net": 114000,
+          "individual_net": null
+        },
+        "sum_5_days": {
+          "foreign_net": 143235,
+          "institution_net": 96083,
+          "individual_net": -248833
+        },
+        "daily_trend": [
+          {
+            "date": "20260220",
+            "foreign_net": 0,
+            "institution_net": 0,
+            "individual_net": 0
+          },
+          {
+            "date": "20260219",
+            "foreign_net": -10704,
+            "institution_net": 38823,
+            "individual_net": -29442
+          },
+          {
+            "date": "20260213",
+            "foreign_net": 143810,
+            "institution_net": 55304,
+            "individual_net": -204478
+          },
+          {
+            "date": "20260212",
+            "foreign_net": -74,
+            "institution_net": 5564,
+            "individual_net": -8319
+          },
+          {
+            "date": "20260211",
+            "foreign_net": 10203,
+            "institution_net": -3608,
+            "individual_net": -6594
+          }
+        ],
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
+      },
+      "foreign_institution": {
+        "today": {
+          "date": "20260220",
+          "foreign_net": 0,
+          "institution_net": 0,
+          "individual_net": 0
+        },
+        "sum_5_days": {
+          "foreign_net": 143235,
+          "institution_net": 96083,
+          "individual_net": -248833
+        },
+        "sum_20_days": {
+          "foreign_net": 28221,
+          "institution_net": 50729,
+          "individual_net": -98074
+        },
+        "description": "양수=순매수, 음수=순매도. 5일/20일 누적 합계"
+      },
+      "price_history": {
+        "days": [
+          {
+            "date": "20260220",
+            "open": 34550,
+            "high": 38400,
+            "low": 33500,
+            "close": 36550,
+            "volume": 1199116
+          },
+          {
+            "date": "20260219",
+            "open": 33550,
+            "high": 34400,
+            "low": 32900,
+            "close": 33100,
+            "volume": 369940
+          },
+          {
+            "date": "20260213",
+            "open": 30200,
+            "high": 33450,
+            "low": 29800,
+            "close": 32400,
+            "volume": 723898
+          },
+          {
+            "date": "20260212",
+            "open": 30050,
+            "high": 30150,
+            "low": 29350,
+            "close": 30100,
+            "volume": 91863
+          },
+          {
+            "date": "20260211",
+            "open": 30000,
+            "high": 30800,
+            "low": 29700,
+            "close": 30200,
+            "volume": 160648
+          },
+          {
+            "date": "20260210",
+            "open": 31200,
+            "high": 31200,
+            "low": 29200,
+            "close": 29500,
+            "volume": 172235
+          },
+          {
+            "date": "20260209",
+            "open": 29550,
+            "high": 31500,
+            "low": 28950,
+            "close": 30800,
+            "volume": 273985
+          },
+          {
+            "date": "20260206",
+            "open": 28550,
+            "high": 29000,
+            "low": 27500,
+            "close": 28400,
+            "volume": 184162
+          },
+          {
+            "date": "20260205",
+            "open": 31500,
+            "high": 32250,
+            "low": 29200,
+            "close": 29750,
+            "volume": 305493
+          },
+          {
+            "date": "20260204",
+            "open": 31950,
+            "high": 32550,
+            "low": 31100,
+            "close": 32150,
+            "volume": 368236
+          },
+          {
+            "date": "20260203",
+            "open": 29250,
+            "high": 30650,
+            "low": 29050,
+            "close": 30400,
+            "volume": 167036
+          },
+          {
+            "date": "20260202",
+            "open": 29650,
+            "high": 30650,
+            "low": 28600,
+            "close": 28700,
+            "volume": 183612
+          },
+          {
+            "date": "20260130",
+            "open": 32000,
+            "high": 32000,
+            "low": 30500,
+            "close": 30650,
+            "volume": 272071
+          },
+          {
+            "date": "20260129",
+            "open": 31700,
+            "high": 33550,
+            "low": 31700,
+            "close": 32200,
+            "volume": 328684
+          },
+          {
+            "date": "20260128",
+            "open": 33250,
+            "high": 33300,
+            "low": 31450,
+            "close": 31700,
+            "volume": 310123
+          },
+          {
+            "date": "20260127",
+            "open": 34700,
+            "high": 35650,
+            "low": 32050,
+            "close": 32800,
+            "volume": 574991
+          },
+          {
+            "date": "20260126",
+            "open": 30900,
+            "high": 32200,
+            "low": 30250,
+            "close": 31850,
+            "volume": 285122
+          },
+          {
+            "date": "20260123",
+            "open": 31950,
+            "high": 33400,
+            "low": 30700,
+            "close": 31050,
+            "volume": 344885
+          },
+          {
+            "date": "20260122",
+            "open": 33850,
+            "high": 34000,
+            "low": 31100,
+            "close": 31200,
+            "volume": 457589
+          },
+          {
+            "date": "20260121",
+            "open": 35500,
+            "high": 36250,
+            "low": 31800,
+            "close": 32400,
+            "volume": 1033088
+          }
+        ],
+        "count": 20,
+        "rsi_14": 65.83
+      },
+      "fundamental": {
+        "roe": 4.42,
+        "opm": 5.9,
+        "debt_ratio": 34.43,
+        "eps_growth_rate": -27.71,
+        "sales_growth": -12.94,
+        "op_profit_growth": -42.28,
         "latest_year": "202412"
       }
     },
@@ -26228,7 +27413,8 @@
             "individual_net": 142745
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -26469,8 +27655,8 @@
         "total_bid_volume": 1700544,
         "bid_ask_ratio": null,
         "best_ask": {
-          "price": 0,
-          "volume": 0
+          "price": 853,
+          "volume": 2363
         },
         "best_bid": {
           "price": 2525,
@@ -26522,7 +27708,8 @@
             "individual_net": 6053
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -51173,7 +52360,8 @@
             "individual_net": -6340
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {
@@ -54701,7 +55889,8 @@
             "individual_net": 218584
           }
         ],
-        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인"
+        "description": "양수=순매수, 음수=순매도. foreign=외국인, institution=기관, individual=개인",
+        "is_estimated": true
       },
       "foreign_institution": {
         "today": {

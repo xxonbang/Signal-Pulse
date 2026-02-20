@@ -1628,16 +1628,77 @@
         ],
         "catalyst": "특정 핵심 재료 부재"
       },
-      "api_signal": null,
-      "api_reason": null,
-      "api_news": [],
-      "api_news_analysis": null,
-      "api_key_factors": null,
-      "api_risk_level": null,
-      "api_confidence": null,
-      "api_data": null,
-      "match_status": "vision-only",
-      "confidence": 0.5
+      "api_signal": "중립",
+      "api_reason": "현재 주가는 20일 이동평균선 근처에서 횡보하고 있으며, 52주 고가 대비 현재 위치는 약 22% 하락한 상태입니다. RSI 지표는 66.35로 중립 구간에 있으나, 외인/기관의 5일 누적 순매수세(-85,000 / +17,000)가 혼조세를 보이고 있습니다. PER 100.74의 높은 밸류에이션은 부담입니다.",
+      "api_news": [
+        {
+          "title": "코스피 5700 돌파…‘광기’ 정점인가, ‘슈퍼 사이클’ 입구인가",
+          "link": "https://n.news.naver.com/mnews/article/092/0002411194?sid=105",
+          "description": "거리에는 주식 이야기뿐이고, 증권사 객장은 그야말로 축제 분위기죠. 하지만 이 뜨거운 숫자 뒤편에서... 시장에서는 AI 훈풍을 타고 로봇주나 우주 항공주(스페이스X 관련주)까지 들썩이고 있습니다. 하지만 전문가는...",
+          "pubDate": "02-20 14:00",
+          "originallink": "https://zdnet.co.kr/view/?no=20260220105008"
+        },
+        {
+          "title": "코스피, 5700·5800 연이어 뚫었다…‘95만닉스’ 등극",
+          "link": "https://n.news.naver.com/mnews/article/366/0001143351?sid=101",
+          "description": "현대로템, 한국항공우주 등 방산주도 오름세를 나타냈다. 아울러 해외 수주 기대가 부각되며... 세계 최대 자산운용사 블랙록이 하이닉스 주식 3640만7157주를 보유해 지분율 5%를 넘겼다는 소식이 전해지면서...",
+          "pubDate": "02-20 13:43",
+          "originallink": "https://biz.chosun.com/stock/stock_general/2026/02/20/CQTI5ZNO2FGQ7HCKDP4RY5IDSA/?utm_source=naver&utm_medium=original&utm_campaign=biz"
+        },
+        {
+          "title": "한화시스템 주가 장중 9%대 상승, 미국의 이란 공습 가능성에 방산주 강...",
+          "link": "https://www.businesspost.co.kr/BP?command=article_view&num=430614",
+          "description": "20일 오전 9시51분 기준 코스피시장에서 한화시스템 주식은 전날보다 9.21%(9800원) 상승한 11만6200원에... 00%) 한국항공우주(1.31%) 등의 주가도 오르고 있다. 미국과 이란의 핵 협상이 난항을 겪으면서 지정학적...",
+          "pubDate": "02-20 10:38",
+          "originallink": "https://www.businesspost.co.kr/BP?command=article_view&num=430614"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "한국항공우주, 폴란드와 2차 수주 계약 임박...수주 잔고 10조 돌파 전망",
+          "차세대 전투기 개발 순항..."
+        ],
+        "catalyst": "폴란드와의 대규모 수주 계약 기대감과 차세대 전투기 개발의 순항이 긍정적인 모멘텀으로 작용하고 있습니다. 그러나 높은 PER 수준은 단기적인 가격 부담으로 작용할 수 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "횡보",
+        "volume_signal": "증가",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매수우위",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.4,
+      "api_data": {
+        "price": {
+          "current": 177800,
+          "change": 2400,
+          "change_rate_pct": 1.37,
+          "open": 179400,
+          "high": 180000,
+          "low": 174700,
+          "prev_close": 175400,
+          "high_52week": 228000,
+          "low_52week": 122800
+        },
+        "ranking": {
+          "volume_rank": 50,
+          "volume": 652495,
+          "volume_rate_vs_prev": 79.15,
+          "trading_value": 115337754050,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 100.74,
+          "pbr": 10.16,
+          "eps": 1765.0,
+          "bps": 17500.0,
+          "peg": null
+        }
+      },
+      "match_status": "partial",
+      "confidence": 0.7
     },
     {
       "code": "032820",
@@ -2328,16 +2389,77 @@
         ],
         "catalyst": "조선업황 회복에 따른 실적 개선 기대감."
       },
-      "api_signal": null,
-      "api_reason": null,
-      "api_news": [],
-      "api_news_analysis": null,
-      "api_key_factors": null,
-      "api_risk_level": null,
-      "api_confidence": null,
-      "api_data": null,
-      "match_status": "vision-only",
-      "confidence": 0.5
+      "api_signal": "적극매수",
+      "api_reason": "RSI 65.83으로 중립 구간에 있으나, 20일 일봉 데이터에서 뚜렷한 상승 추세를 보이고 있습니다. 5일 누적 외인 순매수량 +14만주, 기관 순매수량 +9.6만주로 수급이 매우 강합니다. PER 29.62, PBR 1.21로 적정~고평가 구간에 있지만, 20일 누적 외인/기관 순매수량이 +28만주/+5만주로 긍정적인 흐름입니다. 최근 1주일 이내의 수주 증가 및 실적 개선 관련 뉴스가 투자 심리를 뒷받침하고 있습니다.",
+      "api_news": [
+        {
+          "title": "[마켓+]자사주 소각 열풍…연초 이후 7.8조 '전년 대비 3배'",
+          "link": "https://www.businessplus.kr/news/articleView.html?idxno=107630",
+          "description": "보통주 1530만주로 이는 발행 주식의 2.10%에 해당하는 규모다. 반도체 업황 회복 기대와 함께 주주가치... 특히 태웅로직스는 우선주 230만 주 전량(93.90%)을 소각하는 파격적인 결정으로 시장의 주목을 받았다....",
+          "pubDate": "02-20 14:14",
+          "originallink": "https://www.businessplus.kr/news/articleView.html?idxno=107630"
+        },
+        {
+          "title": "방산 전자부터 위성까지… 한화시스템, 'K-방산' 영토 미국으로 넓힌다",
+          "link": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430764",
+          "description": "우주 영토 확장이 가시화되면서 주식시장 내 우주항공산업(누리호 인공위성 등) 테마가 20일 강력한 상승... 유도무기 및 항공우주 부품 전문인 퍼스텍과 세계 최대 규모의 단조 설비를 보유한 태웅도 7~8%대 강세를...",
+          "pubDate": "02-20 09:38",
+          "originallink": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430764"
+        },
+        {
+          "title": "풍력에너지 관련주, '껑충껑충' 유니슨·우리기술·한국전력·LS머트리얼...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249935",
+          "description": "동국산업, 태웅, LS, 효성, 코오롱글로벌, LS에코에너지 등은 상승했지만 우림피티에스, 포메탈... 이후 1961년 '한국전력주식회사'로 개편되고, 1982년 현재의 통합형 전력공기업으로 재설립되며 국가 전력공급의...",
+          "pubDate": "02-20 00:26",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249935"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "태웅, 대규모 해상풍력 터빈 부품 수주… 주가 급등",
+          "2025년 실적 최대 전망"
+        ],
+        "catalyst": "대규모 해상풍력 터빈 부품 수주 계약 체결 및 2025년 실적 최대 전망이 주가 상승 모멘텀을 강화하고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "적정"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.8,
+      "api_data": {
+        "price": {
+          "current": 36550,
+          "change": 3450,
+          "change_rate_pct": 10.42,
+          "open": 34550,
+          "high": 38400,
+          "low": 33500,
+          "prev_close": 33100,
+          "high_52week": 43000,
+          "low_52week": 23200
+        },
+        "ranking": {
+          "volume_rank": 46,
+          "volume": 1195782,
+          "volume_rate_vs_prev": 323.24,
+          "trading_value": 43563472725,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 29.62,
+          "pbr": 1.21,
+          "eps": 1234.0,
+          "bps": 30212.0,
+          "peg": null
+        }
+      },
+      "match_status": "partial",
+      "confidence": 0.7
     },
     {
       "code": "058470",
@@ -3116,16 +3238,80 @@
         ],
         "catalyst": "현재 시장 심리에 영향을 줄 만한 최근 긍정적/부정적 재료는 확인되지 않습니다."
       },
-      "api_signal": null,
-      "api_reason": null,
-      "api_news": [],
-      "api_news_analysis": null,
-      "api_key_factors": null,
-      "api_risk_level": null,
-      "api_confidence": null,
-      "api_data": null,
-      "match_status": "vision-only",
-      "confidence": 0.5
+      "api_signal": "매수",
+      "api_reason": "최근 20일 일봉 데이터상 상승 추세가 양호하며, 52주 최고가 대비 현재 위치는 82.47% 수준입니다. 거래량 변화율 642.78% 급증, 거래량 회전율 47.13%로 매우 높습니다. RSI 14일 지표는 60.42로 중립 구간에서 상승세를 보이고 있습니다. 외인/기관은 5일 누적으로 각각 4905억 순매도, 125억 순매도로 수급은 부정적입니다. PER이 0으로 산출되지 않아 밸류에이션 평가가 어렵고, ROE 0.81%로 낮습니다. 부채비율 160.79%는 다소 높은 편입니다.",
+      "api_news": [
+        {
+          "title": "오리엔트정공 주가, 2월 20일 장중 2,835원 8.41% 상승",
+          "link": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524761",
+          "description": "보유 주식수는 1,499,340주로, 외국인소진율은 4.72%를 기록하고 있다. 거래량은 13,218,513주로 집계되었으며, 거래대금은 383억 3,300만 원에 달했다. 동일업종 등락률이 0.44% 상승한 가운데, 오리엔트정공의...",
+          "pubDate": "02-20 12:22",
+          "originallink": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524761"
+        },
+        {
+          "title": "오리엔트정공, 공매도 과열종목 지정…2월 19일 하루 공매도 금지",
+          "link": "https://www.cbci.co.kr/news/articleView.html?idxno=556030",
+          "description": "오리엔트정공이 공매도 과열종목으로 지정됐다. 13일 공시에 따르면 오리엔트정공은 코스닥시장 업무규정... 다만 ▲주식시장 유동성공급호가 및 시장조성호가 ▲ELW·ETF·ETN 상품의 유동성 공급을 위한 헤지거래...",
+          "pubDate": "02-15 09:36",
+          "originallink": "https://www.cbci.co.kr/news/articleView.html?idxno=556030"
+        },
+        {
+          "title": "[주식마감] \"자사주 소각 훈풍\"... 증권주 재평가 기대감에 SK증권 상한...",
+          "link": "https://www.ggilbo.com/news/articleView.html?idxno=1142106",
+          "description": "지난 9일 유투바이오는 지구홀딩스 주식회사와 물적분할을 결정했다고 밝혔다. 분할존속회사는... 삼진식품, 오리엔트정공, 에이비프로바이오, 인콘, 레이저쎌, 유투바이오, 미래에셋벤처투자다. 이날 코스피는...",
+          "pubDate": "02-13 19:40",
+          "originallink": "https://www.ggilbo.com/news/articleView.html?idxno=1142106"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "중립",
+        "key_news": [
+          "오리엔트정공, 3분기 영업이익 5억… 전년 동기 대비 15% 감소",
+          "오리엔트정공, '강세'… 건설 장비 부품 공급 기대",
+          "오리엔트정공, 52주 신고가 경신",
+          "오리엔트정공, 2023년 연간 순이익 3억",
+          "오리엔트정공, '실적 부진' 속 최대주주 변경"
+        ],
+        "catalyst": "최근 20일간의 상승 추세와 폭발적인 거래량 증가는 긍정적입니다. 그러나 외인/기관의 대규모 순매도와 PER 부재, 낮은 ROE는 부정적인 요인으로 작용할 수 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매도우위",
+        "valuation": "데이터 부족"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 2800,
+          "change": 185,
+          "change_rate_pct": 7.07,
+          "open": 2605,
+          "high": 3150,
+          "low": 2590,
+          "prev_close": 2615,
+          "high_52week": 3395,
+          "low_52week": 1835
+        },
+        "ranking": {
+          "volume_rank": 49,
+          "volume": 14626776,
+          "volume_rate_vs_prev": 642.78,
+          "trading_value": 42334328464,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 0.0,
+          "pbr": 2.34,
+          "eps": 0.0,
+          "bps": 1199.0,
+          "peg": null
+        }
+      },
+      "match_status": "match",
+      "confidence": 1.0
     },
     {
       "code": "478340",
@@ -6176,7 +6362,7 @@
         "valuation": "고평가"
       },
       "api_risk_level": "중간",
-      "api_confidence": 0.5,
+      "api_confidence": 0.7,
       "api_data": {
         "price": {
           "current": 168800,
@@ -6204,8 +6390,8 @@
           "peg": 3.27
         }
       },
-      "match_status": "api-only",
-      "confidence": 0.5
+      "match_status": "partial",
+      "confidence": 0.7
     },
     {
       "code": "047050",
@@ -6336,7 +6522,7 @@
         "institution_flow": "매도우위",
         "valuation": "고평가"
       },
-      "api_risk_level": "중간",
+      "api_risk_level": "높음",
       "api_confidence": 0.7,
       "api_data": {
         "price": {
@@ -13709,6 +13895,1374 @@
         "institution_flow": "매도우위",
         "valuation": "데이터 부족"
       },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 780,
+          "change": 85,
+          "change_rate_pct": 12.23,
+          "open": 695,
+          "high": 903,
+          "low": 695,
+          "prev_close": 695,
+          "high_52week": 903,
+          "low_52week": 487
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -0.6,
+          "pbr": 0.21,
+          "eps": -1297.0,
+          "bps": 3632.0,
+          "peg": -0.07
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "049180",
+      "name": "셀루메드",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매도",
+      "api_reason": "20일 일봉 데이터 기준 하락 추세가 지속되고 있으며, RSI 지표 43.41은 중립 구간입니다. 52주 고가 대비 현재가는 약 28.4% 하락한 상태이며, 20일 누적 외인 순매도(-1.74억)가 확인됩니다. PBR 8.25배로 밸류에이션 부담이 높습니다.",
+      "api_news": [
+        {
+          "title": "[기업공시] 셀루메드, 한진, 한화오션 외",
+          "link": "https://www.kdpress.co.kr/news/articleView.html?idxno=202759",
+          "description": "■ 셀루메드 (049180) 29회차 CB 1억원 규모 만기전 사채 취득 사채의 종류 : 제29회 무기명식 이권부... 전환청구주식수 누계 : 1,268,947주 (발행주식총수 대비 1.17%) 전환가액 : 2,177원 2026-02-11 청구 : 650,000...",
+          "pubDate": "02-14 01:40",
+          "originallink": "https://www.kdpress.co.kr/news/articleView.html?idxno=202759"
+        },
+        {
+          "title": "엠젠솔루션, 대주주 행방 묘연…주담대는 어쩌나",
+          "link": "https://www.sentv.co.kr/article/view/sentv202602110184",
+          "description": "높은 금리에 수억원의 주식 담보 대출을 받았지만 2년 가까이 상환이 이뤄지지 않고 있다. 엠젠솔루션은... 심 씨는 과거 코스닥 상장사 셀루메드 대표와 대주주로도 활동하기도 했다. 셀루메드는 2015년부터 2020년까지...",
+          "pubDate": "02-13 14:50",
+          "originallink": "https://www.sentv.co.kr/article/view/sentv202602110184"
+        },
+        {
+          "title": "[기업공시] 엘앤에프, 동아쏘시오홀딩스, 나무기술 외",
+          "link": "https://www.kdpress.co.kr/news/articleView.html?idxno=202718",
+          "description": "보통주식 58,350,000,000원 처분방법 : 시간외대량매매 (블록딜) 신제품 생산 물량 대응을 위한 선제적 운영자금 확보 및 재무 안정성 제고 목적임 ■셀루메드 (049180) 제29회차 사채권자 조기상환청구로...",
+          "pubDate": "02-12 23:30",
+          "originallink": "https://www.kdpress.co.kr/news/articleView.html?idxno=202718"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "부정",
+        "key_news": [
+          "셀루메드, 2025년 3분기 누적 영업손실 537억원 기록",
+          "높은 부채비율로 인한 재무 리스크 부각"
+        ],
+        "catalyst": "지속적인 영업손실과 높은 부채비율(333.5%)은 재무 건전성에 대한 우려를 키우고 있으며, 이는 투자 심리에 부정적인 영향을 미치고 있습니다. 뚜렷한 사업 성장 모멘텀 부재."
+      },
+      "api_key_factors": {
+        "price_trend": "하락",
+        "volume_signal": "보통",
+        "foreign_flow": "매도우위",
+        "institution_flow": "중립",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.4,
+      "api_data": {
+        "price": {
+          "current": 1403,
+          "change": -104,
+          "change_rate_pct": -6.9,
+          "open": 1506,
+          "high": 1506,
+          "low": 1400,
+          "prev_close": 1507,
+          "high_52week": 1959,
+          "low_52week": 1055
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -2.17,
+          "pbr": 8.25,
+          "eps": -648.0,
+          "bps": 170.0,
+          "peg": -0.02
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "035420",
+      "name": "NAVER",
+      "market": "KOSPI",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "0.79% 상승하며 긍정적인 가격 모멘텀을 보이고 있으며, RSI 지표 48.19는 중립 구간입니다. 20일 외인 순매수(+7.62억)가 긍정적이며, PBR 1.49배로 밸류에이션 부담이 크지 않습니다. 52주 고가 대비 현재가는 약 22.7% 하락한 상태입니다.",
+      "api_news": [
+        {
+          "title": "내가 '청년형 ISA'를 기다리는 이유",
+          "link": "https://www.korea.kr/news/reporterView.do?newsId=148959033&call_from=naver_news",
+          "description": "◆ '절세 + 투자'를 동시에 담는 통합 계좌, ISA ISA는 개인종합자산관리계좌로 예적금·펀드·ETF·주식 등... ☞ (멀티미디어 뉴스) '2026년 경제성장전략' 주요 지원내용 ① 청년 편 정책기자단|김윤희yunhee1292@naver.com...",
+          "pubDate": "02-20 13:45",
+          "originallink": "https://www.korea.kr/news/reporterView.do?newsId=148959033&call_from=naver_news"
+        },
+        {
+          "title": "네이버 주가, 2월 20일 장중 257,500원 1.78% 상승",
+          "link": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524745",
+          "description": "외국인 투자자들의 NAVER 주식 소진율은 39.62%를 기록했으며, 전체 상장 주식수 156,852,638주 중에서 62,143,267주를 외국인이 보유하고 있다. 동일 업종이 1.38% 상승한 흐름과 비교했을 때, NAVER 역시...",
+          "pubDate": "02-20 12:20",
+          "originallink": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524745"
+        },
+        {
+          "title": "NAVER 주가, 20일 장중 259,500원 2.57% 상승",
+          "link": "https://www.e-science.co.kr/news/articleView.html?idxno=126351",
+          "description": "또한, 외국인 투자자들의 NAVER 주식 소진율은 39.62%를 기록하고 있으며, 이는 총 상장주식수 대비 외국인 보유 주식의 비중을 나타낸다. 현재 동일업종 등락률은 2.00% 상승세를 보이고 있어, NAVER의...",
+          "pubDate": "02-20 11:08",
+          "originallink": "https://www.e-science.co.kr/news/articleView.html?idxno=126351"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "NAVER, 2025년 3분기 누적 매출 7조 6,850억원, 영업이익 1조 3,820억원 달성",
+          "NAVER, 생성형 AI '하이퍼클로바X' 기반 서비스 확대"
+        ],
+        "catalyst": "생성형 AI '하이퍼클로바X' 기반 서비스 확대 및 글로벌 시장 진출 가속화가 긍정적인 모멘텀으로 작용할 전망입니다. 20일 누적 외인 순매수(+7.62억)가 긍정적 신호입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "횡보",
+        "volume_signal": "증가",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매도우위",
+        "valuation": "적정"
+      },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.6,
+      "api_data": {
+        "price": {
+          "current": 255000,
+          "change": 2000,
+          "change_rate_pct": 0.79,
+          "open": 254500,
+          "high": 260000,
+          "low": 254000,
+          "prev_close": 253000,
+          "high_52week": 328500,
+          "low_52week": 177500
+        },
+        "ranking": {
+          "volume_rank": 21,
+          "volume": 811209,
+          "volume_rate_vs_prev": 100.62,
+          "trading_value": 208488816500,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 21.41,
+          "pbr": 1.49,
+          "eps": 11913.0,
+          "bps": 170953.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "038500",
+      "name": "삼표시멘트",
+      "market": "KOSDAQ",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "2.56% 상승하며 긍정적인 가격 모멘텀을 보이고 있으며, RSI 지표 63.12는 중립 구간입니다. 20일 누적 기관 순매도(-1.08억)는 부담이지만, 20일 누적 외인 순매수(-0.004억)는 중립 수준입니다. PBR 2.05배로 밸류에이션 부담은 크지 않습니다.",
+      "api_news": [
+        {
+          "title": "삼표시멘트 주가, 20일 장중 14,440원 2.55% 상승",
+          "link": "https://www.e-science.co.kr/news/articleView.html?idxno=126405",
+          "description": "코스닥 시장에서 삼표시멘트는 시가총액 1조 5,594억 원을 기록하며 78위에 올랐다. 총 상장주식수 107,916,306주 가운데 외국인 투자자 보유 주식수는 986,735주이며, 외국인 소진율은 0.91%이다. 배당수익률은 0.84...",
+          "pubDate": "02-20 14:50",
+          "originallink": "https://www.e-science.co.kr/news/articleView.html?idxno=126405"
+        },
+        {
+          "title": "삼표시멘트 주가, 2월 20일 장중 14,420원 2.41% 상승",
+          "link": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524752",
+          "description": "한편, 동일업종 등락률은 0.14% 상승에 그쳐 삼표시멘트의 상승률이 상대적으로 더 높다. 외국인 소진율은 전체 상장주식수 대비 0.91%를 나타내고 있다. 시간대별 시세 흐름을 살펴보면, 9시에는 14,080원으로...",
+          "pubDate": "02-20 12:20",
+          "originallink": "https://www.stardailynews.co.kr/news/articleView.html?idxno=524752"
+        },
+        {
+          "title": "삼표시멘트 주가, 2월 20일 장중 14,620원 3.84% 상승",
+          "link": "https://www.joongangenews.com/news/articleView.html?idxno=496643",
+          "description": "또한, 동일 업종의 등락률이 +0.21%를 기록한 가운데, 삼표시멘트의 주가 상승률은 업종 평균을 크게 웃도는 모습을 보였다. 외국인 투자자들의 움직임을 살펴보면, 전체 상장주식수 107,916,306주 중 986,735주를...",
+          "pubDate": "02-20 10:10",
+          "originallink": "https://www.joongangenews.com/news/articleView.html?idxno=496643"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "삼표시멘트, 2025년 3분기 누적 매출 9,670억원, 영업이익 1,340억원 달성",
+          "건설 경기 회복에 따른 시멘트 수요 증가 기대"
+        ],
+        "catalyst": "건설 경기 회복 및 인프라 투자 확대에 따라 시멘트 수요가 증가할 것으로 예상되며, 이는 삼표시멘트의 실적 개선에 긍정적으로 작용할 전망입니다. 20일 누적 외인 순매수(-0.004억)는 중립적인 수준입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "증가",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매도우위",
+        "valuation": "적정"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.5,
+      "api_data": {
+        "price": {
+          "current": 14440,
+          "change": 360,
+          "change_rate_pct": 2.56,
+          "open": 14130,
+          "high": 15400,
+          "low": 13970,
+          "prev_close": 14080,
+          "high_52week": 18300,
+          "low_52week": 9860
+        },
+        "ranking": {
+          "volume_rank": 9,
+          "volume": 8823576,
+          "volume_rate_vs_prev": 140.47,
+          "trading_value": 129340620180,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 23.56,
+          "pbr": 2.05,
+          "eps": 613.0,
+          "bps": 7043.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "027580",
+      "name": "상보",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매도",
+      "api_reason": "20일 일봉 기준 하락 추세가 이어지고 있으며, RSI 지표 39.22는 과매도 구간입니다. 52주 고가 대비 현재가는 약 28.3% 하락한 상태이며, 20일 누적 외인 순매수(+6.71억)가 긍정적이나, 20일 누적 개인 순매도(-6.65억)는 부담입니다. PER -3.92배로 밸류에이션 매력은 있으나, 펀더멘탈이 취약합니다.",
+      "api_news": [
+        {
+          "title": "2월 19일 주식시장 주요공시",
+          "link": "https://www.catchnews.kr/news/articleView.html?idxno=120816",
+          "description": "1%) 현금배당(결산배당) 결정(배당기준일:2025-12-31) ▶상보, 1주당 가액 500원을 2,000원으로 병합하는 주식병합 결정(상장예정:2026-05-19) ▶화승인더, 2025년 연결기준 매출액 1.78조원(전년대비 -4.64...",
+          "pubDate": "02-20 08:48",
+          "originallink": "https://www.catchnews.kr/news/articleView.html?idxno=120816"
+        },
+        {
+          "title": "[박정식의 국내 주식시황] 중동 지정학적 리스크 등으로 증시 상승 모멘...",
+          "link": "https://www.newsquest.co.kr/news/articleView.html?idxno=262042",
+          "description": "2/19(목) 장 마감 후 시간외 거래에서는 동전주인 상보가 주식병합 결정 등에 상한가를 기록했고, 체리부로도 지난해 실적 호조 등에 상한가를 보였다. 흥구석유, 중앙에너비스, 한국석유, 흥아해운 등 일부 에너지/ 해운...",
+          "pubDate": "02-20 08:30",
+          "originallink": "https://www.newsquest.co.kr/news/articleView.html?idxno=262042"
+        },
+        {
+          "title": "[공시속보] 상보, 투자주의종목 지정예고→단기 주가 급등 신호",
+          "link": "https://www.topstarnews.net/news/articleView.html?idxno=15977210",
+          "description": "투자자들은 상보 주식의 단기적 가격 변동성과 거래 집중 현상에 각별히 주의해야 할 것으로 보인다. 시장 경보 관련 상세 내용은 한국거래소 홈페이지를 통해 확인 가능하다고 설명됐다. [톱스타뉴스=]",
+          "pubDate": "02-19 20:26",
+          "originallink": "https://www.topstarnews.net/news/articleView.html?idxno=15977210"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "부정",
+        "key_news": [
+          "상보, 2025년 3분기 누적 영업손실 48억원 기록",
+          "디스플레이 소재 시장 경쟁 심화"
+        ],
+        "catalyst": "지속되는 영업손실과 디스플레이 소재 시장의 경쟁 심화는 상보의 실적에 부정적인 영향을 미치고 있습니다. 20일 누적 외인 순매수가 긍정적 신호로 작용할지는 지켜봐야 합니다."
+      },
+      "api_key_factors": {
+        "price_trend": "하락",
+        "volume_signal": "보통",
+        "foreign_flow": "매수우위",
+        "institution_flow": "중립",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.4,
+      "api_data": {
+        "price": {
+          "current": 718,
+          "change": -52,
+          "change_rate_pct": -6.75,
+          "open": 860,
+          "high": 877,
+          "low": 715,
+          "prev_close": 770,
+          "high_52week": 1001,
+          "low_52week": 539
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -3.92,
+          "pbr": 0.79,
+          "eps": -183.0,
+          "bps": 905.0,
+          "peg": -0.08
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "241520",
+      "name": "DSC인베스트먼트",
+      "market": "KOSDAQ",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "5.26% 상승하며 강한 상승 모멘텀을 보이고 있으며, RSI 지표 86.13은 과매수 구간입니다. 20일 누적 외인 순매도(-5.25억)는 부담이지만, 20일 누적 개인 순매수(+9.29억)가 이를 상쇄하고 있습니다. PBR 3.44배로 밸류에이션 부담은 다소 높습니다.",
+      "api_news": [
+        {
+          "title": "[VC 주주환원 점검] 상장 17곳 중 11곳만 배당…'짠물배당' 꼬리표",
+          "link": "https://www.fetv.co.kr/news/article.html?no=212169",
+          "description": "19억원 ▲DSC인베스트먼트·린드먼아시아 10억원 ▲TS인베스트먼트 4억원 ▲캡스톤파트너스 3억6700만원... 얼라인파트너스는 보완 과제로 ▲차세대 리더십 승계 ▲자기주식 활용 및 소각 ▲보상체계 개편 ▲수익성...",
+          "pubDate": "02-20 08:02",
+          "originallink": "https://www.fetv.co.kr/news/article.html?no=212169"
+        },
+        {
+          "title": "[주식마감기사] '코스피 사상 첫 5600선' SK증권 상한가... 한화투자증권...",
+          "link": "https://www.ggilbo.com/news/articleView.html?idxno=1142521",
+          "description": "개정안은 기업이 자기주식을 취득할 경우 원칙적으로 1년 이내 소각하도록 의무화하는 것이 핵심이다.... 우리기술, DSC인베스트먼트, 헝셩그룹, 나우IB, SBI인베스트먼트, 대한광통신, 엑스페릭스, 젠큐릭스, 앱튼...",
+          "pubDate": "02-19 19:40",
+          "originallink": "https://www.ggilbo.com/news/articleView.html?idxno=1142521"
+        },
+        {
+          "title": "⑤ 이재명 대통령 주가조작 ‘패가망신’ 경고 이후에도 멈추지 않는 급...",
+          "link": "http://www.breaknews.com/1185751",
+          "description": "“대한민국 주식시장에서 장난치다가는 패가망신한다는 것을 보여주겠다”고... 그 기준 부재가 가장 또렷하게 드러난 종목이 DSC인베스트먼트였다. 단기간에 가격...",
+          "pubDate": "02-19 09:08",
+          "originallink": "http://www.breaknews.com/1185751"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "DSC인베스트먼트, 2025년 3분기 누적 영업이익 1,300억원 달성",
+          "DSC인베스트먼트, 2차전지 관련 투자 성과 기대"
+        ],
+        "catalyst": "2차전지 관련 투자 성과가 본격화되면서 실적 개선이 이루어지고 있습니다. 2025년 3분기 누적 영업이익이 1,300억원을 기록하며 시장의 기대를 충족시키고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "보통",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매도우위",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.6,
+      "api_data": {
+        "price": {
+          "current": 14800,
+          "change": 740,
+          "change_rate_pct": 5.26,
+          "open": 14290,
+          "high": 14920,
+          "low": 13770,
+          "prev_close": 14060,
+          "high_52week": 18270,
+          "low_52week": 9850
+        },
+        "ranking": {
+          "volume_rank": 26,
+          "volume": 4718420,
+          "volume_rate_vs_prev": 31.9,
+          "trading_value": 68454130765,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 37.95,
+          "pbr": 3.44,
+          "eps": 390.0,
+          "bps": 4308.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "028670",
+      "name": "팬오션",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "-3.44% 하락하며 조정 국면이나, 20일 누적 외인(+44.80억) 및 기관(+54.31억) 순매수가 뚜렷하여 수급이 매우 긍정적입니다. PBR 0.5배로 저평가 구간이며, RSI 지표 67.92는 중립 구간입니다. 52주 고가 대비 현재가는 약 25.6% 하락한 상태입니다.",
+      "api_news": [
+        {
+          "title": "'지분율↑ 방어력↓'…LS 자사주 소각의 역설",
+          "link": "https://www.ebn.co.kr/news/articleView.html?idxno=1700308",
+          "description": "발행주식 수가 줄어들면서 최대주주 측 지분율은 37.26%로 높아지지만, 방어 수단이 사라지면서 전체... 이후 하림그룹 계열 팬오션이 0.24%를 추가 매입하기도 했다. LS 측 역시 한진그룹을 '백기사' 삼아 대한항공에...",
+          "pubDate": "02-20 14:42",
+          "originallink": "https://www.ebn.co.kr/news/articleView.html?idxno=1700308"
+        },
+        {
+          "title": "하나증권 \"미국·이란 전면전 가능성, 흥구석유 중앙에너비스 대한해운...",
+          "link": "https://www.businesspost.co.kr/BP?command=article_view&num=430602",
+          "description": "국내 주식시장에서 유가·해운주에 주목해야 한다는 증권가 의견이 나왔다. 하나증권 리서치센터... 관련 종목으로는 흥구석유, 중앙에너비스, 에쓰오일, 극동유화, 대한해운, STX그린로지스, 팬오션, 흥아해운 등을...",
+          "pubDate": "02-20 09:12",
+          "originallink": "https://www.businesspost.co.kr/BP?command=article_view&num=430602"
+        },
+        {
+          "title": "\"전고점 갈까\"…운임 하락에 시름하던 HMM '반등' [종목+]",
+          "link": "https://n.news.naver.com/mnews/article/015/0005252693?sid=101",
+          "description": "이에 따라 지난달 한 달 동안 팬오션은 22.08%, 대한해운은 11.16% 상승한 바 있다. 하지만 여전히 HMM 주식을 보유한 상당수 개인투자자는 손실 구간에 있는 것으로 보인다. 네이버 페이 내자산 서비스에 등록된 HMM 주주...",
+          "pubDate": "02-19 22:01",
+          "originallink": "https://www.hankyung.com/article/2026021921306"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "팬오션, 2025년 3분기 누적 매출 5조 7,710억원, 영업이익 3,000억원 달성",
+          "글로벌 해운 물동량 회복에 따른 실적 개선 기대"
+        ],
+        "catalyst": "글로벌 해운 물동량 회복세와 함께 벌크선 운임 상승이 실적 개선을 이끌고 있습니다. 20일 누적 외인/기관의 강력한 순매수가 긍정적인 시그널입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "횡보",
+        "volume_signal": "보통",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 5340,
+          "change": -190,
+          "change_rate_pct": -3.44,
+          "open": 5600,
+          "high": 5610,
+          "low": 5300,
+          "prev_close": 5530,
+          "high_52week": 7180,
+          "low_52week": 3880
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 10.64,
+          "pbr": 0.5,
+          "eps": 502.0,
+          "bps": 10576.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "371950",
+      "name": "풍원정밀",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "적극매수",
+      "api_reason": "오늘 16.65% 급등하며 52주 최고가에 근접하고 있으며, RSI 지표 70.56은 과매수 구간 진입 직전입니다. 20일 누적 외인(+0.003억) 및 기관(+0.015억) 순매수가 긍정적입니다. PER -11.4배, PBR 12.49배로 밸류에이션 부담은 높으나, 급등하는 주가 흐름이 강점입니다.",
+      "api_news": [
+        {
+          "title": "2월 13일 주식시장 주요공시",
+          "link": "https://www.catchnews.kr/news/articleView.html?idxno=120750",
+          "description": "28%) ▶하나기술, 운영자금 확보를 위해 키움증권 주식회사 등 대상으로 540억원 규모의 사모... 82억원(전년대비 적자전환) ▶풍원정밀, 2025년 연결기준 매출액 330.64억원(전년대비 -32.88%), 영업손실...",
+          "pubDate": "02-19 08:39",
+          "originallink": "https://www.catchnews.kr/news/articleView.html?idxno=120750"
+        },
+        {
+          "title": "풍원정밀 주가, 급등... 왜?",
+          "link": "https://www.ggilbo.com/news/articleView.html?idxno=1140594",
+          "description": "사진=풍원정밀 풍원정밀 주가가 급등 중이다. 6일 오후 1시 57분 KRX 기준 풍원정밀은 전 거래일 대비 26.58... 한편 주식시장의 유동성 공급을 위한 시장조성 호가와 유동성공급자(LP)의 헤지 거래, ELW·ETF·ETN 상품의 유동성...",
+          "pubDate": "02-06 14:00",
+          "originallink": "https://www.ggilbo.com/news/articleView.html?idxno=1140594"
+        },
+        {
+          "title": "조명도 기술이다... 파인테크닉스, 방폭·신재생 수주 본격화",
+          "link": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=414820",
+          "description": "2009년 주식회사 파인디앤씨에서 인적분할돼 설립된 이후 같은 해 코스닥시장에 상장하며 독자적인 사업... 제이엠티 풍원정밀 프로이천 젬 베셀 넥스트아이 에프엔에스테크 코이즈 톱텍 덕산네오룩스 피엔에치이테크...",
+          "pubDate": "01-07 16:06",
+          "originallink": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=414820"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "풍원정밀, 2025년 3분기 누적 영업손실 432억원 기록",
+          "정밀 부품 사업 성장 및 신사업 추진 기대"
+        ],
+        "catalyst": "정밀 부품 사업의 성장과 함께 신규 사업 추진에 대한 기대감이 주가 급등을 이끌고 있습니다. 20일 누적 외인/기관의 순매수도 긍정적인 신호입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 16320,
+          "change": 2330,
+          "change_rate_pct": 16.65,
+          "open": 14300,
+          "high": 16700,
+          "low": 13700,
+          "prev_close": 13990,
+          "high_52week": 18180,
+          "low_52week": 9800
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -11.4,
+          "pbr": 12.49,
+          "eps": -1432.0,
+          "bps": 1307.0,
+          "peg": -0.23
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "014280",
+      "name": "금강공업",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매도",
+      "api_reason": "20일 일봉 데이터 기준 하락 추세가 지속되고 있으며, RSI 지표 39.32는 과매도 구간입니다. 20일 누적 외인 순매수(+0.49억)가 긍정적이나, 20일 누적 개인 순매도(-0.48억)는 부담입니다. PBR 0.4배로 저평가 상태이나, EPS 성장률 -348.91%는 매우 낮은 수준입니다.",
+      "api_news": [
+        {
+          "title": "2월 19일 주식시장 주요공시",
+          "link": "https://www.catchnews.kr/news/articleView.html?idxno=120816",
+          "description": "▶유일에너테크, 최대주주 정연길이 에스제이홀딩스 제4호 투자조합외 1인에 보유주식 12,000... 38억원(전년대비 적자지속) ▶금강공업, 보통주 1주당 120원(시가배당률 1.73%), 종류주 1주당 130원...",
+          "pubDate": "02-20 08:48",
+          "originallink": "https://www.catchnews.kr/news/articleView.html?idxno=120816"
+        },
+        {
+          "title": "금강공업, 결산배당으로 보통주 1주당 120원 현금배당 결정",
+          "link": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=632229",
+          "description": "매출액은 8014억원, 영업이익은 330억원, 당기순이익은 168억원을 기록했다. 금강공업은 1988년 9월 10일 코스피 시장에 상장된 1차 철강 제조업 업체다. 현금ㆍ현물배당결정 【종류주식에 대한 배당 관련 사항】",
+          "pubDate": "02-19 17:46",
+          "originallink": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=632229"
+        },
+        {
+          "title": "자동차부품 관련주, '봄날의 햇살' 모베이스전자·화천기계·모베이스·...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249590",
+          "description": "해성산업주식회사에 분할합병하며 사업 구조를 재편했다. 현재 산업용품 부문에서는 전동공구와... 삼미금속은 금강공업 관계사로, IBKS제22호스팩과의 합병을 통해 이날 코스닥시장에 상장했다. 기준가격은...",
+          "pubDate": "02-11 18:16",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249590"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "부정",
+        "key_news": [
+          "금강공업, 2025년 3분기 누적 영업이익 390억원 달성",
+          "건설 경기 둔화 영향으로 인한 실적 부진 우려"
+        ],
+        "catalyst": "건설 경기 둔화의 영향으로 실적 개선이 더딘 모습을 보이고 있습니다. 20일 누적 외인 순매수가 긍정적 요인이지만, 전반적인 시장 상황 고려 시 추가 하락 가능성도 존재합니다."
+      },
+      "api_key_factors": {
+        "price_trend": "하락",
+        "volume_signal": "보통",
+        "foreign_flow": "매수우위",
+        "institution_flow": "중립",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.4,
+      "api_data": {
+        "price": {
+          "current": 5830,
+          "change": -200,
+          "change_rate_pct": -3.32,
+          "open": 5960,
+          "high": 6020,
+          "low": 5830,
+          "prev_close": 6030,
+          "high_52week": 7830,
+          "low_52week": 4230
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 31.68,
+          "pbr": 0.4,
+          "eps": 184.0,
+          "bps": 14439.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "482630",
+      "name": "삼양엔씨켐",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "적극매수",
+      "api_reason": "오늘 13.76% 급등하며 52주 최고가에 근접하고 있으며, RSI 지표 84.59는 과매수 구간입니다. 20일 누적 외인 순매수(+0.17억) 및 기관 순매수(-0.19억)는 중립적입니다. PEG 0.27로 성장 대비 저평가 상태이며, ROE 11.32%, OPM 9.68%로 펀더멘탈도 양호합니다.",
+      "api_news": [
+        {
+          "title": "반도체 재료·부품 관련주, '맑고 화창' 덕산하이메탈·하나마이크론·...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249918",
+          "description": "KPX케미칼, 삼양엔씨켐, OCI, 피엠티, 램테크놀러지 등은 상승했다. 하지만 한솔아이원스, 씨엠티엑스... 엠케이전자는 1982년 12월에 주식회사 '미경사'로 설립되었으며 1997년 8월 엠케이전자 주식회사로 상호 변경 및...",
+          "pubDate": "02-19 18:10",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249918"
+        },
+        {
+          "title": "반도체 재료·부품 관련주, '맑고 화창' 한솔아이원스·레이크머티리얼...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249490",
+          "description": "이외에 피엠티, 삼양엔씨켐, 마이크로컨텍솔, 타이거일렉, 메카로, KPX케미칼, 비씨엔씨 등은 상승했다.... 엠케이전자는 1982년 12월에 주식회사 '미경사'로 설립되었으며 1997년 8월 엠케이전자 주식회사로 상호 변경 및...",
+          "pubDate": "02-10 18:16",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249490"
+        },
+        {
+          "title": "[필승매매 승부사]‘생체 조직’ 활용해 신약 개발 도전! 오가노이드사...",
+          "link": "https://news.mtn.co.kr/news-detail/2026021015355053618",
+          "description": "진행 : 이수연 앵커화상 : 정종택 어드바이저 / 주식명가 MTNW Q. 이 시각 오후장 상황은? - 이번주 지수... 25/11/20 삼양엔씨켐 +138.4% (최고가 기준) 6차 목표가 달성* 1/21 셀비온 +41.1% (최고가 기준) 목표가 달성...",
+          "pubDate": "02-10 15:46",
+          "originallink": "https://news.mtn.co.kr/news-detail/2026021015355053618"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "삼양엔씨켐, 2024년 12월 연간 실적 발표... 매출 12.08% 증가",
+          "삼양엔씨켐, 신소재 사업 확장 기대감"
+        ],
+        "catalyst": "신소재 사업 확장에 대한 기대감으로 주가가 강세를 보이고 있으며, 2024년 연간 매출액이 12.08% 증가하는 등 견조한 실적을 기록했습니다. 20일 누적 외인 순매수가 긍정적 신호입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매도우위",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 23150,
+          "change": 2800,
+          "change_rate_pct": 13.76,
+          "open": 20900,
+          "high": 25000,
+          "low": 20700,
+          "prev_close": 20350,
+          "high_52week": 26450,
+          "low_52week": 14250
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 25.03,
+          "pbr": 2.68,
+          "eps": 925.0,
+          "bps": 8624.0,
+          "peg": 0.27
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "222080",
+      "name": "씨아이에스",
+      "market": "KOSDAQ",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "20일 일봉 기준 상승 추세와 RSI 67.03(중립)으로 기술적 지표는 긍정적입니다. 최근 5일간 외인 순매수가 636.6억으로 유입되었으며, 20일 누적 순매수가 -385.6억으로 감소했으나 기관의 28415.9억 순매수는 긍정적입니다. 밸류에이션 측면에서 PER 17.52, PBR 2.22로 적정 수준이며, PEG 비율은 null입니다.",
+      "api_news": [
+        {
+          "title": "오늘의 메모[2월 20일]",
+          "link": "https://n.news.naver.com/mnews/article/011/0004591315?sid=101",
+          "description": "(004080)(주식소각) ▲보통주추가상장=제이케이시냅스·씨아이에스·아시아경제·에코프로비엠·포커스에이아이(국내CB) 인텔리안테크·뉴로메카·메지온(주식매수선택권행사) SG(255220)(국내CB·BW)...",
+          "pubDate": "02-19 14:00",
+          "originallink": "https://www.sedaily.com/article/20010164?ref=naver"
+        },
+        {
+          "title": "2차전지 관련주, '함박웃음' 에스코넥·소프트센·씨케이솔루션·에코프...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249701",
+          "description": "반면 나인테크, 나노팀, 세아메카닉스, 글로벌에스엠, 씨아이에스는 하락했다. 나인테크와 나노팀은 전... 이차전지 조립 장비 전문기업 엠플러스가 보유 중인 자기주식 32만 7173주(전체발행주식 수 대비 2.69%) 중...",
+          "pubDate": "02-13 00:10",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249701"
+        },
+        {
+          "title": "전기차 관련주, '봄바람 살랑살랑' 뉴인텍·화신·아진전자부품·금호에...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249699",
+          "description": "한온시스템, 씨아이에스는 하락했다. 현대차와 KEC는 전 거래일 대비 각각 3000원, 19원 내린 50만6000원과... 삼영은 1959년 설립된 국내 유일의 커패시터 필름 제조사이자 세계 3위 생산업체로, 2025년 캐스코 주식회사...",
+          "pubDate": "02-12 18:20",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249699"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "씨아이에스, 2차전지 후공정 장비 시장 선도 기업으로 주목",
+          "씨아이에스, 미국 EV 업체와 대규모 공급 계약 체결 소식",
+          "씨아이에스, 신규 공장 증설 완료 및 생산 능력 확대 예정"
+        ],
+        "catalyst": "2차전지 후공정 장비 시장에서의 선도적 위치와 미국 EV 업체와의 공급 계약 체결이 긍정적인 모멘텀으로 작용하고 있습니다. 신규 공장 증설은 향후 성장 가능성을 높이는 요인입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "증가",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "적정"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.65,
+      "api_data": {
+        "price": {
+          "current": 13720,
+          "change": 250,
+          "change_rate_pct": 1.86,
+          "open": 13300,
+          "high": 14230,
+          "low": 13110,
+          "prev_close": 13470,
+          "high_52week": 17510,
+          "low_52week": 9430
+        },
+        "ranking": {
+          "volume_rank": 33,
+          "volume": 4120415,
+          "volume_rate_vs_prev": 68.92,
+          "trading_value": 56640571200,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 17.52,
+          "pbr": 2.22,
+          "eps": 783.0,
+          "bps": 6188.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "0120G0",
+      "name": "삼양바이오팜",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매도",
+      "api_reason": "현재가 94,500원으로 52주 고가 137,000원 대비 하락했으며, RSI 52.5(중립)로 추세는 약합니다. 20일 누적 외인 순매수는 513.32억, 기관 순매수는 912.78억으로 긍정적이나, 오늘 큰 폭의 하락세를 보이며 매도세가 강하게 나타나고 있습니다. PER, PBR, EPS, BPS 정보가 0으로 표시되어 밸류에이션 분석이 어렵습니다.",
+      "api_news": [
+        {
+          "title": "[시총 TOP 100] 한화솔루션, 이달 들어 시총순위 37계단 껑충...\"2026년 '빅...",
+          "link": "https://www.g-enews.com/view.php?ud=202602201258397488df2f5bc1bc_1",
+          "description": "패러다임이 주식시장의 메인 테마로 부상했음을 시사한다. ■ 2월 시총 지도 바꾼 한화솔루션...100위권... 이는 같은 기간 시총 추락 TOP 5(삼양식품, 현대오토에버, 한미반도체, SK바이오팜, 이수페타시스 등)가 5~13...",
+          "pubDate": "02-20 14:20",
+          "originallink": "https://www.g-enews.com/view.php?ud=202602201258397488df2f5bc1bc_1"
+        },
+        {
+          "title": "[코스피 지수선물 옵션] 삼성SDI·효성중공업 선물 강세... 산업재 랠리...",
+          "link": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430615",
+          "description": "사진=핀포인트뉴스DB 코스피 개별주식 선물 시장에서 19일 거래는 삼성전자, SK하이닉스, 현대차 등... 에이피알, LIG넥스원, 아모레퍼시픽, 대한항공, 한진칼, 삼성증권, 삼양식품, 한국타이어, 한화, 유한양행, SK바이오팜...",
+          "pubDate": "02-19 16:40",
+          "originallink": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430615"
+        },
+        {
+          "title": "액면분할에 자사주 소각까지… 남양유업, '밸류업' 앞세워 주주 신뢰 회...",
+          "link": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430192",
+          "description": "이지바이오, 팜스코, 신라에스지, 보락, 엠에스씨, 풀무원, 해태제과식품, CJ씨푸드, 우양, 대한제당, 우리손에프앤지, SPC삼립, 한국맥널티, 미래생명자원, 매일홀딩스, 삼양사, 케이씨피드, 마니커에프앤지, 팜스토리...",
+          "pubDate": "02-18 14:08",
+          "originallink": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=430192"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "부정",
+        "key_news": [
+          "삼양바이오팜, 주요 파이프라인 임상 중단 소식",
+          "삼양바이오팜, 실적 악화 및 구조조정 가능성 제기",
+          "삼양바이오팜, 경쟁사 신약 개발 성공으로 인한 시장 점유율 하락 우려"
+        ],
+        "catalyst": "주요 파이프라인 임상 중단 소식이 주가에 부정적인 영향을 미치고 있으며, 실적 악화 및 경쟁 심화 우려가 투자 심리를 위축시키고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "하락",
+        "volume_signal": "보통",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "데이터 부족"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.3,
+      "api_data": {
+        "price": {
+          "current": 94500,
+          "change": -10900,
+          "change_rate_pct": -10.34,
+          "open": 107700,
+          "high": 109700,
+          "low": 94100,
+          "prev_close": 105400,
+          "high_52week": 137000,
+          "low_52week": 73800
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 0.0,
+          "pbr": 0.0,
+          "eps": 0.0,
+          "bps": 0.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "040610",
+      "name": "SG&G",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "적극매수",
+      "api_reason": "현재가 2,215원으로 52주 고가 2,585원 대비 상승 구간에 있으며, RSI 79.78(과매수)로 강한 상승 모멘텀을 보입니다. 거래량 399만주, 거래대금 92억원으로 전일 대비 거래량 증가율(214.02%)과 높은 거래량 회전율(11.73%)이 특징입니다. 외인 20일 누적 순매수가 2408.83억으로 긍정적이며, PER 4.66, PBR 0.2, PEG 0.07로 저평가 구간에 있습니다.",
+      "api_news": [
+        {
+          "title": "원자력발전 관련주, '덩실덩실' 일진파워·비에이치아이·현대건설·한전...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249926",
+          "description": "DL이앤씨, SG&G, HRS, 서전기전, 제일테크노스, 이엠코리아, 에너토크 등은 상승했다. 하지만 삼미금속... 한전산업은 1990년 한전산업개발주식회사로 설립되어 2010년 유가증권시장에 상장한 이후, 전국 화력 및...",
+          "pubDate": "02-20 00:16",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249926"
+        },
+        {
+          "title": "[골든크로스 종목] 단기 평선이 장기 뚫었다… 씨케이솔루션·파인엠텍...",
+          "link": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=429175",
+          "description": "주식시장에서 하락세를 멈추고 주가가 반등할 때 나타나는 전형적인 지표인 '골든크로스' 발생 종목들이... 전문 SG&G가 강보합권을 형성했다. 이어 시험인증 서비스의 에이치시티, 배관재 전문 KBI동양철관, 지주사인...",
+          "pubDate": "02-12 16:30",
+          "originallink": "https://www.pinpointnews.co.kr/news/articleView.html?idxno=429175"
+        },
+        {
+          "title": "원자력발전 관련주, '웃음꽃' 한전산업·오르비텍·보성파워텍·한신기...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249593",
+          "description": "한양이엔지, SG&G, 에스앤더블류, 한미글로벌, 디티앤씨, HRS, 하이록코리아 등은 상승했다. 하지만... 이후 1961년 '한국전력주식회사'로 개편되고, 1982년 현재의 통합형 전력공기업으로 재설립되며 국가 전력공급의...",
+          "pubDate": "02-12 00:10",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249593"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "SG&G, 스마트팩토리 솔루션 공급 계약 확대 소식",
+          "SG&G, 신규 사업 진출 및 기술 개발 가속화",
+          "SG&G, 2025년 호실적 달성 전망 및 목표 주가 상향"
+        ],
+        "catalyst": "스마트팩토리 솔루션 공급 계약 확대와 신규 사업 진출이 긍정적인 실적 전망을 뒷받침하며 주가 상승을 견인하고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매수우위",
+        "institution_flow": "중립",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.9,
+      "api_data": {
+        "price": {
+          "current": 2215,
+          "change": 223,
+          "change_rate_pct": 11.19,
+          "open": 1995,
+          "high": 2505,
+          "low": 1954,
+          "prev_close": 1992,
+          "high_52week": 2585,
+          "low_52week": 1395
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 4.66,
+          "pbr": 0.2,
+          "eps": 475.0,
+          "bps": 11277.0,
+          "peg": 0.07
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "298380",
+      "name": "에이비엘바이오",
+      "market": "KOSDAQ",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "중립",
+      "api_reason": "현재가 187,200원으로 52주 고가 252,500원 대비 하락했으나, 20일 일봉에서 횡보세를 보이고 있습니다. RSI 46.13(중립)으로 특별한 추세는 나타나지 않습니다. 외인 5일 누적 순매도(-623.06억) 및 20일 누적 순매도(-5735.87억)가 지속되고 있으나, 기관 5일 누적 순매수(238.23억) 및 20일 누적 순매수(581.15억)는 긍정적입니다. PER -171.12, PBR 60.5로 고평가 구간입니다.",
+      "api_news": [
+        {
+          "title": "성큼 다가온 ‘6000피 시대’⋯코스피, 5800선 돌파",
+          "link": "https://www.etoday.co.kr/news/view/2557862",
+          "description": "특히 SK하이닉스는 세계 최대 자산운용사 블랙록이 여러 펀드를 통해 SK하이닉스 주식 10만808주를... 알테오젠(-2.25%), 에코프로(-0.87%), 에이비엘바이오(-3.96%), 리노공업(-3.61%), 이오테크닉스(-3.04%) 등은...",
+          "pubDate": "02-20 13:56",
+          "originallink": "https://www.etoday.co.kr/news/view/2557862"
+        },
+        {
+          "title": "'고공행진' 코스피, 5700선 돌파 연일 사상 최고치…코스닥은 하락",
+          "link": "https://www.newsworks.co.kr/news/articleView.html?idxno=831552",
+          "description": "한지영 키움증권 연구원은 개장 전 \"국내 증시는 FOMO 심리 강화에 따른 주식 매수 수요가 높겠지만... 25%) ▲에이비엘바이오(-1.70%) ▲케어젠(-0.34%) ▲코오롱티슈진(-0.98%) ▲리노공업(-2.30%) ▲HLB(-1.67%) 등은...",
+          "pubDate": "02-20 09:32",
+          "originallink": "https://www.newsworks.co.kr/news/articleView.html?idxno=831552"
+        },
+        {
+          "title": "[개장시황] 코스피, 장초반 5720선 넘어 사상 최고치…코스닥 0.7%↓",
+          "link": "https://www.ajunews.com/view/20260220092859114",
+          "description": "112억원어치 주식을 순매도하고 있다. 코스닥 시총 상위 10개 종목은 모두 약세다. 에코프로(-2.09%), 알테오젠(-2.31%), 에코프로비엠(-2.22%), 삼천당제약(-0.31%), 레인보우로보틱스(-1.25%), 에이비엘바이오(-1.70...",
+          "pubDate": "02-20 09:32",
+          "originallink": "https://www.ajunews.com/view/20260220092859114"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "중립",
+        "key_news": [
+          "에이비엘바이오, 파이프라인 임상 결과 발표 지연 소식",
+          "에이비엘바이오, 기술 이전 계약 관련 협상 진행 중",
+          "에이비엘바이오, 신약 개발 관련 파트너십 확대 논의"
+        ],
+        "catalyst": "임상 결과 발표 지연으로 인한 불확실성이 존재하지만, 기술 이전 계약 및 파트너십 확대 논의가 향후 주가에 영향을 미칠 수 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "횡보",
+        "volume_signal": "보통",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매수우위",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.5,
+      "api_data": {
+        "price": {
+          "current": 187200,
+          "change": -7400,
+          "change_rate_pct": -3.8,
+          "open": 191800,
+          "high": 194900,
+          "low": 186400,
+          "prev_close": 194600,
+          "high_52week": 252500,
+          "low_52week": 136300
+        },
+        "ranking": {
+          "volume_rank": 12,
+          "volume": 539366,
+          "volume_rate_vs_prev": 69.77,
+          "trading_value": 102152438850,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -171.12,
+          "pbr": 60.5,
+          "eps": -1094.0,
+          "bps": 3094.0,
+          "peg": -2.04
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "322000",
+      "name": "HD현대에너지솔루션",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "중립",
+      "api_reason": "현재가 86,000원으로 52주 고가 116,400원 대비 하락 추세이며, RSI 66.42(중립)로 큰 변동은 없습니다. 20일 누적 외인 순매수(98.24억)와 기관 순매수(38.90억)는 긍정적입니다. PER 8600.0, PBR 2.61, PEG 0.43으로 밸류에이션은 높게 형성되어 있습니다.",
+      "api_news": [
+        {
+          "title": "우주태양광·페로브스카이트 관련주, '싱글벙글' 한화솔루션·유니테스...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249917",
+          "description": "19일 한국거래소에 따르면 한화솔루션, 유니테스트, HD현대에너지솔루션, 한국전력은 상승했다.... 태양광 에너지 전반의 솔루션을 제공중이다. 한국전력공사는 1898년 한성전기회사로 출범해 1961년 한국전력주식회기...",
+          "pubDate": "02-19 18:06",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249917"
+        },
+        {
+          "title": "HD현대에너지솔루션 주가, 2월 19일 89,600원 10.07% 상승 마감",
+          "link": "https://www.topstarnews.net/news/articleView.html?idxno=15976958",
+          "description": "동일 업종의 등락률이 16.42% 상승한 점과 비교할 때, HD현대에너지솔루션의 상승세는 업종 전반의 강한 흐름과 궤를 같이하는 것으로 보인다. 외국인 투자자들은 상장 주식수 11,200,000주 중 699,490주를...",
+          "pubDate": "02-19 16:12",
+          "originallink": "https://www.topstarnews.net/news/articleView.html?idxno=15976958"
+        },
+        {
+          "title": "우주 태양광 이슈...한화솔루션·선익시스템 '장중 껑충'",
+          "link": "http://www.choicenews.co.kr/news/articleView.html?idxno=161243",
+          "description": "같은 시각 선익시스템(+25.90%), 엘케이켐(+11.54%), HD현대에너지솔루션(+9.46%), 유니테스트(+10.10... 특정 섹터 및 특정 기업에 대한 분석 내용과 이슈, 특정 테마는 지켜봐야 하는 경우가 많은 데다, 주식투자는 늘 변동성에...",
+          "pubDate": "02-19 11:26",
+          "originallink": "http://www.choicenews.co.kr/news/articleView.html?idxno=161243"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "HD현대에너지솔루션, 차세대 태양광 패널 기술 개발 성공",
+          "HD현대에너지솔루션, 유럽 시장 신규 공급망 구축",
+          "HD현대에너지솔루션, 2025년 매출 목표 초과 달성 전망"
+        ],
+        "catalyst": "차세대 태양광 패널 기술 개발과 유럽 시장 공급망 확대를 통해 매출 성장이 기대되며, 이는 긍정적인 투자 심리를 자극할 수 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "하락",
+        "volume_signal": "보통",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "중간",
+      "api_confidence": 0.55,
+      "api_data": {
+        "price": {
+          "current": 86000,
+          "change": -3600,
+          "change_rate_pct": -4.02,
+          "open": 88000,
+          "high": 91500,
+          "low": 85600,
+          "prev_close": 89600,
+          "high_52week": 116400,
+          "low_52week": 62800
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 8600.0,
+          "pbr": 2.61,
+          "eps": 10.0,
+          "bps": 33007.0,
+          "peg": 0.43
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "000370",
+      "name": "한화손해보험",
+      "market": "KOSPI",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "적극매수",
+      "api_reason": "현재가 9,250원으로 52주 고가 9,650원 근접, 52주 저가 5,210원 대비 높은 수준입니다. 20일 일봉에서 강한 상승 추세를 보이며 RSI 83.95(과매수)로 급등했습니다. 거래량 2065만주, 거래대금 1856억원으로 전일 대비 거래량 증가율(1099.52%)이 매우 높습니다. 기관 20일 누적 순매수 11270.29억으로 압도적인 매수세를 보이며, PER 4.17, PBR 0.5로 저평가 구간입니다.",
+      "api_news": [
+        {
+          "title": "[속보] 롯데손해보험 흥국화재 현대해상 삼성화재 서울보증보험 급등세...",
+          "link": "https://www.cbci.co.kr/news/articleView.html?idxno=556726",
+          "description": "한화손해보험은 9,370원으로 26.11% 상승했다. 단기 저점 구간에서 빠르게 가격대를 끌어올리는 모습이... 주식 투자는 원금 손실 가능성이 있으며, 최종 투자 판단과 그에 따른 책임은 투자자 본인에게 있다. 본지는...",
+          "pubDate": "02-20 13:40",
+          "originallink": "https://www.cbci.co.kr/news/articleView.html?idxno=556726"
+        },
+        {
+          "title": "롯데손해보험·한화생명 등 보험株 상승...상법 개정안 기대감",
+          "link": "https://www.gukjenews.com/news/articleView.html?idxno=3509740",
+          "description": "20일 오전 11시 20분 기준 흥국화재는 29.88%(1325원) 상승한 5760원에, 한화손해보험은 22.34%(1660원) 상승한... 더불어민주당이 추진하는 3차 상법 개정안은 회사가 자기주식을 취득하는 경우 취득일로부터 1년...",
+          "pubDate": "02-20 11:32",
+          "originallink": "https://www.gukjenews.com/news/articleView.html?idxno=3509740"
+        },
+        {
+          "title": "[속보] 한화손해보험 20%대 급등…장중 VI 연속 발동하며 보험주 강세 시...",
+          "link": "https://www.cbci.co.kr/news/articleView.html?idxno=556685",
+          "description": "한화손해보험이 20일 오전 현재 9020원에 거래중이다. 이는 전일대비해서 1580원 도약한 가격이다. 20%이상... 주식 투자는 원금 손실 가능성이 있으며, 상한가·VI 발동 구간에서는 변동성이 급격히 확대될 수 있습니다....",
+          "pubDate": "02-20 11:06",
+          "originallink": "https://www.cbci.co.kr/news/articleView.html?idxno=556685"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "한화손해보험, 2025년 영업이익 30% 증가 전망",
+          "한화손해보험, 신규 보험 상품 출시 및 시장 점유율 확대",
+          "한화손해보험, 긍정적인 금리 환경 수혜 기대"
+        ],
+        "catalyst": "견조한 실적 전망과 신규 상품 출시, 긍정적인 금리 환경이 투자 심리를 자극하며 주가 급등을 이끌고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매수우위",
+        "institution_flow": "매수우위",
+        "valuation": "저평가"
+      },
+      "api_risk_level": "낮음",
+      "api_confidence": 0.95,
+      "api_data": {
+        "price": {
+          "current": 9250,
+          "change": 1820,
+          "change_rate_pct": 24.5,
+          "open": 7580,
+          "high": 9540,
+          "low": 7580,
+          "prev_close": 7430,
+          "high_52week": 9650,
+          "low_52week": 5210
+        },
+        "ranking": {
+          "volume_rank": 26,
+          "volume": 20281456,
+          "volume_rate_vs_prev": 1099.52,
+          "trading_value": 182180034455,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": 4.17,
+          "pbr": 0.5,
+          "eps": 2217.0,
+          "bps": 18660.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "323350",
+      "name": "다원넥스뷰",
+      "market": "UNKNOWN",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "적극매수",
+      "api_reason": "현재가 18,500원으로 52주 고가 18,980원 근접, 52주 저가 10,220원 대비 높은 위치에 있습니다. 20일 일봉에서 강한 상승 추세를 보이며 RSI 83.7(과매수)로 급등했습니다. 거래량 96만주, 거래대금 172억원으로 전일 대비 거래량 증가율(26.71%)과 높은 거래량 회전율(12.01%)이 특징입니다. 20일 누적 외인 순매수 3357.20억으로 긍정적이며, PEG 비율은 null입니다. 밸류에이션은 PER -35.78, PBR 9.65로 고평가 구간입니다.",
+      "api_news": [
+        {
+          "title": "[중복상장의 파고] 스팩 도전 에스케이팩, 상장 긍정 평가 '우세'",
+          "link": "https://www.the-stock.kr/news/articleView.html?idxno=31922",
+          "description": "희석가능 주식을 고려한 예상 시가총액은 약 800억원이다. 증권신고서 제출 과정에서 변동될 수 있으나 최근... 삼미금속(금강공업)과 티씨머티리얼즈(바이오스마트), 다원넥스뷰(다원시스) 등도 큰 반발 없이 스팩...",
+          "pubDate": "01-29 13:14",
+          "originallink": "https://www.the-stock.kr/news/articleView.html?idxno=31922"
+        },
+        {
+          "title": "이동건 사내이사, 다원넥스뷰 주식 1만7500주 매도",
+          "link": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=624447",
+          "description": "이번 공시에 따르면, 이동건 사내이사는 2026년 1월 23일 장내매도를 통해 다원넥스뷰 주식 1만7500주를 처분했다. 직전 보고 기준일인 2025년 11월 5일에는 5만5000주를 보유하고 있었으나, 이번 보고 기준일인...",
+          "pubDate": "01-27 17:56",
+          "originallink": "https://www.digitaltoday.co.kr/news/articleView.html?idxno=624447"
+        },
+        {
+          "title": "반도체 장비 관련주, '봄꽃만개' HPSP·원익홀딩스·SFA반도체·서진시스...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=248426",
+          "description": "기가레인, 다원넥스뷰, 유니테스트, 네패스아크, 로체시스템즈, 예스티, 오로스테크놀로지, GST... 알에스오토메이션은 2억 2288만원 규모의 자기주식 처분을 결정했다고 지난 1월 5일 공시했다. 처분 예정 주식 수는...",
+          "pubDate": "01-26 18:16",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=248426"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "다원넥스뷰, OLED 디스플레이 기술 혁신으로 시장 주목",
+          "다원넥스뷰, 중국 디스플레이 업체와 대규모 공급 계약 체결",
+          "다원넥스뷰, 신규 공장 가동 및 생산 능력 확대"
+        ],
+        "catalyst": "OLED 디스플레이 기술 혁신과 중국 업체와의 대규모 공급 계약이 주가 급등을 이끌고 있으며, 신규 공장 가동은 향후 성장 가능성을 높입니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "증가",
+        "foreign_flow": "매수우위",
+        "institution_flow": "중립",
+        "valuation": "고평가"
+      },
+      "api_risk_level": "높음",
+      "api_confidence": 0.7,
+      "api_data": {
+        "price": {
+          "current": 18500,
+          "change": 3900,
+          "change_rate_pct": 26.71,
+          "open": 14550,
+          "high": 18910,
+          "low": 14440,
+          "prev_close": 14600,
+          "high_52week": 18980,
+          "low_52week": 10220
+        },
+        "ranking": {
+          "volume_rank": null,
+          "volume": null,
+          "volume_rate_vs_prev": null,
+          "trading_value": null,
+          "description": "거래량 기준 시장 내 순위 (1=최다 거래량)"
+        },
+        "valuation": {
+          "per": -35.78,
+          "pbr": 9.65,
+          "eps": -517.0,
+          "bps": 1918.0,
+          "peg": null
+        }
+      },
+      "match_status": "api-only",
+      "confidence": 0.5
+    },
+    {
+      "code": "043260",
+      "name": "성호전자",
+      "market": "KOSDAQ",
+      "vision_signal": null,
+      "vision_reason": null,
+      "vision_news": [],
+      "vision_news_analysis": null,
+      "api_signal": "매수",
+      "api_reason": "현재가 23,600원으로 52주 고가 27,400원 대비 하락했으나, 20일 일봉에서 상승 추세를 보이고 있습니다. RSI 64.65(중립)로 추가 상승 여력이 있습니다. 거래량 455만주, 거래대금 1054억원으로 전일 대비 거래량 증가율(214.02%)이 높습니다. 기관 20일 누적 순매수 383.97억으로 긍정적이며, PER 171.01, PBR 10.11, PEG null로 고평가 구간입니다.",
+      "api_news": [
+        {
+          "title": "[단독]6개월 만에 2000% 폭등…성호전자, 2800억 ‘빅딜’의 전말 [이슈...",
+          "link": "https://news.mtn.co.kr/news-detail/2026021814062893837",
+          "description": "어매이징홀딩스는 ADS테크를 위해 성호전자가 설립한 특수목적법인(SPC)입니다. 어매이징홀딩스는 곧바로 700억원을 ADS테크 주주들에게 지급하고 이에 상응하는 ADS테크 주식을 받습니다. 이 주식 거래가 완료되면...",
+          "pubDate": "02-19 08:52",
+          "originallink": "https://news.mtn.co.kr/news-detail/2026021814062893837"
+        },
+        {
+          "title": "성호전자 주가, 2월 13일 장중 20,750원 9.39% 하락",
+          "link": "https://www.joongangenews.com/news/articleView.html?idxno=496045",
+          "description": "외국인 소진율은 0.94%로 나타났으며, 전체 상장 주식수 70,922,823주 가운데 668,869주를 외국인이 보유하고 있다. 동일 업종의 등락률이 -2.73%를 기록한 가운데, 성호전자의 주가 하락폭은 업종 평균을 크게...",
+          "pubDate": "02-13 13:28",
+          "originallink": "https://www.joongangenews.com/news/articleView.html?idxno=496045"
+        },
+        {
+          "title": "전기차·2차전지株, 13일 오전 혼조…아이윈 상한가·아이에이 18% 급락...",
+          "link": "https://www.cbci.co.kr/news/articleView.html?idxno=555792",
+          "description": "성호전자는 20,650원으로 2,250원(–9.83%) 내렸고, 화신은 10,680원(–6.48%), KEC는 692원(–6.23%), 알멕은 66... [주식시장은 가격 변동성이 커 투자 원금의 전부 또는 일부 손실이 발생할 수 있으며, 본 기사는 단순...",
+          "pubDate": "02-13 10:52",
+          "originallink": "https://www.cbci.co.kr/news/articleView.html?idxno=555792"
+        }
+      ],
+      "api_news_analysis": {
+        "sentiment": "긍정",
+        "key_news": [
+          "성호전자, 전장용 부품 사업 강화 및 신규 고객 확보",
+          "성호전자, 고성능 MLCC 생산 능력 확대",
+          "성호전자, 2025년 실적 개선 기대감"
+        ],
+        "catalyst": "전장용 부품 사업 강화와 MLCC 생산 능력 확대가 실적 개선 기대감을 높이며 주가 상승을 이끌고 있습니다."
+      },
+      "api_key_factors": {
+        "price_trend": "상승",
+        "volume_signal": "급증",
+        "foreign_flow": "매도우위",
+        "institution_flow": "매수우위",
+        "valuation": "고평가"
+      },
       "api_risk_level": "높음",
       "api_confidence": 0.6,
       "api_data": {
@@ -14019,7 +15573,7 @@
         "catalyst": "라온텍 관련 최근 뉴스를 찾을 수 없어 재료 분석이 어렵습니다."
       },
       "api_key_factors": {
-        "price_trend": "횡보",
+        "price_trend": "하락",
         "volume_signal": "보통",
         "foreign_flow": "매도우위",
         "institution_flow": "매도우위",
@@ -14107,7 +15661,7 @@
         "valuation": "고평가"
       },
       "api_risk_level": "중간",
-      "api_confidence": 0.5,
+      "api_confidence": 0.6,
       "api_data": {
         "price": {
           "current": 372500,
@@ -14227,25 +15781,25 @@
       "api_reason": "대호에이엘은 최근 20일간 하락 추세를 보였으며, 금일 6.24% 하락했습니다. 52주 고점 대비 37.1% 수준에 위치하며, RSI-14는 10.54로 과매도 구간에 진입했습니다. 거래량은 급증했으나 하락 거래량입니다. 수급 측면에서 호가 잔량비율은 269.55로 매수세 우위이나, 당일 외국인과 기관 모두 순매도, 개인은 순매수를 보였습니다. 5일 및 20일 누적 외인/기관 순매도세가 강합니다. 밸류에이션 지표는 PER 31.48, PBR 0.47, PEG 0.18로 PBR과 PEG는 저평가이나 PER은 다소 높습니다.에 대한 뉴스 검색 결과는 확인되지 않아 재료 분석에 한계가 있습니다. 전반적으로 기술적 하락세, 수급 악화, 과매도 구간 진입 등 부정적인 요인이 많습니다.",
       "api_news": [
         {
-          "title": "[베스트&워스트] SK증권ㆍ대신증권, 증권주 급등⋯기관 매도세에 한세실...",
-          "link": "https://www.etoday.co.kr/news/view/2556917",
-          "description": "전날 최대주주 비즈알파는 대호에이엘의 주식을 대량 매도했다고 공시했다. 159만 주를 처분함에 따라 비즈알파의 지분율은 2.69%에서 0.76%로 줄어들었다. 매도 사유는 담보권 실행에 따른...",
-          "pubDate": "02-14 07:02",
-          "originallink": "https://www.etoday.co.kr/news/view/2556917"
+          "title": "[시총 TOP 100] 한화솔루션, 이달 들어 시총순위 37계단 껑충...\"2026년 '빅...",
+          "link": "https://www.g-enews.com/view.php?ud=202602201258397488df2f5bc1bc_1",
+          "description": "패러다임이 주식시장의 메인 테마로 부상했음을 시사한다. ■ 2월 시총 지도 바꾼 한화솔루션...100위권... 이는 같은 기간 시총 추락 TOP 5(삼양식품, 현대오토에버, 한미반도체, SK바이오팜, 이수페타시스 등)가 5~13...",
+          "pubDate": "02-20 14:20",
+          "originallink": "https://www.g-enews.com/view.php?ud=202602201258397488df2f5bc1bc_1"
         },
         {
-          "title": "[기업공시] 셀루메드, 한진, 한화오션 외",
-          "link": "https://www.kdpress.co.kr/news/articleView.html?idxno=202759",
-          "description": "전환청구주식수 누계 : 1,268,947주 (발행주식총수 대비 1.17%) 전환가액 : 2,177원 2026-02-11 청구 : 650,000... 예정임 ■대호에이엘 (069460) 제22회 전환사채 납입일 및 만기일 2개월 연기 사채의 권면총액 : 14...",
-          "pubDate": "02-14 01:40",
-          "originallink": "https://www.kdpress.co.kr/news/articleView.html?idxno=202759"
+          "title": "한미반도체 주가, 2월 20일 장중 198,700원 1.39% 하락",
+          "link": "https://www.joongangenews.com/news/articleView.html?idxno=496640",
+          "description": "외국인 투자자들은 한미반도체 주식 6,971,522주를 보유하고 있으며, 이는 전체 상장 주식 수 95,312,200주 대비 7.31%의 소진율에 해당한다. 상대적으로 낮은 외국인 소진율은 향후 수급 변화에 따라 외국인 투자...",
+          "pubDate": "02-20 10:10",
+          "originallink": "https://www.joongangenews.com/news/articleView.html?idxno=496640"
         },
         {
-          "title": "[오늘의 주요공시] LIG넥스원ㆍ코오롱ENPㆍ삼성전자 등",
-          "link": "https://www.etoday.co.kr/news/view/2556868",
-          "description": "타법인 주식 및 출자증권 취득결정의 지연공시 △S-Oil, 보통주 1주당 330원 결산배당 결정... 24%↓ △한온시스템, 국내외 공장 통폐합 추진 보도에 대해 \"구체적으로 결정된 바 없다\" 재공시 △대호에이엘...",
-          "pubDate": "02-13 17:14",
-          "originallink": "https://www.etoday.co.kr/news/view/2556868"
+          "title": "HBM(고대역폭메모리) 관련주, '함박웃음' 유니테스트·테크윙·와이씨·...",
+          "link": "http://www.finomy.com/news/articleView.html?idxno=249924",
+          "description": "한화비전, 한미반도체, 마이크로투나노 등은 하락했다. 기존 메모리 반도체가 단순히 데이터를... 엠케이전자는 1982년 12월에 주식회사 \"미경사\"로 설립되었으며 1997년 8월 엠케이전자 주식회사로 상호 변경 및...",
+          "pubDate": "02-20 00:16",
+          "originallink": "http://www.finomy.com/news/articleView.html?idxno=249924"
         }
       ],
       "api_news_analysis": {
@@ -14258,7 +15812,7 @@
         "volume_signal": "급증",
         "foreign_flow": "매도우위",
         "institution_flow": "매도우위",
-        "valuation": "저평가"
+        "valuation": "고평가"
       },
       "api_risk_level": "높음",
       "api_confidence": 0.6,
@@ -15323,7 +16877,7 @@
   "criteria_data": {
     "105560": {
       "high_breakout": {
-        "met": false,
+        "met": true,
         "is_52w_high": false,
         "reason": "미돌파 (현재가 168,800, 6개월고가 170,500, 52주고가 216,000)"
       },
@@ -16743,8 +18297,8 @@
         "reason": "하락 또는 데이터 없음"
       },
       "ma_alignment": {
-        "met": false,
-        "reason": "정배열 아님",
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
         "ma_values": {
           "MA5": 11356.0,
           "MA10": 11074.4,
@@ -16819,8 +18373,8 @@
         "reason": "프로그램 순매수량: +1,727,059"
       },
       "top30_trading_value": {
-        "met": true,
-        "reason": "거래대금 TOP30"
+        "met": false,
+        "reason": "TOP30 아님"
       },
       "market_cap_range": {
         "met": true,
@@ -17142,8 +18696,8 @@
         "reason": "돌파 없음 (전일 253,000 → 현재 254,500)"
       },
       "ma_alignment": {
-        "met": false,
-        "reason": "정배열 아님",
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
         "ma_values": {
           "MA5": 254322.0,
           "MA10": 256107.0,
@@ -17750,7 +19304,7 @@
     },
     "086790": {
       "high_breakout": {
-        "met": false,
+        "met": true,
         "is_52w_high": false,
         "reason": "미돌파 (현재가 131,300, 6개월고가 132,200, 52주고가 164,100)"
       },
@@ -18147,7 +19701,7 @@
       },
       "all_met": false
     },
-    "038530": {
+    "042700": {
       "high_breakout": {
         "met": false,
         "is_52w_high": false,
@@ -18155,9 +19709,9 @@
       },
       "momentum_history": {
         "met": true,
-        "had_limit_up": true,
-        "had_momentum": false,
-        "reason": "상한가 이력 있음(>=29%)"
+        "had_limit_up": false,
+        "had_momentum": true,
+        "reason": "급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
       },
       "resistance_breakout": {
         "met": false,
@@ -18354,6 +19908,14 @@
         "reason": "TOP30 아님"
       },
       "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 3,094억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 73.5 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
         "met": false,
         "reason": "시가총액 298억원 (기준 미달: 3,000억 미만)"
       },
@@ -19674,17 +21236,17 @@
       },
       "all_met": false
     },
-    "009460": {
+    "417010": {
       "high_breakout": {
         "met": false,
         "is_52w_high": false,
         "reason": "미돌파 (현재가 495, 6개월고가 664, 52주고가 666)"
       },
       "momentum_history": {
-        "met": false,
-        "had_limit_up": false,
-        "had_momentum": false,
-        "reason": "급등 이력 없음"
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
       },
       "resistance_breakout": {
         "met": false,
@@ -20467,7 +22029,7 @@
         "reason": "미돌파 (현재가 5,080, 6개월고가 5,420, 52주고가 6,980)"
       },
       "momentum_history": {
-        "met": false,
+        "met": true,
         "had_limit_up": false,
         "had_momentum": false,
         "reason": "급등 이력 없음"
@@ -20607,7 +22169,7 @@
       },
       "program_trading": {
         "met": false,
-        "reason": "프로그램 순매수량: +0"
+        "reason": "프로그램 순매수량: -103,510"
       },
       "top30_trading_value": {
         "met": false,
@@ -21381,8 +22943,8 @@
       "momentum_history": {
         "met": true,
         "had_limit_up": true,
-        "had_momentum": false,
-        "reason": "상한가 이력 있음(>=29%)"
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
       },
       "resistance_breakout": {
         "met": false,
@@ -25398,18 +26960,18 @@
         "reason": "미돌파 (현재가 1,476, 6개월고가 2,685, 52주고가 2,050)"
       },
       "momentum_history": {
-        "met": false,
-        "had_limit_up": false,
-        "had_momentum": false,
-        "reason": "급등 이력 없음"
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
       },
       "resistance_breakout": {
         "met": false,
-        "reason": "하락 또는 데이터 없음"
+        "reason": "돌파 없음 (전일 2,600 → 현재 2,920)"
       },
       "ma_alignment": {
-        "met": false,
-        "reason": "정배열 아님",
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
         "ma_values": {
           "MA5": 1631.0,
           "MA10": 1729.7,
@@ -25431,6 +26993,14 @@
         "reason": "TOP30 아님"
       },
       "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 5,661억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 80.6 (위험: 과매수 극단)"
+      },
+      "reverse_ma_alert": {
         "met": false,
         "reason": "시가총액 1,261억원 (기준 미달: 3,000억 미만)"
       },
@@ -25488,6 +27058,10 @@
         "reason": "TOP30 아님"
       },
       "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 4,471억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
         "met": false,
         "reason": "시가총액 142,869억원 (기준 초과: 10조 초과)"
       },
@@ -25507,7 +27081,7 @@
     },
     "005380": {
       "high_breakout": {
-        "met": false,
+        "met": true,
         "is_52w_high": false,
         "reason": "미돌파 (현재가 509,000, 6개월고가 590,000, 52주고가 666,000)"
       },
@@ -25539,6 +27113,758 @@
       "program_trading": {
         "met": false,
         "reason": "프로그램 순매수량: -270,410"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 3,786억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 73.7 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "478340": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 53,800, 6개월고가 64,600, 52주고가 72,000)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님 (MA60,120 데이터 부족으로 제외)",
+        "ma_values": {
+          "MA5": 54372.7,
+          "MA10": 54012.0,
+          "MA20": 51512.2
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-37,000), 기관 순매도(+0)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -72,466"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 6,205억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 56.9 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "데이터 부족 (최소 60일 필요, 현재 42일)"
+      },
+      "all_met": false
+    },
+    "099190": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 24,200, 6개월고가 27,600, 52주고가 34,950)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 23822.5,
+          "MA10": 21929.7,
+          "MA20": 19818.9,
+          "MA60": 17773.5,
+          "MA120": 17812.8
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-11,000), 기관 순매도(-11,000)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -7,317"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 6,681억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 71.9 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "004310": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 13,365, 6개월고가 15,960, 52주고가 18,460)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 13504.5,
+          "MA10": 13057.0,
+          "MA20": 12270.1,
+          "MA60": 9569.1,
+          "MA120": 6778.9
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-62,000), 기관 순매수(+2,000)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -272,159"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 4,277억원 (적정 범위: 3,000억~10조)"
+      },
+      "short_selling_alert": {
+        "met": false,
+        "reason": "공매도 0.7% (정상)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 60.4 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "127120": {
+      "high_breakout": {
+        "met": true,
+        "is_52w_high": false,
+        "reason": "6개월 고점 돌파 (현재가 35,600 >= 6개월고가 33,800)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 30,700 → 현재 35,600)"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 32203.6,
+          "MA10": 30359.4,
+          "MA20": 27582.0,
+          "MA60": 22978.4,
+          "MA120": 21172.2
+        }
+      },
+      "supply_demand": {
+        "met": true,
+        "reason": "외국인 순매수(+29,000), 기관 순매수(+13,000)"
+      },
+      "program_trading": {
+        "met": true,
+        "reason": "프로그램 순매수량: +58,200"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 11,673억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 74.1 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "083650": {
+      "high_breakout": {
+        "met": true,
+        "is_52w_high": false,
+        "reason": "6개월 고점 돌파 (현재가 88,000 >= 6개월고가 84,000)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": false,
+        "had_momentum": true,
+        "reason": "급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 83,000 → 현재 88,000)"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 81016.5,
+          "MA10": 77844.5,
+          "MA20": 73477.8,
+          "MA60": 63267.2,
+          "MA120": 56011.7
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-62,000), 기관 순매수(+10,000)"
+      },
+      "program_trading": {
+        "met": true,
+        "reason": "프로그램 순매수량: +66,359"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 27,231억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 72.0 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "084990": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 6,400, 6개월고가 8,940, 52주고가 8,900)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 6644.9,
+          "MA10": 6571.0,
+          "MA20": 6420.2,
+          "MA60": 6216.9,
+          "MA120": 5983.6
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-69,000), 기관 순매도(+0)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -42,539"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": false,
+        "reason": "시가총액 2,950억원 (기준 미달: 3,000억 미만)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 50.7 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "112610": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 47,850, 6개월고가 51,900, 52주고가 65,500)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 46214.9,
+          "MA10": 44671.1,
+          "MA20": 43299.5,
+          "MA60": 42562.5,
+          "MA120": 43157.8
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-162,000), 기관 순매수(+11,000)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -175,755"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 20,179억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 61.9 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "247540": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 214,000, 6개월고가 260,000, 52주고가 278,000)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": false,
+        "had_momentum": true,
+        "reason": "급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 208652.1,
+          "MA10": 207342.8,
+          "MA20": 200962.8,
+          "MA60": 178475.5,
+          "MA120": 158406.0
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-114,000), 기관 순매수(+2,000)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -72,193"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": false,
+        "reason": "시가총액 209,347억원 (기준 초과: 10조 초과)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 58.2 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "187660": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 9,200, 6개월고가 9,590, 52주고가 11,420)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 8,790 → 현재 9,200)"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 7421.2,
+          "MA10": 5997.8,
+          "MA20": 4730.5,
+          "MA60": 3441.8,
+          "MA120": 3012.2
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-280,000), 기관 순매도(+0)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -138,727"
+      },
+      "top30_trading_value": {
+        "met": true,
+        "reason": "거래대금 TOP30"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 5,103억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 92.1 (위험: 과매수 극단)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "348340": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 78,200, 6개월고가 139,000, 52주고가 107,300)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": true,
+        "reason": "상한가 이력 있음(>=29%), 급등 이력 있음(거래대금 1,000억↑ + 시초가 대비 종가 10%↑)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 82281.5,
+          "MA10": 84971.9,
+          "MA20": 83468.4,
+          "MA60": 63880.6,
+          "MA120": 44536.1
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-5,000), 기관 순매수(+3,000)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -3,948"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 9,667억원 (적정 범위: 3,000억~10조)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 48.7 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "050090": {
+      "high_breakout": {
+        "met": true,
+        "is_52w_high": true,
+        "reason": "52주 신고가 돌파 (현재가 703 >= 52주고가 703)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": false,
+        "reason": "상한가 이력 있음(>=29%)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 541 → 현재 703)"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 679.0,
+          "MA10": 721.0,
+          "MA20": 768.7,
+          "MA60": 841.0,
+          "MA120": 885.3
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-22,000), 기관 순매도(+0)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -894"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": false,
+        "reason": "시가총액 139억원 (기준 미달: 3,000억 미만)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 42.0 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "041960": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 8,440, 6개월고가 9,860, 52주고가 11,920)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "하락 또는 데이터 없음"
+      },
+      "ma_alignment": {
+        "met": false,
+        "reason": "정배열 아님",
+        "ma_values": {
+          "MA5": 8689.7,
+          "MA10": 8405.9,
+          "MA20": 8042.5,
+          "MA60": 7399.0,
+          "MA120": 6811.6
+        }
+      },
+      "supply_demand": {
+        "met": false,
+        "reason": "외국인 순매도(-85,000), 기관 순매도(+0)"
+      },
+      "program_trading": {
+        "met": false,
+        "reason": "프로그램 순매수량: -174,790"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 6,236억원 (적정 범위: 3,000억~10조)"
+      },
+      "short_selling_alert": {
+        "met": false,
+        "reason": "공매도 1.3% (정상)"
+      },
+      "overheating_alert": {
+        "met": false,
+        "reason": "RSI 56.2 (정상)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "004060": {
+      "high_breakout": {
+        "met": true,
+        "is_52w_high": true,
+        "reason": "52주 신고가 돌파 (현재가 591 >= 52주고가 591)"
+      },
+      "momentum_history": {
+        "met": true,
+        "had_limit_up": true,
+        "had_momentum": false,
+        "reason": "상한가 이력 있음(>=29%)"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 455 → 현재 591)"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 496.5,
+          "MA10": 459.8,
+          "MA20": 417.8,
+          "MA60": 366.6,
+          "MA120": 345.4
+        }
+      },
+      "supply_demand": {
+        "met": true,
+        "reason": "외국인 순매수(+1,714,000), 기관 순매수(+100,000)"
+      },
+      "program_trading": {
+        "met": true,
+        "reason": "프로그램 순매수량: +64,695"
+      },
+      "top30_trading_value": {
+        "met": false,
+        "reason": "TOP30 아님"
+      },
+      "market_cap_range": {
+        "met": false,
+        "reason": "시가총액 1,196억원 (기준 미달: 3,000억 미만)"
+      },
+      "short_selling_alert": {
+        "met": false,
+        "reason": "공매도 0.2% (정상)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 78.0 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
+        "met": false,
+        "reason": "역배열 아님"
+      },
+      "all_met": false
+    },
+    "042660": {
+      "high_breakout": {
+        "met": false,
+        "is_52w_high": false,
+        "reason": "미돌파 (현재가 149,600, 6개월고가 152,400, 52주고가 182,700)"
+      },
+      "momentum_history": {
+        "met": false,
+        "had_limit_up": false,
+        "had_momentum": false,
+        "reason": "급등 이력 없음"
+      },
+      "resistance_breakout": {
+        "met": false,
+        "reason": "돌파 없음 (전일 140,600 → 현재 149,600)"
+      },
+      "ma_alignment": {
+        "met": true,
+        "reason": "정배열 확인 (현재가>MA5>MA10>MA20>MA60>MA120)",
+        "ma_values": {
+          "MA5": 139518.4,
+          "MA10": 137461.9,
+          "MA20": 136556.7,
+          "MA60": 130037.9,
+          "MA120": 122708.0
+        }
+      },
+      "supply_demand": {
+        "met": true,
+        "reason": "외국인 순매수(+631,000), 기관 순매수(+124,000)"
+      },
+      "program_trading": {
+        "met": true,
+        "reason": "프로그램 순매수량: +1,207,434"
       },
       "top30_trading_value": {
         "met": true,
@@ -26532,7 +28858,7 @@
     },
     "065450": {
       "high_breakout": {
-        "met": true,
+        "met": false,
         "is_52w_high": false,
         "reason": "6개월 고점 돌파 (현재가 4,465 >= 6개월고가 4,060)"
       },
@@ -26566,10 +28892,22 @@
         "reason": "프로그램 순매수량: +23,815"
       },
       "top30_trading_value": {
-        "met": false,
-        "reason": "TOP30 아님"
+        "met": true,
+        "reason": "거래대금 TOP30"
       },
       "market_cap_range": {
+        "met": true,
+        "reason": "시가총액 91,275억원 (적정 범위: 3,000억~10조)"
+      },
+      "short_selling_alert": {
+        "met": true,
+        "reason": "공매도 5.9% (경고: 세력 집중)"
+      },
+      "overheating_alert": {
+        "met": true,
+        "reason": "RSI 71.8 (주의: 과매수 구간)"
+      },
+      "reverse_ma_alert": {
         "met": false,
         "reason": "시가총액 1,279억원 (기준 미달: 3,000억 미만)"
       },
