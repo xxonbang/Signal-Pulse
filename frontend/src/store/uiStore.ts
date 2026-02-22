@@ -27,6 +27,9 @@ interface UIStore {
   // Compact 보기
   isCompactView: boolean;
 
+  // 종목 검색
+  searchQuery: string;
+
   // Toast
   toast: ToastState;
 
@@ -44,6 +47,7 @@ interface UIStore {
   showToast: (message: string, duration?: number) => void;
   hideToast: () => void;
   toggleCompactView: () => void;
+  setSearchQuery: (query: string) => void;
 }
 
 export const useUIStore = create<UIStore>((set, get) => ({
@@ -55,6 +59,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
   isViewingHistory: false,
   viewingHistoryDateTime: null,
   isCompactView: false,
+  searchQuery: '',
   toast: { isVisible: false, message: '' },
 
   setCurrentPage: (page) => set({ currentPage: page }),
@@ -106,4 +111,6 @@ export const useUIStore = create<UIStore>((set, get) => ({
   hideToast: () => set((state) => ({ toast: { ...state.toast, isVisible: false } })),
 
   toggleCompactView: () => set((state) => ({ isCompactView: !state.isCompactView })),
+
+  setSearchQuery: (query) => set({ searchQuery: query }),
 }));

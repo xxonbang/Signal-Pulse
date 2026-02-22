@@ -67,6 +67,44 @@ function usePrefetchAllData() {
   }, [client]);
 }
 
+function SearchBar() {
+  const { searchQuery, setSearchQuery } = useUIStore();
+
+  return (
+    <div className="relative mb-3 md:mb-4">
+      <svg
+        className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        placeholder="종목 검색 (이름, 코드, 초성 예: ㅅㅅㅈㅈ)"
+        className="w-full pl-9 pr-9 py-2 text-sm
+          bg-bg-secondary border border-border rounded-xl
+          placeholder:text-text-muted/50
+          focus:outline-none focus:border-accent-primary/50 focus:ring-1 focus:ring-accent-primary/20
+          transition-all"
+      />
+      {searchQuery && (
+        <button
+          onClick={() => setSearchQuery('')}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      )}
+    </div>
+  );
+}
+
 function MainContent() {
   const { activeTab } = useUIStore();
 
@@ -83,6 +121,7 @@ function MainContent() {
   return (
     <>
       <AnalysisTabs />
+      <SearchBar />
 
       {/* Vision AI - 항상 마운트 */}
       <div style={{ display: activeTab === 'vision' ? 'block' : 'none' }}>

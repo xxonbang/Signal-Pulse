@@ -13,6 +13,7 @@ import { useUIStore } from '@/store/uiStore';
 import { useAuthStore } from '@/store/authStore';
 import { WarningDot } from '@/components/stock/WarningDot';
 import { cn, getWarningRingClass } from '@/lib/utils';
+import { matchStock } from '@/lib/koreanSearch';
 
 // 숫자 포맷
 function formatNumber(num: number | null | undefined): string {
@@ -320,7 +321,7 @@ export function APIAnalysis() {
   const [marketFilter, setMarketFilter] = useState<MarketType>('all');
   const [signalFilter, setSignalFilter] = useState<SignalType | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const { isViewingHistory, viewingHistoryDateTime, isCompactView } = useUIStore();
+  const { isViewingHistory, viewingHistoryDateTime, isCompactView, searchQuery } = useUIStore();
   const { data: criteriaData } = useCriteriaData();
   const isAdmin = useAuthStore((s) => s.isAdmin);
 
@@ -381,6 +382,11 @@ export function APIAnalysis() {
         results = results.filter(r => r.signal === signalFilter);
       }
 
+      // 검색 필터
+      if (searchQuery) {
+        results = results.filter(r => matchStock(searchQuery, r.name, r.code));
+      }
+
       return results;
     }
 
@@ -402,9 +408,14 @@ export function APIAnalysis() {
       });
     }
 
+    // 검색 필터
+    if (searchQuery) {
+      stocks = stocks.filter(s => matchStock(searchQuery, s.name, s.code));
+    }
+
     // 거래량 순위로 정렬
     return stocks.sort((a, b) => (a.ranking.volume_rank || 999) - (b.ranking.volume_rank || 999));
-  }, [kisData, analysisData, isViewingHistory, marketFilter, signalFilter, analysisMap]);
+  }, [kisData, analysisData, isViewingHistory, marketFilter, signalFilter, analysisMap, searchQuery]);
 
   // 시그널 카운트 (SignalCounts 타입에 맞춤)
   const signalCounts: SignalCounts = useMemo(() => {
@@ -577,9 +588,32 @@ export function APIAnalysis() {
       {filteredStocks.length > 0 ? (
         <>
           {!isCompactView && (
-            <TipText>
-              종목명을 클릭하면 네이버 금융으로 이동합니다
-            </TipText>
+            <>
+              <TipText>
+                종목명을 클릭하면 네이버 금융으로 이동합니다
+              </TipText>
+              <div className="flex justify-end gap-2 mb-2">
+                <button
+                  onClick={() => {
+                    const allCodes = new Set(
+                      isViewingHistory
+                        ? (filteredStocks as KISAnalysisResult[]).map(a => a.code)
+                        : (filteredStocks as KISStockData[]).map(s => s.code)
+                    );
+                    setExpandedCards(allCodes);
+                  }}
+                  className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
+                >
+                  전체 펼치기
+                </button>
+                <button
+                  onClick={() => setExpandedCards(new Set())}
+                  className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
+                >
+                  전체 접기
+                </button>
+              </div>
+            </>
           )}
           {isCompactView ? (
             // Compact 보기

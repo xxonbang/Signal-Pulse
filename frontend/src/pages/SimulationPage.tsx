@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useSimulationIndex, useSimulationMultipleDates } from '@/hooks/useSimulationData';
 import { useSimulationStore } from '@/store/simulationStore';
 import { useAuthStore } from '@/store/authStore';
@@ -7,31 +7,35 @@ import { SimulationSummary, DateSelector, CategorySection, CollectionTrigger, An
 import { useAnalysisTimeOverride } from '@/hooks/useAnalysisTimeOverride';
 import { LoadingSpinner, EmptyState } from '@/components/common';
 import { cn } from '@/lib/utils';
-import { matchStock } from '@/lib/koreanSearch';
+import { isMarketOpen } from '@/lib/marketCalendar';
 import type { AvailableTime } from '@/hooks/useAnalysisTimeOverride';
-import type { SimulationData, SimulationStock, SimulationCategory } from '@/services/types';
+import type { SimulationData, SimulationCategory } from '@/services/types';
 
 export function SimulationPage() {
   const { data: index, isLoading: indexLoading } = useSimulationIndex();
   const { activeDetailDate, selectAllDates, setAnalysisTime } = useSimulationStore();
   const initializedRef = useRef(false);
-  const [searchQuery, setSearchQuery] = useState('');
+
+  // 주말/공휴일 제외한 거래일 데이터만 사용
+  const tradingDayHistory = useMemo(() => {
+    if (!index) return [];
+    return index.history.filter((h) => isMarketOpen(h.date));
+  }, [index]);
 
   // 인덱스 최초 로드 시에만 전체 선택 (이후 사용자 조작은 존중)
   useEffect(() => {
-    if (index && index.history.length > 0 && !initializedRef.current) {
+    if (tradingDayHistory.length > 0 && !initializedRef.current) {
       initializedRef.current = true;
-      selectAllDates(index.history.map((h) => h.date));
+      selectAllDates(tradingDayHistory.map((h) => h.date));
     }
-  }, [index, selectAllDates]);
+  }, [tradingDayHistory, selectAllDates]);
 
   // 모든 날짜의 데이터 병렬 로딩 (선택 여부와 무관하게 통계 표시용)
   const filenames = useMemo(() => {
-    if (!index) return [];
-    return index.history
+    return tradingDayHistory
       .map((h) => h.filename)
       .filter((f): f is string => !!f);
-  }, [index]);
+  }, [tradingDayHistory]);
 
   const queryResults = useSimulationMultipleDates(filenames);
 
@@ -69,7 +73,7 @@ export function SimulationPage() {
     return <LoadingSpinner message="시뮬레이션 데이터 로딩 중..." />;
   }
 
-  if (!index || index.history.length === 0) {
+  if (!index || tradingDayHistory.length === 0) {
     return (
       <div className="space-y-4">
         <PageHeader />
@@ -84,14 +88,14 @@ export function SimulationPage() {
 
   return (
     <div className="space-y-3 md:space-y-4">
-      <PageHeader allDates={index.history.map((h) => h.date)} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      <PageHeader allDates={tradingDayHistory.map((h) => h.date)} />
       <SimulationModeTabs />
 
       {/* 종합 수익률 */}
       <SimulationSummary dataByDate={effectiveDataByDate} />
 
       {/* 날짜 선택 */}
-      <DateSelector items={index.history} dataByDate={effectiveDataByDate} />
+      <DateSelector items={tradingDayHistory} dataByDate={effectiveDataByDate} />
 
       {/* 로딩 */}
       {isAnyLoading && (
@@ -110,7 +114,6 @@ export function SimulationPage() {
           selectedTime={selectedTime}
           onSelectTime={(time) => setAnalysisTime(activeDetailDate, time)}
           isTimeLoading={timeOverrideLoading}
-          searchQuery={searchQuery}
         />
       )}
 
@@ -123,7 +126,7 @@ export function SimulationPage() {
   );
 }
 
-function PageHeader({ allDates, searchQuery, onSearchChange }: { allDates?: string[]; searchQuery?: string; onSearchChange?: (q: string) => void }) {
+function PageHeader({ allDates }: { allDates?: string[] }) {
   const { simulationMode, resetAll } = useSimulationStore();
   const { isAdmin } = useAuthStore();
   const desc = simulationMode === 'close'
@@ -131,58 +134,22 @@ function PageHeader({ allDates, searchQuery, onSearchChange }: { allDates?: stri
     : '적극매수 시그널 종목의 시가 매수 → 장중 최고가 매도 수익률';
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg md:text-xl font-bold">모의투자 시뮬레이션</h2>
-          <p className="text-xs text-text-muted mt-0.5">{desc}</p>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {allDates && (
-            <button
-              onClick={() => resetAll(allDates)}
-              className="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all whitespace-nowrap"
-            >
-              초기화
-            </button>
-          )}
-          {isAdmin && <CollectionTrigger />}
-        </div>
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <h2 className="text-lg md:text-xl font-bold">모의투자 시뮬레이션</h2>
+        <p className="text-xs text-text-muted mt-0.5">{desc}</p>
       </div>
-
-      {onSearchChange && (
-        <div className="relative">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {allDates && (
+          <button
+            onClick={() => resetAll(allDates)}
+            className="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all whitespace-nowrap"
           >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            value={searchQuery ?? ''}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="종목 검색 (이름, 코드, 초성 예: ㅅㅅㅈㅈ)"
-            className="w-full pl-9 pr-9 py-2 text-sm
-              bg-bg-secondary border border-border rounded-xl
-              placeholder:text-text-muted/50
-              focus:outline-none focus:border-accent-primary/50 focus:ring-1 focus:ring-accent-primary/20
-              transition-all"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => onSearchChange('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          )}
-        </div>
-      )}
+            초기화
+          </button>
+        )}
+        {isAdmin && <CollectionTrigger />}
+      </div>
     </div>
   );
 }
@@ -223,41 +190,14 @@ interface DetailSectionProps {
   selectedTime: string | null;
   onSelectTime: (time: string | null) => void;
   isTimeLoading: boolean;
-  searchQuery: string;
 }
 
-function DetailSection({ date, data, availableTimes, selectedTime, onSelectTime, isTimeLoading, searchQuery }: DetailSectionProps) {
-  // 검색 필터링된 종목 (카테고리별)
-  const filteredCategories = useMemo(() => {
-    const cats = data?.categories;
-    if (!cats) return { vision: [], kis: [], combined: [] };
-
-    const filter = (stocks: SimulationStock[]) =>
-      searchQuery
-        ? stocks.filter((s) => matchStock(searchQuery, s.name, s.code))
-        : stocks;
-
-    return {
-      vision: filter(cats.vision || []),
-      kis: filter(cats.kis || []),
-      combined: filter(cats.combined || []),
-    };
-  }, [data, searchQuery]);
-
-  const totalFiltered = filteredCategories.vision.length + filteredCategories.kis.length + filteredCategories.combined.length;
-  const totalAll = (data?.categories.vision?.length || 0) + (data?.categories.kis?.length || 0) + (data?.categories.combined?.length || 0);
-  const isFiltering = searchQuery.length > 0;
-
+function DetailSection({ date, data, availableTimes, selectedTime, onSelectTime, isTimeLoading }: DetailSectionProps) {
   return (
     <div className="space-y-3">
       <h3 className="text-sm font-semibold text-text-secondary flex items-center gap-2">
         <span className="w-2 h-2 bg-accent-primary rounded-full" />
         {date} 상세
-        {isFiltering && (
-          <span className="text-[0.65rem] font-normal text-text-muted">
-            ({totalFiltered}/{totalAll}개)
-          </span>
-        )}
       </h3>
 
       <AnalysisTimeSelector
@@ -271,7 +211,7 @@ function DetailSection({ date, data, availableTimes, selectedTime, onSelectTime,
         <CategorySection
           key={cat}
           category={cat}
-          stocks={filteredCategories[cat]}
+          stocks={data?.categories[cat] || []}
           date={date}
         />
       ))}

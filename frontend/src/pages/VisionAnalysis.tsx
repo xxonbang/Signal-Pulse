@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useVisionData } from '@/hooks/useVisionData';
 import { useHistoryData } from '@/hooks/useHistoryData';
 import { useCriteriaData } from '@/hooks/useCriteriaData';
@@ -8,6 +9,7 @@ import { LoadingSpinner, EmptyState, AnimatedNumber, KosdaqStatusBanner, TipText
 import { SignalSummary } from '@/components/signal';
 import { MarketTabs, StockList, CriteriaLegend } from '@/components/stock';
 import { getSignalCounts, getFilteredStocks, categorizeStocks, getLatestAnalysisTime, formatTimeOnly } from '@/lib/utils';
+import { matchStock } from '@/lib/koreanSearch';
 import type { AnalysisData, StockCriteria } from '@/services/types';
 
 function ResultsMeta({ data }: { data: AnalysisData }) {
@@ -48,11 +50,15 @@ function ResultsMeta({ data }: { data: AnalysisData }) {
 }
 
 function AnalysisContent({ data, criteriaData, isAdmin }: { data: AnalysisData; criteriaData: Record<string, StockCriteria> | null; isAdmin: boolean }) {
-  const { activeMarket, setMarketFilter, activeSignal, toggleSignalFilter, clearSignalFilter } = useUIStore();
+  const { activeMarket, setMarketFilter, activeSignal, toggleSignalFilter, clearSignalFilter, searchQuery } = useUIStore();
 
   const { kospi, kosdaq } = categorizeStocks(data.results);
   const signalCounts = getSignalCounts(data.results, activeMarket);
-  const filteredStocks = getFilteredStocks(data.results, activeMarket, activeSignal);
+  const baseFiltered = getFilteredStocks(data.results, activeMarket, activeSignal);
+  const filteredStocks = useMemo(() =>
+    searchQuery ? baseFiltered.filter(s => matchStock(searchQuery, s.name, s.code)) : baseFiltered,
+    [baseFiltered, searchQuery]
+  );
 
   const marketCounts = {
     all: data.results.length,

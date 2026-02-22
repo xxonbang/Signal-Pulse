@@ -12,6 +12,7 @@ import { useUIStore } from '@/store/uiStore';
 import { useAuthStore } from '@/store/authStore';
 import { WarningDot } from '@/components/stock/WarningDot';
 import { cn, getWarningRingClass } from '@/lib/utils';
+import { matchStock } from '@/lib/koreanSearch';
 
 // 시그널 타입 리스트
 const SIGNAL_TYPES: SignalType[] = ['적극매수', '매수', '중립', '매도', '적극매도'];
@@ -54,8 +55,10 @@ function ConfidenceBar({ score }: { score: number }) {
 }
 
 // 통합 종목 카드 (메모화)
-const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isAdmin }: { stock: CombinedStock; criteria: StockCriteria | null; isAdmin: boolean }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isAdmin, isExpanded: expandOverride, onToggleExpand }: { stock: CombinedStock; criteria: StockCriteria | null; isAdmin: boolean; isExpanded?: boolean; onToggleExpand?: () => void }) {
+  const [localExpanded, setLocalExpanded] = useState(false);
+  const isExpanded = expandOverride ?? localExpanded;
+  const toggleExpand = onToggleExpand ?? (() => setLocalExpanded(v => !v));
   const [isVisionDetailOpen, setIsVisionDetailOpen] = useState(false);
   const [isApiDetailOpen, setIsApiDetailOpen] = useState(false);
 
@@ -153,7 +156,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
 
       {/* 분석 근거 토글 */}
       {(stock.vision_reason || stock.api_reason) && (
-        <div className="cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+        <div className="cursor-pointer" onClick={toggleExpand}>
           <div className="flex items-center justify-between text-[0.65rem] md:text-xs text-text-muted mb-1">
             <span>분석 근거</span>
             <span className="transition-transform duration-200" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
@@ -271,7 +274,8 @@ export function CombinedAnalysis() {
   // 멀티셀렉트: 빈 Set = 전체 선택
   const [matchFilters, setMatchFilters] = useState<Set<MatchStatus>>(new Set());
   const [signalFilters, setSignalFilters] = useState<Set<SignalType>>(new Set());
-  const { isViewingHistory, viewingHistoryDateTime, isCompactView } = useUIStore();
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const { isViewingHistory, viewingHistoryDateTime, isCompactView, searchQuery } = useUIStore();
   const isAdmin = useAuthStore((s) => s.isAdmin);
 
   // viewingHistoryDateTime: "2026-02-04_0700" → filename: "combined_2026-02-04_0700.json"
@@ -320,6 +324,15 @@ export function CombinedAnalysis() {
     setSignalFilters(new Set());
   };
 
+  const toggleCard = (code: string) => {
+    setExpandedCards(prev => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code);
+      else next.add(code);
+      return next;
+    });
+  };
+
   // 필터링된 종목
   const filteredStocks = useMemo(() => {
     if (!data?.stocks) return [];
@@ -346,13 +359,18 @@ export function CombinedAnalysis() {
       });
     }
 
+    // 검색 필터
+    if (searchQuery) {
+      stocks = stocks.filter(s => matchStock(searchQuery, s.name, s.code));
+    }
+
     // 거래대금 순위 기준 정렬 (API 데이터의 volume_rank 사용, 없으면 뒤로)
     return stocks.sort((a, b) => {
       const rankA = a.api_data?.ranking?.volume_rank ?? Infinity;
       const rankB = b.api_data?.ranking?.volume_rank ?? Infinity;
       return rankA - rankB;
     });
-  }, [data, marketFilter, matchFilters, signalFilters]);
+  }, [data, marketFilter, matchFilters, signalFilters, searchQuery]);
 
   // 통계 데이터 (pre-calculated에서 가져옴)
   const stats = data?.stats || { total: 0, match: 0, partial: 0, mismatch: 0, vision_only: 0, api_only: 0, no_data: 0, avg_confidence: 0 };
@@ -611,7 +629,24 @@ export function CombinedAnalysis() {
 
       {/* 종목 그리드 */}
       {filteredStocks.length > 0 ? (
-        isCompactView ? (
+        <>
+          {!isCompactView && (
+            <div className="flex justify-end gap-2 mb-2">
+              <button
+                onClick={() => setExpandedCards(new Set(filteredStocks.map(s => s.code)))}
+                className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
+              >
+                전체 펼치기
+              </button>
+              <button
+                onClick={() => setExpandedCards(new Set())}
+                className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
+              >
+                전체 접기
+              </button>
+            </div>
+          )}
+          {isCompactView ? (
           // Compact 보기
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {filteredStocks.map(stock => (
@@ -652,10 +687,18 @@ export function CombinedAnalysis() {
           // 일반 보기
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredStocks.map(stock => (
-              <CombinedStockCard key={stock.code} stock={stock} criteria={criteriaData?.[stock.code] ?? null} isAdmin={isAdmin} />
+              <CombinedStockCard
+                key={stock.code}
+                stock={stock}
+                criteria={criteriaData?.[stock.code] ?? null}
+                isAdmin={isAdmin}
+                isExpanded={expandedCards.has(stock.code)}
+                onToggleExpand={() => toggleCard(stock.code)}
+              />
             ))}
           </div>
-        )
+        )}
+        </>
       ) : (
         <EmptyState
           icon="🔍"
