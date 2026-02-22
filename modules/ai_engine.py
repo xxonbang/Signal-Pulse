@@ -2,11 +2,15 @@
 Gemini API 연동 및 프롬프트 관리 (배치 처리 방식)
 """
 from __future__ import annotations
+import random
 import time
 import base64
+from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from google import genai
+from google.genai import types
+from google.genai.errors import ClientError, ServerError
 
 # KST 시간대
 KST = timezone(timedelta(hours=9))
@@ -15,42 +19,69 @@ from config.settings import GEMINI_API_KEYS, GEMINI_MODEL, GEMINI_MODEL_LITE, SI
 from modules.utils import parse_json_response, resize_image
 
 
-# 현재 사용 중인 API 키 인덱스
-_current_key_index = 0
-_failed_keys = set()
+@dataclass
+class KeyState:
+    index: int
+    request_count: int = 0
+    fail_count: int = 0
+    daily_exhausted: bool = False
+    cooldown_until: float = 0.0
+
+    def is_available(self) -> bool:
+        if self.daily_exhausted:
+            return False
+        if self.cooldown_until > time.time():
+            return False
+        return True
+
+
+# 키 상태 리스트 초기화
+_key_states: list[KeyState] = [KeyState(index=i) for i in range(len(GEMINI_API_KEYS))]
 
 
 def get_next_api_key() -> tuple[str, int] | None:
-    """다음 사용 가능한 API 키 반환"""
-    global _current_key_index
-
+    """사용 가능한 키 중 request_count가 가장 낮은 것 선택"""
     if not GEMINI_API_KEYS:
         print("[ERROR] Gemini API 키가 설정되지 않았습니다.")
         return None
 
-    if len(_failed_keys) >= len(GEMINI_API_KEYS):
-        print("[INFO] 모든 키가 실패 상태. 리셋 후 재시도...")
-        _failed_keys.clear()
+    available = [ks for ks in _key_states if ks.is_available()]
 
-    for _ in range(len(GEMINI_API_KEYS)):
-        if _current_key_index not in _failed_keys:
-            key = GEMINI_API_KEYS[_current_key_index]
-            return key, _current_key_index
-        _current_key_index = (_current_key_index + 1) % len(GEMINI_API_KEYS)
+    if not available:
+        # 쿨다운 키만 리셋 (daily_exhausted는 유지)
+        for ks in _key_states:
+            if not ks.daily_exhausted:
+                ks.cooldown_until = 0.0
+                ks.fail_count = 0
+        available = [ks for ks in _key_states if ks.is_available()]
 
-    return None
+    if not available:
+        print("[ERROR] 모든 키 소진 (daily_exhausted)")
+        return None
+
+    # 여유 프로젝트 우선 (request_count 가장 낮은 키)
+    best = min(available, key=lambda ks: ks.request_count)
+    best.request_count += 1
+    return GEMINI_API_KEYS[best.index], best.index
 
 
-def mark_key_failed(key_index: int):
-    """키를 실패 상태로 표시"""
-    _failed_keys.add(key_index)
-    print(f"  [KEY #{key_index + 1}] 실패. 남은 키: {len(GEMINI_API_KEYS) - len(_failed_keys)}개")
+def handle_rate_limit(key_index: int):
+    """429 에러 후 RPM/RPD 분류 및 쿨다운 설정"""
+    ks = _key_states[key_index]
+    ks.fail_count += 1
 
+    if ks.request_count >= 10:
+        # RPD(당일 소진) 추정
+        ks.daily_exhausted = True
+        print(f"  [KEY #{key_index + 1}] RPD 소진 추정 (requests={ks.request_count}). 당일 제외.")
+    else:
+        # RPM(일시적) → 지수 백오프 쿨다운
+        cooldown = min(30 * (2 ** (ks.fail_count - 1)), 300)
+        ks.cooldown_until = time.time() + cooldown
+        print(f"  [KEY #{key_index + 1}] RPM 제한. 쿨다운 {cooldown}초 설정.")
 
-def rotate_to_next_key():
-    """다음 키로 로테이션"""
-    global _current_key_index
-    _current_key_index = (_current_key_index + 1) % len(GEMINI_API_KEYS)
+    avail_count = sum(1 for ks in _key_states if ks.is_available())
+    print(f"  남은 사용 가능 키: {avail_count}개")
 
 
 # Vision AI 분석 프롬프트
@@ -171,7 +202,7 @@ VISION_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장
 """
 
 
-def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retries: int = 3) -> list[dict]:
+def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retries: int = min(2 * len(GEMINI_API_KEYS), 10)) -> list[dict]:
     """모든 종목 이미지를 한 번에 배치 분석 (API 1회 호출)"""
     print("\n=== Phase 3: AI 배치 분석 (Vision) ===\n")
     print(f"[INFO] 사용 가능한 API 키: {len(GEMINI_API_KEYS)}개")
@@ -237,7 +268,17 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
         print(f"[시도 {attempt + 1}/{max_retries}] API 키 #{key_index + 1} 사용")
 
         try:
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(
+                api_key=api_key,
+                http_options=types.HttpOptions(
+                    timeout=300_000,
+                    retry_options=types.HttpRetryOptions(
+                        initial_delay=2.0, attempts=3, exp_base=2,
+                        max_delay=30, jitter=1,
+                        http_status_codes=[408, 500, 502, 503, 504],
+                    ),
+                ),
+            )
 
             # 모든 이미지와 프롬프트를 하나의 요청으로
             parts = image_parts + [{"text": prompt}]
@@ -262,6 +303,14 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
 
             api_elapsed = time.time() - api_start_time
             print(f"[API] 응답 수신 완료 (소요시간: {api_elapsed:.1f}초)")
+
+            # response.text가 None인 경우 방어
+            if not response.text:
+                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None)")
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
+                continue
+
             print(f"[API] 응답 길이: {len(response.text)}자")
 
             # 응답 파싱
@@ -392,7 +441,6 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
 
                 print(f"\n[SUCCESS] 분석 완료: {actual_count}/{expected_count}개 종목 ({coverage_rate:.1f}%)")
                 print(f"[INFO] 시그널 분포: {signal_stats}")
-                rotate_to_next_key()
                 return valid_results
 
             # 파싱 실패: 디버깅 로그와 함께 재파싱 시도
@@ -402,28 +450,35 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
             print(f"[DEBUG] 응답 전체 (최대 500자):\n{response.text[:500]}")
             if len(response.text) > 500:
                 print(f"[DEBUG] ... (총 {len(response.text)}자 중 500자만 표시)")
-            rotate_to_next_key()
             return []  # 파싱 실패 시 빈 결과 반환, 재호출 안 함
 
-        except Exception as e:
-            error_msg = str(e)
-            print(f"  [KEY #{key_index + 1}] 오류: {error_msg[:100]}")
-
-            # 429 오류 (쿼터 초과): 다른 키로 재시도
-            if "429" in error_msg or "quota" in error_msg.lower() or "rate" in error_msg.lower():
-                mark_key_failed(key_index)
-                rotate_to_next_key()
-                print(f"  [KEY #{key_index + 1}] 실패. 남은 키: {len(GEMINI_API_KEYS) - len(_failed_keys)}개")
-                time.sleep(2)
+        except ClientError as e:
+            print(f"  [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:150]}")
+            if e.code == 429:
+                handle_rate_limit(key_index)
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
                 continue
-
-            if "404" in error_msg:
+            elif e.code in (400, 401, 403):
+                _key_states[key_index].daily_exhausted = True
+                print(f"  [KEY #{key_index + 1}] 영구 제외 (HTTP {e.code})")
+                continue
+            elif e.code == 404:
                 print("[ERROR] 모델을 찾을 수 없습니다.")
                 return []
+            else:
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
 
-            # 기타 오류: 다른 키로 재시도
-            rotate_to_next_key()
-            time.sleep(1)
+        except ServerError as e:
+            print(f"  [KEY #{key_index + 1}] ServerError({e.code}): {str(e)[:150]}")
+            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            time.sleep(backoff)
+
+        except Exception as e:
+            print(f"  [KEY #{key_index + 1}] 오류: {str(e)[:150]}")
+            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            time.sleep(backoff)
 
     print(f"[ERROR] {max_retries}회 시도 후 실패 (모든 API 키 쿼터 소진)")
     return []
@@ -614,7 +669,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 def analyze_kis_data(
     stocks_data: dict,
     stock_codes: list[str] | None = None,
-    max_retries: int = 3,
+    max_retries: int = min(2 * len(GEMINI_API_KEYS), 10),
 ) -> list[dict]:
     """KIS API 데이터 기반 종목 분석
 
@@ -668,14 +723,23 @@ def analyze_kis_data(
         key_info = get_next_api_key()
         if not key_info:
             print("[ERROR] 사용 가능한 API 키가 없습니다.")
-            print(f"[DEBUG] 실패한 키 인덱스: {list(_failed_keys)}")
             return []
 
         api_key, key_index = key_info
         print(f"[시도 {attempt + 1}/{max_retries}] API 키 #{key_index + 1} 사용 (키 마스킹: {api_key[:8]}...)")
 
         try:
-            client = genai.Client(api_key=api_key, http_options={"timeout": 300_000})
+            client = genai.Client(
+                api_key=api_key,
+                http_options=types.HttpOptions(
+                    timeout=300_000,
+                    retry_options=types.HttpRetryOptions(
+                        initial_delay=2.0, attempts=3, exp_base=2,
+                        max_delay=30, jitter=1,
+                        http_status_codes=[408, 500, 502, 503, 504],
+                    ),
+                ),
+            )
 
             print(f"[API] Gemini API 호출 시작...")
             print(f"[API] 모델: {GEMINI_MODEL_LITE} (KIS 데이터 분석용)")
@@ -702,8 +766,8 @@ def analyze_kis_data(
             # response.text가 None인 경우 방어
             if not response.text:
                 print("[ERROR] 응답 텍스트가 비어있음 (response.text=None)")
-                rotate_to_next_key()
-                time.sleep(1)
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
                 continue
 
             print(f"[API] 응답 길이: {len(response.text):,}자")
@@ -775,7 +839,6 @@ def analyze_kis_data(
 
                 print(f"\n[SUCCESS] 분석 완료: {len(analysis_results)}/{expected_count}개 종목 ({coverage_rate:.1f}%)")
                 print(f"[INFO] 시그널 분포: {signal_stats}")
-                rotate_to_next_key()
                 return analysis_results
 
             # 파싱 실패: 다른 키로 재시도
@@ -783,29 +846,37 @@ def analyze_kis_data(
             print("[DEBUG] 상세 파싱 로그:")
             parse_json_response(response.text, debug=True)
             print(f"[DEBUG] 응답 앞부분 (최대 300자):\n{response.text[:300]}")
-            rotate_to_next_key()
-            time.sleep(1)
+            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            time.sleep(backoff)
             continue  # 재시도
 
-        except Exception as e:
-            error_msg = str(e)
-            print(f"[ERROR] [KEY #{key_index + 1}] 오류: {error_msg[:200]}")
-
-            # 429 오류 (쿼터 초과): 다른 키로 재시도
-            if "429" in error_msg or "quota" in error_msg.lower() or "rate" in error_msg.lower():
-                mark_key_failed(key_index)
-                rotate_to_next_key()
-                print(f"  [KEY #{key_index + 1}] 실패. 남은 키: {len(GEMINI_API_KEYS) - len(_failed_keys)}개")
-                time.sleep(2)
+        except ClientError as e:
+            print(f"[ERROR] [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:200]}")
+            if e.code == 429:
+                handle_rate_limit(key_index)
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
                 continue
-
-            if "404" in error_msg:
+            elif e.code in (400, 401, 403):
+                _key_states[key_index].daily_exhausted = True
+                print(f"  [KEY #{key_index + 1}] 영구 제외 (HTTP {e.code})")
+                continue
+            elif e.code == 404:
                 print("[ERROR] 모델을 찾을 수 없습니다.")
                 return []
+            else:
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                time.sleep(backoff)
 
-            # 기타 오류: 다른 키로 재시도
-            rotate_to_next_key()
-            time.sleep(1)
+        except ServerError as e:
+            print(f"[ERROR] [KEY #{key_index + 1}] ServerError({e.code}): {str(e)[:200]}")
+            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            time.sleep(backoff)
+
+        except Exception as e:
+            print(f"[ERROR] [KEY #{key_index + 1}] 오류: {str(e)[:200]}")
+            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            time.sleep(backoff)
 
     print(f"[ERROR] {max_retries}회 시도 후 실패")
     return []
@@ -814,7 +885,7 @@ def analyze_kis_data(
 def analyze_kis_data_batch(
     stocks_data: dict,
     batch_size: int = 10,
-    max_retries: int = 3,
+    max_retries: int = min(2 * len(GEMINI_API_KEYS), 10),
 ) -> list[dict]:
     """KIS API 데이터 배치 분석 (대량 종목용)
 
@@ -853,10 +924,10 @@ def analyze_kis_data_batch(
         else:
             print(f"배치 {batch_num} 실패")
 
-        # 배치 간 딜레이 (rate limit 방지)
+        # 배치 간 딜레이 (google_search 포함, 10 RPM 고려)
         if i + batch_size < len(all_codes):
-            print("다음 배치 대기 중... (3초)")
-            time.sleep(3)
+            print("다음 배치 대기 중... (8초)")
+            time.sleep(8)
 
     # === 누락 종목 재시도 ===
     analyzed_codes = set(r.get("code") for r in all_results if r.get("code"))
@@ -886,7 +957,7 @@ def analyze_kis_data_batch(
                 print(f"재시도 배치 {retry_num} 실패")
 
             if i + batch_size < len(missing_codes):
-                time.sleep(3)
+                time.sleep(8)
 
     print(f"\n=== 배치 분석 완료 ===")
     print(f"총 분석 완료: {len(all_results)}/{len(all_codes)}개 종목")

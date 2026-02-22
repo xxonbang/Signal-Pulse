@@ -9,7 +9,7 @@ export interface NewsItem {
   title: string;
   link: string;
   description: string;
-  pubDate: string;
+  pubDate?: string;  // google_search에서는 pubDate 없을 수 있음
   originallink?: string;
 }
 

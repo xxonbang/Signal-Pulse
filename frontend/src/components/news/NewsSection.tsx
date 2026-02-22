@@ -84,9 +84,11 @@ function NewsItemList({ news }: { news: NewsItem[] }) {
           >
             {item.title}
           </a>
-          <span className="text-[0.6rem] text-text-muted flex-shrink-0 whitespace-nowrap">
-            {item.pubDate}
-          </span>
+          {item.pubDate && (
+            <span className="text-[0.6rem] text-text-muted flex-shrink-0 whitespace-nowrap">
+              {item.pubDate}
+            </span>
+          )}
         </li>
       ))}
     </ul>
