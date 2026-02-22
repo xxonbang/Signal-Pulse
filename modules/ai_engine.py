@@ -522,12 +522,12 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 - 부채비율: 100% 미만 안정적, 200% 초과 주의
 
 ### 2-4. 재료 분석 (가중치 15%)
-아래 제공된 뉴스 데이터를 활용하여 각 종목의 재료를 분석하세요.
+각 종목에 대해 google_search를 통해 검색하여 재료를 분석하세요.
+검색 키워드: "{{종목명}} 주식 뉴스" (예: "삼성전자 주식 뉴스")
 - 호재/악재 여부 및 시장 심리 판단
 - 실적, M&A, 신사업, 규제, 소송 등 주요 재료 파악
 - 테마 및 섹터 모멘텀 평가
 - 뉴스 시의성: 오늘 날짜 기준 1주일 이내를 '최근'으로 간주하세요.
-- 뉴스가 없는 종목: sentiment="중립", catalyst="관련 뉴스 없음"으로 설정하세요.
 
 ## 3. 계산 지표 활용
 다음 지표들을 직접 계산하여 분석에 반영하세요:
@@ -566,10 +566,7 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 {stock_data}
 ```
 
-## 7. 종목별 뉴스 데이터
-{news_data}
-
-## 8. 출력 형식
+## 7. 출력 형식
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요:
 ```json
 {{
@@ -596,7 +593,10 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
         "sentiment": "긍정/중립/부정",
         "key_news": ["주요 뉴스 1줄 요약 (최대 5개)"],
         "catalyst": "핵심 재료 요약 (1~2문장)"
-      }}
+      }},
+      "news": [
+        {{"title": "뉴스 제목", "link": "URL", "description": "1줄 요약"}}
+      ]
     }}
   ]
 }}
@@ -606,8 +606,8 @@ KIS_ANALYSIS_PROMPT = """당신은 20년 경력의 대한민국 주식 시장 �
 1. 모든 {count}개 종목에 대해 분석 결과를 반드시 포함해야 합니다.
 2. 종목과 해당 종목에 대한 분석 결과가 정확히 매칭되도록 주의하세요.
 3. 입력 데이터의 종목 순서와 출력 결과의 순서가 동일해야 합니다.
-4. 뉴스 데이터가 제공된 종목은 해당 데이터를 기반으로 news_analysis를 작성하세요.
-5. 뉴스가 없는 종목은 sentiment="중립", catalyst="관련 뉴스 없음"으로 설정하세요.
+4. 각 종목에 대해 반드시 google_search로 뉴스를 검색하고 news_analysis와 news 필드를 포함하세요.
+5. news_analysis와 news는 반드시 google_search 검색 결과를 기반으로 작성하세요. 검색 결과에 없는 내용을 추측하여 포함하지 마세요.
 """
 
 
@@ -615,7 +615,6 @@ def analyze_kis_data(
     stocks_data: dict,
     stock_codes: list[str] | None = None,
     max_retries: int = 3,
-    news_data: dict | None = None,
 ) -> list[dict]:
     """KIS API 데이터 기반 종목 분석
 
@@ -623,7 +622,6 @@ def analyze_kis_data(
         stocks_data: 변환된 KIS 데이터 (kis_gemini.json 형식)
         stock_codes: 분석할 종목 코드 리스트 (없으면 전체)
         max_retries: 최대 재시도 횟수
-        news_data: 종목별 뉴스 데이터 {code: [news_list]}
 
     Returns:
         분석 결과 리스트
@@ -656,30 +654,16 @@ def analyze_kis_data(
     reduction_rate = (1 - len(reduced_json) / len(original_json)) * 100
     print(f"[INFO] 데이터 축소: {len(original_json):,}자 → {len(reduced_json):,}자 ({reduction_rate:.1f}% 감소)")
 
-    # 배치 대상 종목의 뉴스 추출
-    batch_news = {}
-    if news_data:
-        for code in reduced_stocks:
-            if code in news_data:
-                batch_news[code] = news_data[code]
-
-    if batch_news:
-        news_section = "```json\n" + json.dumps(batch_news, ensure_ascii=False, indent=2) + "\n```"
-    else:
-        news_section = "뉴스 데이터가 제공되지 않았습니다. 뉴스가 없는 종목은 sentiment=\"중립\", catalyst=\"관련 뉴스 없음\"으로 설정하세요."
-
     # 프롬프트 생성
     today = datetime.now(KST).strftime("%Y-%m-%d")
     prompt = KIS_ANALYSIS_PROMPT.format(
         count=len(reduced_stocks),
         stock_data=reduced_json,
-        news_data=news_section,
         today=today
     )
-    print(f"[INFO] 프롬프트 길이: {len(prompt):,}자")
-    print(f"[INFO] 뉴스 데이터: {len(batch_news)}개 종목\n")
+    print(f"[INFO] 프롬프트 길이: {len(prompt):,}자\n")
 
-    # API 호출 시도 (429 오류 시에만 재시도, 파싱 실패 시 재시도 안 함)
+    # API 호출 시도 (파싱 실패, 429 오류 등 모두 재시도)
     for attempt in range(max_retries):
         key_info = get_next_api_key()
         if not key_info:
@@ -691,7 +675,7 @@ def analyze_kis_data(
         print(f"[시도 {attempt + 1}/{max_retries}] API 키 #{key_index + 1} 사용 (키 마스킹: {api_key[:8]}...)")
 
         try:
-            client = genai.Client(api_key=api_key)
+            client = genai.Client(api_key=api_key, http_options={"timeout": 300_000})
 
             print(f"[API] Gemini API 호출 시작...")
             print(f"[API] 모델: {GEMINI_MODEL_LITE} (KIS 데이터 분석용)")
@@ -707,13 +691,21 @@ def analyze_kis_data(
                     }
                 ],
                 config={
-                    "max_output_tokens": 65536,  # 최대 출력 토큰 (기본값 8K → 64K)
-                    # google_search 비활성화: 배치당 처리시간 급증으로 80분 timeout 초과
+                    "max_output_tokens": 65536,
+                    "tools": [{"google_search": {}}],
                 }
             )
 
             api_elapsed = time.time() - api_start_time
             print(f"[API] 응답 수신 완료 (소요시간: {api_elapsed:.1f}초)")
+
+            # response.text가 None인 경우 방어
+            if not response.text:
+                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None)")
+                rotate_to_next_key()
+                time.sleep(1)
+                continue
+
             print(f"[API] 응답 길이: {len(response.text):,}자")
 
             # 응답 파싱
@@ -786,15 +778,14 @@ def analyze_kis_data(
                 rotate_to_next_key()
                 return analysis_results
 
-            # 파싱 실패: 디버깅 로그와 함께 재파싱 시도
-            print("[ERROR] 응답 파싱 실패 - API 호출은 성공했으나 JSON 파싱 불가")
+            # 파싱 실패: 다른 키로 재시도
+            print("[ERROR] 응답 파싱 실패 - JSON 파싱 불가 (재시도)")
             print("[DEBUG] 상세 파싱 로그:")
-            parse_json_response(response.text, debug=True)  # 디버그 모드로 재시도하여 로그 출력
-            print(f"[DEBUG] 응답 전체 (최대 500자):\n{response.text[:500]}")
-            if len(response.text) > 500:
-                print(f"[DEBUG] ... (총 {len(response.text)}자 중 500자만 표시)")
+            parse_json_response(response.text, debug=True)
+            print(f"[DEBUG] 응답 앞부분 (최대 300자):\n{response.text[:300]}")
             rotate_to_next_key()
-            return []  # 파싱 실패 시 빈 결과 반환, 재호출 안 함
+            time.sleep(1)
+            continue  # 재시도
 
         except Exception as e:
             error_msg = str(e)
@@ -816,7 +807,7 @@ def analyze_kis_data(
             rotate_to_next_key()
             time.sleep(1)
 
-    print(f"[ERROR] {max_retries}회 시도 후 실패 (모든 API 키 쿼터 소진)")
+    print(f"[ERROR] {max_retries}회 시도 후 실패")
     return []
 
 
@@ -824,7 +815,6 @@ def analyze_kis_data_batch(
     stocks_data: dict,
     batch_size: int = 10,
     max_retries: int = 3,
-    news_data: dict | None = None,
 ) -> list[dict]:
     """KIS API 데이터 배치 분석 (대량 종목용)
 
@@ -832,7 +822,6 @@ def analyze_kis_data_batch(
         stocks_data: 변환된 KIS 데이터
         batch_size: 배치당 종목 수
         max_retries: 최대 재시도 횟수
-        news_data: 종목별 뉴스 데이터 {code: [news_list]}
 
     Returns:
         전체 분석 결과 리스트
@@ -856,7 +845,6 @@ def analyze_kis_data_batch(
             stocks_data,
             stock_codes=batch_codes,
             max_retries=max_retries,
-            news_data=news_data,
         )
 
         if results:
@@ -870,7 +858,37 @@ def analyze_kis_data_batch(
             print("다음 배치 대기 중... (3초)")
             time.sleep(3)
 
+    # === 누락 종목 재시도 ===
+    analyzed_codes = set(r.get("code") for r in all_results if r.get("code"))
+    missing_codes = [code for code in all_codes if code not in analyzed_codes]
+
+    if missing_codes:
+        print(f"\n=== 누락 종목 재시도 ({len(missing_codes)}개) ===")
+        missing_names = [stocks[c].get("name", c) for c in missing_codes[:10]]
+        print(f"[INFO] 대상: {missing_names}{'...' if len(missing_codes) > 10 else ''}")
+
+        for i in range(0, len(missing_codes), batch_size):
+            retry_codes = missing_codes[i:i + batch_size]
+            retry_num = i // batch_size + 1
+
+            print(f"\n--- 재시도 배치 {retry_num} ---")
+
+            results = analyze_kis_data(
+                stocks_data,
+                stock_codes=retry_codes,
+                max_retries=max_retries,
+            )
+
+            if results:
+                all_results.extend(results)
+                print(f"재시도 배치 {retry_num} 완료: {len(results)}개 종목 복구")
+            else:
+                print(f"재시도 배치 {retry_num} 실패")
+
+            if i + batch_size < len(missing_codes):
+                time.sleep(3)
+
     print(f"\n=== 배치 분석 완료 ===")
-    print(f"총 분석 완료: {len(all_results)}개 종목")
+    print(f"총 분석 완료: {len(all_results)}/{len(all_codes)}개 종목")
 
     return all_results
