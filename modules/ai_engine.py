@@ -427,6 +427,8 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
 
                 if extra_codes:
                     print(f"  - 추가된 종목 ({len(extra_codes)}개): {list(extra_codes)[:10]}{'...' if len(extra_codes) > 10 else ''}")
+                    # 요청한 종목만 유지
+                    valid_results = [item for item in valid_results if item.get("code") in requested_codes]
 
                 if not missing_codes and not extra_codes:
                     print(f"  - ✓ 요청/응답 종목 리스트 완전 일치")
@@ -813,6 +815,8 @@ def analyze_kis_data(
 
                 if extra_codes:
                     print(f"  - 추가된 종목 ({len(extra_codes)}개): {list(extra_codes)[:10]}{'...' if len(extra_codes) > 10 else ''}")
+                    # 요청한 종목만 유지
+                    analysis_results = [item for item in analysis_results if item.get("code") in requested_codes]
 
                 if not missing_codes and not extra_codes:
                     print(f"  - ✓ 요청/응답 종목 리스트 완전 일치")

@@ -16,7 +16,7 @@
 """
 import json
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any
 
@@ -100,7 +100,12 @@ class KISClient:
                     self._access_token = token_data.get('access_token')
                     self._token_expires_at = datetime.fromisoformat(token_data['expires_at'])
                     self._token_issued_at = datetime.fromisoformat(token_data['issued_at'])
-                    remaining = self._token_expires_at - datetime.now()
+                    # naive datetime → UTC aware 변환 (기존 캐시 호환)
+                    if self._token_expires_at.tzinfo is None:
+                        self._token_expires_at = self._token_expires_at.replace(tzinfo=timezone.utc)
+                    if self._token_issued_at.tzinfo is None:
+                        self._token_issued_at = self._token_issued_at.replace(tzinfo=timezone.utc)
+                    remaining = self._token_expires_at - datetime.now(timezone.utc)
                     hours = remaining.total_seconds() / 3600
                     print(f"[KIS] Supabase에서 유효 토큰 로드 (잔여: {hours:.1f}시간)")
                     return True
@@ -114,6 +119,11 @@ class KISClient:
                     self._access_token = token_data.get('access_token')
                     self._token_expires_at = datetime.fromisoformat(token_data['expires_at'])
                     self._token_issued_at = datetime.fromisoformat(token_data['issued_at'])
+                    # naive datetime → UTC aware 변환 (기존 캐시 호환)
+                    if self._token_expires_at.tzinfo is None:
+                        self._token_expires_at = self._token_expires_at.replace(tzinfo=timezone.utc)
+                    if self._token_issued_at.tzinfo is None:
+                        self._token_issued_at = self._token_issued_at.replace(tzinfo=timezone.utc)
                     print(f"[KIS] Supabase 토큰 로드 (만료됨, API 호출 시 재발급 시도)")
                     return True
                 except (KeyError, ValueError) as e:
@@ -134,9 +144,14 @@ class KISClient:
             self._access_token = token_data.get('access_token')
             self._token_expires_at = datetime.fromisoformat(token_data['expires_at'])
             self._token_issued_at = datetime.fromisoformat(token_data['issued_at'])
+            # naive datetime → UTC aware 변환 (기존 캐시 호환)
+            if self._token_expires_at.tzinfo is None:
+                self._token_expires_at = self._token_expires_at.replace(tzinfo=timezone.utc)
+            if self._token_issued_at.tzinfo is None:
+                self._token_issued_at = self._token_issued_at.replace(tzinfo=timezone.utc)
 
             # 토큰 상태 출력
-            remaining = self._token_expires_at - datetime.now()
+            remaining = self._token_expires_at - datetime.now(timezone.utc)
             if remaining.total_seconds() > 0:
                 hours = remaining.total_seconds() / 3600
                 print(f"[KIS] 로컬 캐시에서 토큰 로드 (유효시간: {hours:.1f}시간 남음)")
@@ -180,14 +195,14 @@ class KISClient:
             return True
 
         # 마지막 발급으로부터 23시간이 지났는지 확인 (여유 1시간)
-        time_since_issue = datetime.now() - self._token_issued_at
+        time_since_issue = datetime.now(timezone.utc) - self._token_issued_at
         return time_since_issue.total_seconds() >= 23 * 3600
 
     def _is_token_valid(self) -> bool:
         """토큰이 유효한지 확인 (만료 10분 전까지 유효)"""
         if not self._access_token or not self._token_expires_at:
             return False
-        return datetime.now() < self._token_expires_at - timedelta(minutes=10)
+        return datetime.now(timezone.utc) < self._token_expires_at - timedelta(minutes=10)
 
     def get_access_token(self, force_refresh: bool = False) -> str:
         """OAuth 액세스 토큰 반환
@@ -221,7 +236,7 @@ class KISClient:
         """
         # 1일 1회 제한 확인
         if not self._can_refresh_token():
-            remaining = timedelta(hours=23) - (datetime.now() - self._token_issued_at)
+            remaining = timedelta(hours=23) - (datetime.now(timezone.utc) - self._token_issued_at)
             hours = remaining.total_seconds() / 3600
             raise TokenRefreshLimitError(
                 f"토큰 재발급은 1일 1회로 제한됩니다. "
@@ -264,7 +279,7 @@ class KISClient:
             raise Exception(f"토큰 발급 실패: {data}")
 
         self._access_token = data['access_token']
-        self._token_issued_at = datetime.now()
+        self._token_issued_at = datetime.now(timezone.utc)
 
         # 토큰 만료 시간 (보통 24시간)
         expires_in = int(data.get('expires_in', 86400))
@@ -339,6 +354,13 @@ class KISClient:
             return data
 
         except requests.exceptions.HTTPError as e:
+            # 429 Rate Limit 처리
+            if response.status_code == 429 and _retry:
+                import time as _time
+                print(f"[KIS] 429 Rate Limit. 2초 대기 후 재시도...")
+                _time.sleep(2)
+                return self.request(method, path, tr_id, params, body, tr_cont, _retry=False)
+
             # 에러 응답 본문 확인
             try:
                 error_data = response.json()
@@ -349,7 +371,7 @@ class KISClient:
                     print(f"[KIS] 토큰이 만료되었습니다 (HTTP {response.status_code}, msg: {error_msg}). 재발급 시도...")
                     self._refresh_token()
                     return self.request(method, path, tr_id, params, body, tr_cont, _retry=False)
-            except:
+            except Exception:
                 error_msg = str(e)
             raise Exception(f"API 요청 실패: {error_msg}")
 
@@ -393,13 +415,20 @@ class KISClient:
             return data, dict(response.headers)
 
         except requests.exceptions.HTTPError as e:
+            # 429 Rate Limit 처리
+            if response.status_code == 429 and _retry:
+                import time as _time
+                print(f"[KIS] 429 Rate Limit. 2초 대기 후 재시도...")
+                _time.sleep(2)
+                return self.request_raw(method, path, tr_id, params, body, tr_cont, _retry=False)
+
             try:
                 error_data = response.json()
                 error_msg = error_data.get('msg1', str(e))
                 if _retry and ("만료" in error_msg or "token" in error_msg.lower() or "expired" in error_msg.lower()):
                     self._refresh_token()
                     return self.request_raw(method, path, tr_id, params, body, tr_cont, _retry=False)
-            except:
+            except Exception:
                 error_msg = str(e)
             raise Exception(f"API 요청 실패: {error_msg}")
 
@@ -414,7 +443,7 @@ class KISClient:
         }
 
         if self._token_expires_at:
-            remaining = self._token_expires_at - datetime.now()
+            remaining = self._token_expires_at - datetime.now(timezone.utc)
             status["expires_at"] = self._token_expires_at.isoformat()
             status["remaining_hours"] = max(0, remaining.total_seconds() / 3600)
 
@@ -475,8 +504,8 @@ class KISClient:
         path = "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice"
         tr_id = "FHKST03010100"
 
-        end_date = datetime.now().strftime("%Y%m%d")
-        start_date = (datetime.now() - timedelta(days=100)).strftime("%Y%m%d")
+        end_date = datetime.now(timezone.utc).strftime("%Y%m%d")
+        start_date = (datetime.now(timezone.utc) - timedelta(days=100)).strftime("%Y%m%d")
 
         params = {
             "FID_COND_MRKT_DIV_CODE": "J",

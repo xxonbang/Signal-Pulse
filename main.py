@@ -53,8 +53,8 @@ def cleanup_old_results(results_dir: Path, retention_days: int = RESULTS_RETENTI
     for item in history_dir.iterdir():
         if item.is_file() and item.suffix == ".json":
             try:
-                # 파일명에서 날짜 추출 (vision_YYYY-MM-DD.json)
-                date_str = item.stem.replace("vision_", "")
+                # 파일명에서 날짜 추출 (vision_YYYY-MM-DD.json 또는 vision_YYYY-MM-DD_HHMM.json)
+                date_str = item.stem.replace("vision_", "").split("_")[0]
                 file_date = datetime.strptime(date_str, "%Y-%m-%d")
 
                 if file_date < cutoff_date:

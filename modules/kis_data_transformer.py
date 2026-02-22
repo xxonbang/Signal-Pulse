@@ -62,12 +62,19 @@ class KISDataTransformer:
 
         # 종목별 통합 데이터 생성
         stocks = {}
+        skipped = 0
         for code, details in stock_details.items():
+            if details.get("error"):
+                skipped += 1
+                continue
             stocks[code] = self._merge_stock_data(
                 code=code,
                 ranking_info=ranking_map.get(code),
                 details=details,
             )
+
+        if skipped:
+            print(f"[TRANSFORM] 에러 종목 {skipped}개 스킵")
 
         # 통합 결과
         result = {
