@@ -11,11 +11,13 @@ ROOT_DIR = Path(__file__).parent.parent
 # .env 파일 로드
 load_dotenv(ROOT_DIR / ".env")
 
-# Gemini API Keys (3개 로테이션)
+# Gemini API Keys (5개 로테이션)
 GEMINI_API_KEYS = [
     os.getenv("GEMINI_API_KEY_01"),
     os.getenv("GEMINI_API_KEY_02"),
     os.getenv("GEMINI_API_KEY_03"),
+    os.getenv("GEMINI_API_KEY_04"),
+    os.getenv("GEMINI_API_KEY_05"),
 ]
 GEMINI_API_KEYS = [k for k in GEMINI_API_KEYS if k]  # None 제거
 
