@@ -3,6 +3,7 @@ Gemini API 연동 및 프롬프트 관리 (배치 처리 방식)
 """
 from __future__ import annotations
 import random
+import re
 import time
 import base64
 from dataclasses import dataclass
@@ -67,25 +68,26 @@ def get_next_api_key() -> tuple[str, int] | None:
     return GEMINI_API_KEYS[best.index], best.index
 
 
-def handle_rate_limit(key_index: int):
+def handle_rate_limit(key_index: int, retry_delay: float | None = None, quota_type: str = "UNKNOWN"):
     """429 에러 후 RPM/RPD 분류 및 쿨다운 설정
 
-    연속 429 횟수 기반으로 RPD 소진을 판정:
-    - 연속 3회 미만: RPM(일시적) → 쿨다운 설정
-    - 연속 3회 이상: RPD(당일 소진) → daily_exhausted 마킹
+    - quota_type="RPD" 또는 연속 3회 429 → daily_exhausted 마킹
+    - 그 외 → retry_delay 기반 쿨다운 (없으면 지수 백오프)
     """
     ks = _key_states[key_index]
     ks.consecutive_429 += 1
 
-    if ks.consecutive_429 >= 3:
-        # 연속 3회 429 → RPD 소진 확정
+    if quota_type == "RPD" or ks.consecutive_429 >= 3:
         ks.daily_exhausted = True
-        print(f"  [KEY #{key_index + 1}] RPD 소진 확정 (연속 429: {ks.consecutive_429}회, 성공: {ks.success_count}회). 당일 제외.")
+        print(f"  [KEY #{key_index + 1}] RPD 소진 확정 (quota_type={quota_type}, 연속 429: {ks.consecutive_429}회, 성공: {ks.success_count}회). 당일 제외.")
     else:
-        # RPM(일시적) → 지수 백오프 쿨다운
-        cooldown = min(30 * (2 ** (ks.consecutive_429 - 1)), 300)
+        # RPM(일시적) → 쿨다운 설정
+        if retry_delay and retry_delay > 0:
+            cooldown = min(retry_delay + random.uniform(1, 5), 300)
+        else:
+            cooldown = min(30 * (2 ** (ks.consecutive_429 - 1)), 300)
         ks.cooldown_until = time.time() + cooldown
-        print(f"  [KEY #{key_index + 1}] RPM 제한. 쿨다운 {cooldown}초 설정. (연속 429: {ks.consecutive_429}회)")
+        print(f"  [KEY #{key_index + 1}] RPM 제한. 쿨다운 {cooldown:.0f}초 설정. (연속 429: {ks.consecutive_429}회)")
 
     avail_count = sum(1 for ks in _key_states if ks.is_available())
     print(f"  남은 사용 가능 키: {avail_count}개")
@@ -96,6 +98,41 @@ def mark_success(key_index: int):
     ks = _key_states[key_index]
     ks.success_count += 1
     ks.consecutive_429 = 0
+
+
+def _parse_retry_delay(error) -> float | None:
+    """429 에러 메시지에서 retryDelay 추출 (초 단위)"""
+    try:
+        match = re.search(r'retry in (\d+\.?\d*)s', str(error))
+        if match:
+            return float(match.group(1))
+    except Exception:
+        pass
+    return None
+
+
+def _parse_quota_type(error) -> str:
+    """429 에러 메시지에서 RPM vs RPD 구분 (quotaId 패턴 매칭)"""
+    msg = str(error)
+    if "PerDay" in msg or "Daily" in msg:
+        return "RPD"
+    if "PerMinute" in msg:
+        return "RPM"
+    return "UNKNOWN"
+
+
+def _check_finish_reason(response) -> str | None:
+    """응답의 finish_reason 확인. 차단된 경우 사유 문자열 반환, 정상이면 None."""
+    try:
+        if not response.candidates:
+            return None
+        fr = response.candidates[0].finish_reason
+        fr_str = fr.name if hasattr(fr, 'name') else str(fr) if fr else ""
+        if fr_str in ("SAFETY", "RECITATION", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII"):
+            return fr_str
+    except (AttributeError, IndexError):
+        pass
+    return None
 
 
 # Vision AI 분석 프롬프트
@@ -320,9 +357,16 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
             api_elapsed = time.time() - api_start_time
             print(f"[API] 응답 수신 완료 (소요시간: {api_elapsed:.1f}초)")
 
-            # response.text가 None인 경우 방어
-            if not response.text:
-                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None)")
+            # FinishReason 검사 (콘텐츠 차단 감지)
+            blocked_reason = _check_finish_reason(response)
+            if blocked_reason:
+                print(f"[WARNING] 콘텐츠 차단됨 (finish_reason={blocked_reason}). 재시도...")
+                time.sleep(min(5 * (attempt + 1), 30))
+                continue
+
+            # response.text가 비어있는 경우 방어 (STOP이어도 빈 응답 가능)
+            if not response.text or not response.text.strip():
+                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None/empty)")
                 backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
                 time.sleep(backoff)
                 continue
@@ -474,14 +518,26 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
         except ClientError as e:
             print(f"  [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:150]}")
             if e.code == 429:
-                handle_rate_limit(key_index)
-                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
-                time.sleep(backoff)
+                retry_delay = _parse_retry_delay(e)
+                quota_type = _parse_quota_type(e)
+                handle_rate_limit(key_index, retry_delay=retry_delay, quota_type=quota_type)
+                # 별도 프로젝트 키가 남아있으면 즉시 전환, 없으면 백오프 대기
+                avail = sum(1 for ks in _key_states if ks.is_available())
+                if avail > 0:
+                    time.sleep(random.uniform(1, 3))
+                else:
+                    backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                    time.sleep(backoff)
                 continue
-            elif e.code in (400, 401, 403):
+            elif e.code == 400:
+                # INVALID_ARGUMENT — 요청 자체 문제, 다른 키로 재시도해도 동일
+                print(f"  요청 오류 (HTTP 400). 동일 요청 재시도 불가.")
+                record_alert("GEMINI", f"KEY_{key_index+1}", "request_error", f"Vision: HTTP 400 요청 오류")
+                return []
+            elif e.code in (401, 403):
                 _key_states[key_index].daily_exhausted = True
-                print(f"  [KEY #{key_index + 1}] 영구 제외 (HTTP {e.code})")
-                record_alert("GEMINI", f"KEY_{key_index+1}", "auth_error", f"Vision: HTTP {e.code} 키 영구 제외")
+                print(f"  [KEY #{key_index + 1}] 인증/권한 오류 — 당일 제외 (HTTP {e.code})")
+                record_alert("GEMINI", f"KEY_{key_index+1}", "auth_error", f"Vision: HTTP {e.code} 키 제외")
                 continue
             elif e.code == 404:
                 print("[ERROR] 모델을 찾을 수 없습니다.")
@@ -492,7 +548,14 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
 
         except ServerError as e:
             print(f"  [KEY #{key_index + 1}] ServerError({e.code}): {str(e)[:150]}")
-            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            if e.code == 503:
+                backoff = min(30 * (2 ** attempt) + random.uniform(0, 5), 120)
+                print(f"  서버 과부하. {backoff:.0f}초 대기.")
+            elif e.code == 504:
+                print(f"  서버 타임아웃 (5분 제한 초과 가능).")
+                backoff = min(10 + random.uniform(0, 5), 30)
+            else:
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
             time.sleep(backoff)
 
         except Exception as e:
@@ -787,9 +850,16 @@ def analyze_kis_data(
             api_elapsed = time.time() - api_start_time
             print(f"[API] 응답 수신 완료 (소요시간: {api_elapsed:.1f}초)")
 
-            # response.text가 None인 경우 방어
-            if not response.text:
-                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None)")
+            # FinishReason 검사 (콘텐츠 차단 감지)
+            blocked_reason = _check_finish_reason(response)
+            if blocked_reason:
+                print(f"[WARNING] 콘텐츠 차단됨 (finish_reason={blocked_reason}). 재시도...")
+                time.sleep(min(5 * (attempt + 1), 30))
+                continue
+
+            # response.text가 비어있는 경우 방어 (STOP이어도 빈 응답 가능)
+            if not response.text or not response.text.strip():
+                print("[ERROR] 응답 텍스트가 비어있음 (response.text=None/empty)")
                 backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
                 time.sleep(backoff)
                 continue
@@ -880,14 +950,26 @@ def analyze_kis_data(
         except ClientError as e:
             print(f"[ERROR] [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:200]}")
             if e.code == 429:
-                handle_rate_limit(key_index)
-                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
-                time.sleep(backoff)
+                retry_delay = _parse_retry_delay(e)
+                quota_type = _parse_quota_type(e)
+                handle_rate_limit(key_index, retry_delay=retry_delay, quota_type=quota_type)
+                # 별도 프로젝트 키가 남아있으면 즉시 전환, 없으면 백오프 대기
+                avail = sum(1 for ks in _key_states if ks.is_available())
+                if avail > 0:
+                    time.sleep(random.uniform(1, 3))
+                else:
+                    backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+                    time.sleep(backoff)
                 continue
-            elif e.code in (400, 401, 403):
+            elif e.code == 400:
+                # INVALID_ARGUMENT — 요청 자체 문제, 다른 키로 재시도해도 동일
+                print(f"  요청 오류 (HTTP 400). 동일 요청 재시도 불가.")
+                record_alert("GEMINI", f"KEY_{key_index+1}", "request_error", f"KIS 분석: HTTP 400 요청 오류")
+                return []
+            elif e.code in (401, 403):
                 _key_states[key_index].daily_exhausted = True
-                print(f"  [KEY #{key_index + 1}] 영구 제외 (HTTP {e.code})")
-                record_alert("GEMINI", f"KEY_{key_index+1}", "auth_error", f"KIS 분석: HTTP {e.code} 키 영구 제외")
+                print(f"  [KEY #{key_index + 1}] 인증/권한 오류 — 당일 제외 (HTTP {e.code})")
+                record_alert("GEMINI", f"KEY_{key_index+1}", "auth_error", f"KIS 분석: HTTP {e.code} 키 제외")
                 continue
             elif e.code == 404:
                 print("[ERROR] 모델을 찾을 수 없습니다.")
@@ -898,7 +980,14 @@ def analyze_kis_data(
 
         except ServerError as e:
             print(f"[ERROR] [KEY #{key_index + 1}] ServerError({e.code}): {str(e)[:200]}")
-            backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
+            if e.code == 503:
+                backoff = min(30 * (2 ** attempt) + random.uniform(0, 5), 120)
+                print(f"  서버 과부하. {backoff:.0f}초 대기.")
+            elif e.code == 504:
+                print(f"  서버 타임아웃 (5분 제한 초과 가능).")
+                backoff = min(10 + random.uniform(0, 5), 30)
+            else:
+                backoff = min(2 * (2 ** attempt) + random.uniform(0, 1), 60)
             time.sleep(backoff)
 
         except Exception as e:
