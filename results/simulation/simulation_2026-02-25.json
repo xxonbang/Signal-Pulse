@@ -1,0 +1,292 @@
+{
+  "date": "2026-02-25",
+  "collected_at": "2026-02-25T07:54:35.775435+09:00",
+  "categories": {
+    "vision": [
+      {
+        "code": "005930",
+        "name": "삼성전자",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "000660",
+        "name": "SK하이닉스",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "006400",
+        "name": "삼성SDI",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "005935",
+        "name": "삼성전자우",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "489790",
+        "name": "한화비전",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "402340",
+        "name": "SK스퀘어",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "373220",
+        "name": "LG에너지솔루션",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "047040",
+        "name": "대우건설",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "005440",
+        "name": "현대지에프홀딩스",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "010130",
+        "name": "고려아연",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "011500",
+        "name": "한농화성",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "010120",
+        "name": "LS ELECTRIC",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "319400",
+        "name": "현대무벡스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "024060",
+        "name": "흥구석유",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "491000",
+        "name": "리브스메드",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "476060",
+        "name": "온코닉테라퓨틱스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "187660",
+        "name": "현대ADM",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "221800",
+        "name": "유투바이오",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "035810",
+        "name": "이지홀딩스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "253590",
+        "name": "네오셈",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "247540",
+        "name": "에코프로비엠",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "254490",
+        "name": "미래반도체",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "277810",
+        "name": "레인보우로보틱스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "141080",
+        "name": "리가켐바이오",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "036540",
+        "name": "SFA반도체",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "147830",
+        "name": "제룡산업",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "353200",
+        "name": "대덕전자",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      }
+    ],
+    "kis": [
+      {
+        "code": "007460",
+        "name": "에이프로젠",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      }
+    ],
+    "combined": []
+  },
+  "all_prices": {}
+}
