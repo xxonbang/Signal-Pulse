@@ -1,0 +1,222 @@
+{
+  "date": "2026-02-26",
+  "collected_at": "2026-02-26T08:07:13.803461+09:00",
+  "categories": {
+    "vision": [
+      {
+        "code": "005380",
+        "name": "현대차",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "000270",
+        "name": "기아",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "307950",
+        "name": "현대오토에버",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "006800",
+        "name": "미래에셋증권",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "000720",
+        "name": "현대건설",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "003490",
+        "name": "대한항공",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "373220",
+        "name": "LG에너지솔루션",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "086280",
+        "name": "현대글로비스",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "015760",
+        "name": "한국전력",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "010130",
+        "name": "고려아연",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "278470",
+        "name": "에이피알",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "034730",
+        "name": "SK",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "277810",
+        "name": "레인보우로보틱스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "058610",
+        "name": "에스피지",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "226950",
+        "name": "올릭스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "330350",
+        "name": "위더스제약",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "012860",
+        "name": "모베이스전자",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "242040",
+        "name": "나무기술",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "101330",
+        "name": "모베이스",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      },
+      {
+        "code": "307180",
+        "name": "아이엘",
+        "market": "KOSDAQ",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      }
+    ],
+    "kis": [
+      {
+        "code": "012160",
+        "name": "영흥",
+        "market": "KOSPI",
+        "open_price": null,
+        "close_price": null,
+        "high_price": null,
+        "return_pct": null,
+        "high_return_pct": null
+      }
+    ],
+    "combined": []
+  },
+  "all_prices": {}
+}
