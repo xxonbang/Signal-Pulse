@@ -677,7 +677,7 @@ export function APIAnalysis() {
             </div>
           ) : (
             // 일반 보기
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4 items-start">
               {isViewingHistory ? (
                 // 히스토리 모드: 분석 결과만 표시
                 (filteredStocks as KISAnalysisResult[]).map(analysis => (
