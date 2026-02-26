@@ -7,7 +7,8 @@ interface CriteriaLegendProps {
 }
 
 const LEGEND_ITEMS = [
-  { dotColor: 'bg-red-500', label: '전고점 돌파', desc: '6개월(120영업일) 고가 또는 52주 신고가를 현재가가 돌파한 종목' },
+  { dotColor: 'bg-red-500', label: '전고점 돌파', desc: '6개월(120영업일) 고가를 현재가가 돌파한 종목' },
+  { icon: '👑', label: '52주 신고가', desc: '52주 신고가를 현재가가 돌파한 종목 (더 강력한 매수 신호)' },
   { dotColor: 'bg-blue-500', label: '외국인/기관 수급', desc: '외국인과 기관이 동시에 순매수 중인 종목' },
   { dotColor: 'bg-violet-500', label: '프로그램 매매', desc: '프로그램 순매수량이 양수인 종목' },
   { dotColor: 'bg-orange-500', label: '끼 보유', desc: '상한가(29%↑) 이력 또는 거래대금 1,000억 이상 + 시초가 대비 종가 10%↑ 이력이 있는 종목' },
@@ -58,7 +59,10 @@ export function CriteriaLegend({ isAdmin, hasCriteriaData }: CriteriaLegendProps
               onClick={() => setActiveIndex(activeIndex === i ? null : i)}
               className="inline-flex items-center gap-1 cursor-pointer hover:opacity-70 transition-opacity"
             >
-              <span className={cn('inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full', item.dotColor)} />
+              {'icon' in item
+                ? <span className="text-[10px] sm:text-xs leading-none">{item.icon}</span>
+                : <span className={cn('inline-block w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full', item.dotColor)} />
+              }
               <span className="text-[10px] sm:text-xs text-text-muted">{item.label}</span>
             </button>
             {activeIndex === i && (
@@ -67,7 +71,10 @@ export function CriteriaLegend({ isAdmin, hasCriteriaData }: CriteriaLegendProps
                 className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 z-50 w-56 bg-white border border-border rounded-lg shadow-lg p-2.5"
               >
                 <div className="flex items-center gap-1.5 mb-1">
-                  <span className={cn('inline-block w-2 h-2 rounded-full flex-shrink-0', item.dotColor)} />
+                  {'icon' in item
+                    ? <span className="text-xs leading-none flex-shrink-0">{item.icon}</span>
+                    : <span className={cn('inline-block w-2 h-2 rounded-full flex-shrink-0', item.dotColor)} />
+                  }
                   <span className="text-[11px] font-semibold text-text-primary">{item.label}</span>
                 </div>
                 <p className="text-[10px] text-text-secondary leading-relaxed">{item.desc}</p>
