@@ -115,7 +115,8 @@ jobs:
           if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
             curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
               -d chat_id="${TELEGRAM_CHAT_ID}" \
-              -d text="[Stock Analysis] 워크플로우 시작 (${{ steps.check.outputs.market_status }})"
+              -d parse_mode=HTML \
+              -d text="<b>[Stock Analysis]</b> 워크플로우 시작 (${{ steps.check.outputs.market_status }})"
           fi
 
   # Vision AI 분석 (네이버 스크린샷 + Gemini Vision)
@@ -965,17 +966,18 @@ jobs:
             [ "$KIS" == "failure" ] && FAILED_JOBS="${FAILED_JOBS}KIS, "
             [ "$DEPLOY" == "failure" ] && FAILED_JOBS="${FAILED_JOBS}Deploy, "
             FAILED_JOBS="${FAILED_JOBS%, }"
-            MSG="[Stock Analysis] 실패 - ${FAILED_JOBS}"
+            MSG="<b>[Stock Analysis]</b> 실패 - ${FAILED_JOBS}"
           else
             VISION_STATUS="Skip"
             KIS_STATUS="Skip"
             [ "$VISION" == "success" ] && VISION_STATUS="OK"
             [ "$KIS" == "success" ] && KIS_STATUS="OK"
-            MSG="[Stock Analysis] 완료 (Vision: ${VISION_STATUS}, KIS: ${KIS_STATUS})"
+            MSG="<b>[Stock Analysis]</b> 완료 (Vision: ${VISION_STATUS}, KIS: ${KIS_STATUS})"
           fi
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d parse_mode=HTML \
             -d text="${MSG}"
 
   notify-skip:
