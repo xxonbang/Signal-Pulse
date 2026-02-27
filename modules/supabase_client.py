@@ -163,8 +163,11 @@ class SupabaseCredentialManager:
             for row in response.data:
                 result[row["credential_type"]] = row["credential_value"]
 
-            if "access_token" in result:
+            required_fields = ("access_token", "expires_at", "issued_at")
+            if all(f in result for f in required_fields):
                 return result
+            missing = [f for f in required_fields if f not in result]
+            print(f"[Supabase] KIS 토큰 불완전 데이터 (누락: {missing}), None 반환")
             return None
 
         except Exception as e:
@@ -200,8 +203,11 @@ class SupabaseCredentialManager:
             for row in response.data:
                 result[row["credential_type"]] = row["credential_value"]
 
-            if "access_token" in result:
+            required_fields = ("access_token", "expires_at", "issued_at")
+            if all(f in result for f in required_fields):
                 return result
+            missing = [f for f in required_fields if f not in result]
+            print(f"[Supabase] KIS 유효 토큰 불완전 데이터 (누락: {missing}), None 반환")
             return None
 
         except Exception as e:
@@ -230,6 +236,7 @@ class SupabaseCredentialManager:
 
         try:
             now = datetime.now(timezone.utc).isoformat()
+            saved_types = []
 
             # 각 토큰 정보를 개별 행으로 저장
             # expires_at DB 컬럼: 모든 행에 설정하여 DB 레벨 만료 필터링 지원
@@ -238,15 +245,33 @@ class SupabaseCredentialManager:
                 ("expires_at", expires_at),
                 ("issued_at", issued_at),
             ]:
-                client.table("api_credentials").upsert({
-                    "service_name": "kis_token",
-                    "credential_type": cred_type,
-                    "credential_value": cred_value,
-                    "expires_at": expires_at,
-                    "environment": "production",
-                    "is_active": True,
-                    "updated_at": now,
-                }, on_conflict="service_name,credential_type,environment").execute()
+                try:
+                    client.table("api_credentials").upsert({
+                        "service_name": "kis_token",
+                        "credential_type": cred_type,
+                        "credential_value": cred_value,
+                        "expires_at": expires_at,
+                        "environment": "production",
+                        "is_active": True,
+                        "updated_at": now,
+                    }, on_conflict="service_name,credential_type,environment").execute()
+                    saved_types.append(cred_type)
+                except Exception as e:
+                    print(f"[Supabase] KIS 토큰 '{cred_type}' 저장 실패: {e}")
+                    # 이미 저장된 행을 is_active=False로 롤백
+                    if saved_types:
+                        try:
+                            for rollback_type in saved_types:
+                                client.table("api_credentials").update({
+                                    "is_active": False,
+                                    "updated_at": now,
+                                }).eq("service_name", "kis_token").eq(
+                                    "credential_type", rollback_type
+                                ).eq("environment", "production").execute()
+                            print(f"[Supabase] 불완전 토큰 데이터 롤백 완료 ({saved_types})")
+                        except Exception as rb_err:
+                            print(f"[Supabase] 롤백 실패: {rb_err}")
+                    return False
 
             print(f"[Supabase] KIS 토큰 저장 완료")
             return True
