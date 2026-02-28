@@ -99,23 +99,23 @@ export function StockBadge({ stock, category, date, isExpanded, onToggle }: Stoc
       {/* 상세 정보 */}
       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
         <div className="px-2.5 md:px-3 pb-2 md:pb-2.5 pt-0 text-[0.65rem] md:text-xs text-text-muted tabular-nums">
-          <div className="border-t border-border/50 pt-1.5 space-y-0.5">
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted/70">시장</span>
-              <span>{stock.market || '-'}</span>
+          <div className="border-t border-border/50 pt-1.5">
+            <div className="flex items-center gap-2 px-1.5 py-0.5 rounded">
+              <span className="w-7 text-text-muted/70">시장</span>
+              <span className="text-text-secondary">{stock.market || '-'}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted/70">시가</span>
-              <span>{stock.open_price !== null ? stock.open_price.toLocaleString() : '-'}</span>
+            <div className="flex items-center gap-2 px-1.5 py-0.5 rounded bg-black/[0.03]">
+              <span className="w-7 text-text-muted/70">시가</span>
+              <span className="text-text-secondary">{stock.open_price !== null ? stock.open_price.toLocaleString() : '-'}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted/70">종가</span>
-              <span>{stock.close_price !== null ? stock.close_price.toLocaleString() : '-'}</span>
+            <div className="flex items-center gap-2 px-1.5 py-0.5 rounded">
+              <span className="w-7 text-text-muted/70">종가</span>
+              <span className="text-text-secondary">{stock.close_price !== null ? stock.close_price.toLocaleString() : '-'}</span>
               {stock.return_pct !== null && <ReturnDisplay value={stock.return_pct} size="sm" />}
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-text-muted/70">고가</span>
-              <span>{stock.high_price !== null ? stock.high_price.toLocaleString() : '-'}</span>
+            <div className="flex items-center gap-2 px-1.5 py-0.5 rounded bg-black/[0.03]">
+              <span className="w-7 text-text-muted/70">고가</span>
+              <span className="text-text-secondary">{stock.high_price !== null ? stock.high_price.toLocaleString() : '-'}</span>
               {stock.high_return_pct !== null && <ReturnDisplay value={stock.high_return_pct} size="sm" />}
               {stock.high_price_time && <span className="text-text-muted/50">{stock.high_price_time}</span>}
             </div>
