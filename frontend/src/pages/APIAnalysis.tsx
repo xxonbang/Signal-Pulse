@@ -32,7 +32,7 @@ function FlowBadge({ value, label, isEstimated }: { value: number | null | undef
   // null이면 추정 모드에서 개인 데이터 없음
   if (value === null && isEstimated) {
     return (
-      <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium bg-gray-100 text-gray-400">
+      <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.75rem] md:text-xs font-medium bg-gray-100 text-gray-400">
         {label}: 추정불가
       </span>
     );
@@ -43,7 +43,7 @@ function FlowBadge({ value, label, isEstimated }: { value: number | null | undef
   // 값이 0이고 추정 모드가 아니면 "장중" 표시
   if (value === 0 && !isEstimated) {
     return (
-      <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium bg-gray-100 text-gray-500">
+      <span className="inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.75rem] md:text-xs font-medium bg-gray-100 text-gray-500">
         {label}: 장중
       </span>
     );
@@ -60,7 +60,7 @@ function FlowBadge({ value, label, isEstimated }: { value: number | null | undef
     : formatNumber(value);
   const estimateLabel = isEstimated ? '(추정)' : '';
   return (
-    <span className={`inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium ${bgColor}`}>
+    <span className={`inline-flex items-center px-1.5 md:px-2 py-0.5 rounded text-[0.75rem] md:text-xs font-medium ${bgColor}`}>
       {label}: {isPositive ? '+' : ''}{displayValue}{estimateLabel}
     </span>
   );
@@ -80,7 +80,7 @@ function DataAvailabilityNotice() {
         </div>
       </div>
       <div className="px-3 md:px-4 py-2.5 md:py-3">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 text-[0.65rem] md:text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 text-[0.75rem] md:text-xs">
           <div className="flex items-start gap-2">
             <span className="text-green-500 font-bold mt-0.5">✓</span>
             <div>
@@ -143,7 +143,7 @@ function StockCard({
             >
               {stock.name}
             </a>
-            <span className={`text-[0.65rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${stock.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+            <span className={`text-[0.75rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${stock.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
               {stock.market}
             </span>
           </div>
@@ -158,18 +158,18 @@ function StockCard({
           {analysis ? (
             <SignalBadge signal={analysis.signal} />
           ) : (
-            <span className="inline-block text-[0.6rem] md:text-[0.65rem] px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 font-medium">
+            <span className="inline-block text-[0.75rem] md:text-xs px-1.5 py-0.5 rounded bg-gray-100 text-gray-400 font-medium">
               AI 분석 실패
             </span>
           )}
-          <div className="text-[0.65rem] md:text-xs text-text-muted mt-1">
+          <div className="text-[0.75rem] md:text-xs text-text-muted mt-1">
             #{stock.ranking?.volume_rank ?? '-'}위
           </div>
         </div>
       </div>
 
       {/* 핵심 지표 */}
-      <div className="grid grid-cols-4 gap-1 md:gap-2 mb-2 md:mb-3 text-[0.65rem] md:text-xs">
+      <div className="grid grid-cols-4 gap-1 md:gap-2 mb-2 md:mb-3 text-[0.75rem] md:text-xs">
         <div className="bg-bg-primary rounded-lg p-1.5 md:p-2 text-center">
           <div className="text-text-muted mb-0.5">PER</div>
           <div className="font-medium">{stock.valuation?.per && stock.valuation.per > 0 ? stock.valuation.per.toFixed(1) : '-'}</div>
@@ -209,17 +209,17 @@ function StockCard({
         <>
           <CriteriaIndicator criteria={criteria} />
           {criteria.short_selling_alert?.met && (
-            <span className="text-[9px] text-red-600 font-medium">
+            <span className="text-[11px] text-red-600 font-medium">
               공매도 주의 ({criteria.short_selling_alert.reason})
             </span>
           )}
           {criteria.overheating_alert?.met && (
-            <span className="text-[9px] text-orange-600 font-medium">
+            <span className="text-[11px] text-orange-600 font-medium">
               과열 주의 ({criteria.overheating_alert.reason})
             </span>
           )}
           {criteria.reverse_ma_alert?.met && (
-            <span className="text-[9px] text-violet-600 font-medium">
+            <span className="text-[11px] text-violet-600 font-medium">
               역배열 주의 ({criteria.reverse_ma_alert.reason})
             </span>
           )}
@@ -232,7 +232,7 @@ function StockCard({
           className="cursor-pointer"
           onClick={onToggle}
         >
-          <div className="flex items-center justify-between text-[0.65rem] md:text-xs text-text-muted mb-1">
+          <div className="flex items-center justify-between text-[0.75rem] md:text-xs text-text-muted mb-1">
             <span>AI 분석 근거</span>
             <span className="transition-transform duration-200" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
           </div>
@@ -242,7 +242,7 @@ function StockCard({
             <div className="bg-bg-primary rounded-lg p-2 md:p-3 text-xs md:text-sm">
               <p className="text-text-secondary mb-2">{analysis.reason}</p>
               {analysis.key_factors && (
-                <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.65rem] md:text-xs">
+                <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.75rem] md:text-xs">
                   <div><span className="text-text-muted">추세:</span> {analysis.key_factors.price_trend}</div>
                   <div><span className="text-text-muted">거래량:</span> {analysis.key_factors.volume_signal}</div>
                   <div><span className="text-text-muted">외인:</span> {analysis.key_factors.foreign_flow}</div>
@@ -250,7 +250,7 @@ function StockCard({
                 </div>
               )}
               {analysis.confidence != null && (
-                <div className="mt-2 text-[0.65rem] md:text-xs text-text-muted">
+                <div className="mt-2 text-[0.75rem] md:text-xs text-text-muted">
                   신뢰도: {((analysis.confidence ?? 0) * 100).toFixed(0)}% | 위험도: {analysis.risk_level || '-'}
                 </div>
               )}
@@ -287,14 +287,14 @@ function ResultsMeta({ analysisTime, totalStocks, analyzedCount }: {
           📅
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+          <div className="text-[0.75rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
             분석 일시
           </div>
           <div className="text-xs md:text-base font-bold text-text-primary">
             {dateOnly}
           </div>
           {timeOnly && (
-            <div className="text-[0.65rem] md:text-xs text-text-muted font-medium">{timeOnly}</div>
+            <div className="text-[0.75rem] md:text-xs text-text-muted font-medium">{timeOnly}</div>
           )}
         </div>
       </div>
@@ -303,7 +303,7 @@ function ResultsMeta({ analysisTime, totalStocks, analyzedCount }: {
           📊
         </div>
         <div className="min-w-0">
-          <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+          <div className="text-[0.75rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
             수집 종목
           </div>
           <div className="text-xs md:text-base font-bold text-text-primary"><AnimatedNumber value={totalStocks} duration={500} />개</div>
@@ -314,7 +314,7 @@ function ResultsMeta({ analysisTime, totalStocks, analyzedCount }: {
           🤖
         </div>
         <div className="min-w-0">
-          <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+          <div className="text-[0.75rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
             AI 분석
           </div>
           <div className="text-xs md:text-base font-bold text-text-primary"><AnimatedNumber value={analyzedCount} duration={500} />개</div>
@@ -328,6 +328,7 @@ export function APIAnalysis() {
   const [marketFilter, setMarketFilter] = useState<MarketType>('all');
   const [signalFilter, setSignalFilter] = useState<SignalType | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [sortBy, setSortBy] = useState<'volume_rank' | 'change_rate' | 'signal'>('volume_rank');
   const { isViewingHistory, viewingHistoryDateTime, isCompactView, searchQuery } = useUIStore();
   const { data: criteriaData } = useCriteriaData();
   const isAdmin = useAuthStore((s) => s.isAdmin);
@@ -420,9 +421,15 @@ export function APIAnalysis() {
       stocks = stocks.filter(s => matchStock(searchQuery, s.name, s.code));
     }
 
-    // 거래량 순위로 정렬
+    // 정렬
+    const signalOrder: Record<string, number> = { '적극매수': 0, '매수': 1, '중립': 2, '매도': 3, '적극매도': 4 };
+    if (sortBy === 'change_rate') {
+      return stocks.sort((a, b) => (b.price?.change_rate_pct ?? 0) - (a.price?.change_rate_pct ?? 0));
+    } else if (sortBy === 'signal') {
+      return stocks.sort((a, b) => (signalOrder[analysisMap[a.code]?.signal ?? '중립'] ?? 2) - (signalOrder[analysisMap[b.code]?.signal ?? '중립'] ?? 2));
+    }
     return stocks.sort((a, b) => (a.ranking.volume_rank || 999) - (b.ranking.volume_rank || 999));
-  }, [kisData, analysisData, isViewingHistory, marketFilter, signalFilter, analysisMap, searchQuery]);
+  }, [kisData, analysisData, isViewingHistory, marketFilter, signalFilter, analysisMap, searchQuery, sortBy]);
 
   // 시그널 카운트 (SignalCounts 타입에 맞춤)
   const signalCounts: SignalCounts = useMemo(() => {
@@ -585,11 +592,24 @@ export function APIAnalysis() {
         onChange={setMarketFilter}
       />
 
-      {/* 필터 인디케이터 */}
-      <FilterIndicator
-        signal={signalFilter}
-        onClear={() => setSignalFilter(null)}
-      />
+      {/* 정렬 + 필터 인디케이터 */}
+      <div className="flex items-center justify-between mb-2">
+        <FilterIndicator
+          signal={signalFilter}
+          onClear={() => setSignalFilter(null)}
+        />
+        {!isViewingHistory && (
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+            className="text-xs bg-bg-secondary border border-border rounded-lg px-2 py-1 text-text-secondary"
+          >
+            <option value="volume_rank">거래량 순위</option>
+            <option value="change_rate">등락률</option>
+            <option value="signal">시그널</option>
+          </select>
+        )}
+      </div>
 
       {/* 종목 그리드 */}
       {filteredStocks.length > 0 ? (
@@ -750,7 +770,7 @@ function HistoryStockCard({
               {analysis.name}
             </a>
             {analysis.market && (
-              <span className={`text-[0.65rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${analysis.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+              <span className={`text-[0.75rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${analysis.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
                 {analysis.market}
               </span>
             )}
@@ -774,17 +794,17 @@ function HistoryStockCard({
         <>
           <CriteriaIndicator criteria={criteria} />
           {criteria.short_selling_alert?.met && (
-            <span className="text-[9px] text-red-600 font-medium">
+            <span className="text-[11px] text-red-600 font-medium">
               공매도 주의 ({criteria.short_selling_alert.reason})
             </span>
           )}
           {criteria.overheating_alert?.met && (
-            <span className="text-[9px] text-orange-600 font-medium">
+            <span className="text-[11px] text-orange-600 font-medium">
               과열 주의 ({criteria.overheating_alert.reason})
             </span>
           )}
           {criteria.reverse_ma_alert?.met && (
-            <span className="text-[9px] text-violet-600 font-medium">
+            <span className="text-[11px] text-violet-600 font-medium">
               역배열 주의 ({criteria.reverse_ma_alert.reason})
             </span>
           )}
@@ -796,7 +816,7 @@ function HistoryStockCard({
         className="cursor-pointer"
         onClick={onToggle}
       >
-        <div className="flex items-center justify-between text-[0.65rem] md:text-xs text-text-muted mb-1">
+        <div className="flex items-center justify-between text-[0.75rem] md:text-xs text-text-muted mb-1">
           <span>AI 분석 근거</span>
           <span className="transition-transform duration-200" style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
         </div>
@@ -806,7 +826,7 @@ function HistoryStockCard({
           <div className="bg-bg-primary rounded-lg p-2 md:p-3 text-xs md:text-sm">
             <p className="text-text-secondary mb-2">{analysis.reason}</p>
             {analysis.key_factors && (
-              <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.65rem] md:text-xs">
+              <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.75rem] md:text-xs">
                 <div><span className="text-text-muted">추세:</span> {analysis.key_factors.price_trend}</div>
                 <div><span className="text-text-muted">거래량:</span> {analysis.key_factors.volume_signal}</div>
                 <div><span className="text-text-muted">외인:</span> {analysis.key_factors.foreign_flow}</div>
@@ -814,7 +834,7 @@ function HistoryStockCard({
               </div>
             )}
             {analysis.confidence != null && (
-              <div className="mt-2 text-[0.65rem] md:text-xs text-text-muted">
+              <div className="mt-2 text-[0.75rem] md:text-xs text-text-muted">
                 신뢰도: {((analysis.confidence ?? 0) * 100).toFixed(0)}% | 위험도: {analysis.risk_level || '-'}
               </div>
             )}

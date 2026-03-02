@@ -15,7 +15,7 @@ export function Navigation() {
   });
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-border z-50 px-4 md:px-6 pt-[env(safe-area-inset-top)]">
+    <nav aria-label="메인 네비게이션" className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-border z-50 px-4 md:px-6 pt-[env(safe-area-inset-top)]">
       <div className="max-w-[1200px] mx-auto flex justify-between items-center h-14 md:h-16">
         <Logo />
 

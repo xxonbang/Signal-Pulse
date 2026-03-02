@@ -141,14 +141,17 @@ def evaluate_alignment(ohlcv: list[dict], market_name: str) -> dict:
 
     if is_bullish:
         status = "bullish"
+        signal_adjustment = +0.5
         checked = ">".join(f"MA{p}" for p, _ in available)
         reason = f"{market_name} 정배열 (현재가>{checked})"
     elif is_bearish:
         status = "bearish"
+        signal_adjustment = -0.5
         checked = "<".join(f"MA{p}" for p, _ in available)
         reason = f"{market_name} 역배열 (현재가<{checked})"
     else:
         status = "mixed"
+        signal_adjustment = 0.0
         reason = f"{market_name} 혼조 (정배열도 역배열도 아님)"
 
     return {
@@ -156,6 +159,7 @@ def evaluate_alignment(ohlcv: list[dict], market_name: str) -> dict:
         "current": round(current, 2),
         "ma_values": ma_display,
         "reason": reason,
+        "signal_adjustment": signal_adjustment,
     }
 
 

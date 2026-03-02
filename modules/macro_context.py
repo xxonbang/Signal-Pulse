@@ -61,8 +61,9 @@ def fetch_macro_summary() -> str:
 
 
 def load_market_status(results_dir: Path) -> str:
-    """market_status.json 읽어서 1줄 요약 반환
+    """market_status.json 읽어서 KOSPI/KOSDAQ 요약 반환
 
+    파일 구조: {kospi: {reason, signal_adjustment, ...}, kosdaq: {reason, signal_adjustment, ...}}
     파일 없거나 읽기 실패 시 빈 문자열.
     """
     path = results_dir / "kis" / "market_status.json"
@@ -73,10 +74,16 @@ def load_market_status(results_dir: Path) -> str:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        reason = data.get("reason", "")
-        if reason:
-            return reason
-        return ""
+        parts = []
+        for market_key in ("kospi", "kosdaq"):
+            market_data = data.get(market_key, {})
+            reason = market_data.get("reason", "")
+            adj = market_data.get("signal_adjustment", 0)
+            if reason:
+                adj_str = f"(시그널 보정: {adj:+.1f})" if adj != 0 else ""
+                parts.append(f"- {reason} {adj_str}".strip())
+
+        return "\n".join(parts) if parts else ""
 
     except Exception as e:
         print(f"[MACRO] market_status.json 읽기 실패: {e}")

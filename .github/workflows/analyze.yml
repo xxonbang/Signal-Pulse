@@ -568,8 +568,14 @@ jobs:
               diff = abs(signal_level.get(vision_signal, 0) - signal_level.get(api_signal, 0))
               return 'partial' if diff <= 1 else 'mismatch'
 
-          def calculate_confidence(match_status):
-              return {'match': 1.0, 'partial': 0.7, 'vision-only': 0.5, 'api-only': 0.5, 'mismatch': 0.3, 'no_data': 0.0}.get(match_status, 0)
+          def calculate_confidence(match_status, vision_conf=None, api_conf=None):
+              base = {'match': 1.0, 'partial': 0.7, 'vision-only': 0.5, 'api-only': 0.5, 'mismatch': 0.3, 'no_data': 0.0}.get(match_status, 0)
+              # AI 개별 confidence가 있으면 가중 평균 보정
+              confs = [c for c in [vision_conf, api_conf] if c is not None and isinstance(c, (int, float))]
+              if confs:
+                  avg_ai = sum(confs) / len(confs)
+                  return round(base * 0.5 + avg_ai * 0.5, 2)
+              return base
 
           # 데이터 로드
           vision_data = {}
@@ -615,6 +621,7 @@ jobs:
                   'market': market,
                   'vision_signal': stock.get('signal'),
                   'vision_reason': stock.get('reason'),
+                  'vision_confidence': stock.get('confidence'),
                   'vision_news': stock.get('news', []),
                   'vision_news_analysis': stock.get('news_analysis'),
                   'api_signal': None,
@@ -653,6 +660,7 @@ jobs:
                       'market': kis_stock.get('market', 'UNKNOWN'),
                       'vision_signal': None,
                       'vision_reason': None,
+                      'vision_confidence': None,
                       'vision_news': [],
                       'vision_news_analysis': None,
                       'api_signal': kis_result.get('signal'),
@@ -673,7 +681,7 @@ jobs:
           # 일치 상태 및 신뢰도 계산
           for code, stock in combined_stocks.items():
               stock['match_status'] = calculate_match_status(stock['vision_signal'], stock['api_signal'])
-              stock['confidence'] = calculate_confidence(stock['match_status'])
+              stock['confidence'] = calculate_confidence(stock['match_status'], stock.get('vision_confidence'), stock.get('api_confidence'))
 
           # 통계 계산
           stats = {'total': 0, 'match': 0, 'partial': 0, 'mismatch': 0, 'vision_only': 0, 'api_only': 0, 'no_data': 0}

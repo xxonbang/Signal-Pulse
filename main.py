@@ -19,7 +19,7 @@ from modules.naver_news import collect_news_for_stocks
 KST = timezone(timedelta(hours=9))
 
 # Vision 배치 처리 설정
-VISION_BATCH_SIZE = 15  # 15개씩 배치 처리 (google_search 안정성 확보)
+VISION_BATCH_SIZE = 10  # 10개씩 배치 처리 (google_search 안정성 확보)
 
 
 # 분석 결과 보존 기간 (일)

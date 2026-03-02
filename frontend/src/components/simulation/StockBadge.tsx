@@ -58,9 +58,9 @@ export function StockBadge({ stock, category, date, isExpanded, onToggle }: Stoc
                 <line x1="10" y1="14" x2="21" y2="3"/>
               </svg>
             </a>
-            <span className="text-[0.6rem] md:text-[0.65rem] text-text-muted">{stock.code}</span>
+            <span className="text-[0.75rem] md:text-xs text-text-muted">{stock.code}</span>
           </div>
-          <div className="flex items-center gap-1 md:gap-2 mt-0.5 text-[0.65rem] md:text-xs text-text-muted tabular-nums">
+          <div className="flex items-center gap-1 md:gap-2 mt-0.5 text-[0.75rem] md:text-xs text-text-muted tabular-nums">
             {stock.open_price !== null ? (
               sellPrice !== null && sellPrice !== undefined ? (
                 <>
@@ -98,7 +98,7 @@ export function StockBadge({ stock, category, date, isExpanded, onToggle }: Stoc
 
       {/* 상세 정보 */}
       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
-        <div className="px-2.5 md:px-3 pb-2 md:pb-2.5 pt-0 text-[0.65rem] md:text-xs text-text-muted tabular-nums">
+        <div className="px-2.5 md:px-3 pb-2 md:pb-2.5 pt-0 text-[0.75rem] md:text-xs text-text-muted tabular-nums">
           <div className="border-t border-border/50 pt-1.5">
             <div className="flex items-center gap-2 px-1.5 py-0.5 rounded">
               <span className="w-7 text-text-muted/70">시장</span>

@@ -118,12 +118,12 @@ export function CriteriaIndicator({ criteria, isCompact = false }: CriteriaIndic
                   }
                   {/* PC: 뱃지 */}
                   <span className={cn(
-                    'hidden sm:inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-medium leading-none',
+                    'hidden sm:inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[11px] font-medium leading-none',
                     is52w ? 'bg-amber-100 text-amber-700' : config.badgeBg,
                     is52w ? '' : config.badgeText,
                   )}>
                     {is52w
-                      ? <span className="text-[9px] leading-none">👑</span>
+                      ? <span className="text-[11px] leading-none">👑</span>
                       : <span className={cn('inline-block w-1.5 h-1.5 rounded-full', config.dotColor)} />
                     }
                     {is52w ? '52주 신고가' : config.label}

@@ -14,10 +14,12 @@ export function AnalysisTabs() {
   return (
     <div className="mb-6">
       {/* 탭 버튼들 - 전체 너비 */}
-      <div className="flex gap-1 bg-bg-secondary p-1 rounded-xl border border-border">
+      <div className="flex gap-1 bg-bg-secondary p-1 rounded-xl border border-border" role="tablist">
         {tabs.map((tab) => (
           <button
             key={tab.key}
+            role="tab"
+            aria-selected={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={cn(
               'flex-1 py-2.5 md:py-3 px-3 md:px-4 rounded-lg text-xs md:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 md:gap-2',

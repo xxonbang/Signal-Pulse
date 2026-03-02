@@ -32,7 +32,7 @@ function MatchStatusBadge({ status }: { status: MatchStatus }) {
   const { label, shortLabel, className, icon } = config[status];
 
   return (
-    <span className={cn('inline-flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-0.5 rounded text-[0.65rem] md:text-xs font-medium border', className)}>
+    <span className={cn('inline-flex items-center gap-0.5 md:gap-1 px-1.5 md:px-2 py-0.5 rounded text-[0.75rem] md:text-xs font-medium border', className)}>
       <span>{icon}</span>
       <span className="hidden md:inline">{label}</span>
       <span className="md:hidden">{shortLabel}</span>
@@ -50,7 +50,7 @@ function ConfidenceBar({ score }: { score: number }) {
       <div className="flex-1 h-1 md:h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div className={cn('h-full rounded-full transition-all', colorClass)} style={{ width: `${percentage}%` }} />
       </div>
-      <span className="text-[0.65rem] md:text-xs font-medium text-text-muted w-7 md:w-8">{percentage}%</span>
+      <span className="text-[0.75rem] md:text-xs font-medium text-text-muted w-7 md:w-8">{percentage}%</span>
     </div>
   );
 }
@@ -106,7 +106,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
             >
               {stock.name}
             </a>
-            <span className={`text-[0.65rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${stock.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+            <span className={`text-[0.75rem] md:text-xs px-1 md:px-1.5 py-0.5 rounded flex-shrink-0 ${stock.market === 'KOSPI' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
               {stock.market}
             </span>
           </div>
@@ -127,17 +127,17 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
         <>
           <CriteriaIndicator criteria={criteria} />
           {criteria.short_selling_alert?.met && (
-            <span className="text-[9px] text-red-600 font-medium">
+            <span className="text-[11px] text-red-600 font-medium">
               공매도 주의 ({criteria.short_selling_alert.reason})
             </span>
           )}
           {criteria.overheating_alert?.met && (
-            <span className="text-[9px] text-orange-600 font-medium">
+            <span className="text-[11px] text-orange-600 font-medium">
               과열 주의 ({criteria.overheating_alert.reason})
             </span>
           )}
           {criteria.reverse_ma_alert?.met && (
-            <span className="text-[9px] text-violet-600 font-medium">
+            <span className="text-[11px] text-violet-600 font-medium">
               역배열 주의 ({criteria.reverse_ma_alert.reason})
             </span>
           )}
@@ -147,23 +147,23 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
       {/* 시그널 비교 */}
       <div className="grid grid-cols-2 gap-2 md:gap-3 mb-2 md:mb-3">
         <div className="bg-bg-primary rounded-lg p-2 md:p-3">
-          <div className="text-[0.65rem] md:text-xs text-text-muted mb-1 md:mb-1.5 flex items-center gap-1">
+          <div className="text-[0.75rem] md:text-xs text-text-muted mb-1 md:mb-1.5 flex items-center gap-1">
             <span>👁</span> <span className="hidden md:inline">Vision AI</span><span className="md:hidden">Vision</span>
           </div>
           {stock.vision_signal ? (
             <SignalBadge signal={stock.vision_signal} />
           ) : (
-            <span className="text-[0.65rem] md:text-xs text-text-muted">없음</span>
+            <span className="text-[0.75rem] md:text-xs text-text-muted">없음</span>
           )}
         </div>
         <div className="bg-bg-primary rounded-lg p-2 md:p-3">
-          <div className="text-[0.65rem] md:text-xs text-text-muted mb-1 md:mb-1.5 flex items-center gap-1">
+          <div className="text-[0.75rem] md:text-xs text-text-muted mb-1 md:mb-1.5 flex items-center gap-1">
             <span>📡</span> <span className="hidden md:inline">한투 API</span><span className="md:hidden">API</span>
           </div>
           {stock.api_signal ? (
             <SignalBadge signal={stock.api_signal} />
           ) : (
-            <span className="text-[0.65rem] md:text-xs text-text-muted">없음</span>
+            <span className="text-[0.75rem] md:text-xs text-text-muted">없음</span>
           )}
         </div>
       </div>
@@ -177,20 +177,20 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
 
       {/* 신뢰도 */}
       <div className="mb-2 md:mb-3">
-        <div className="text-[0.65rem] md:text-xs text-text-muted mb-1">신뢰도</div>
+        <div className="text-[0.75rem] md:text-xs text-text-muted mb-1">신뢰도</div>
         <ConfidenceBar score={stock.confidence} />
       </div>
 
       {/* 분석 근거 토글 */}
       {(stock.vision_reason || stock.api_reason) && (
         <div className="cursor-pointer" onClick={toggleExpand}>
-          <div className="flex items-center justify-between text-[0.65rem] md:text-xs text-text-muted mb-1">
+          <div className="flex items-center justify-between text-[0.75rem] md:text-xs text-text-muted mb-1">
             <span>분석 근거</span>
             <div className="flex items-center gap-2">
               {(hasVisionDetail || hasApiDetail) && (
                 <button
                   onClick={(e) => { e.stopPropagation(); allDetailExpanded ? handleCollapseAll() : handleExpandAll(); }}
-                  className="px-2 py-0.5 text-[0.65rem] md:text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
+                  className="px-2 py-0.5 text-[0.75rem] md:text-xs font-medium text-text-muted hover:text-text-secondary bg-bg-secondary hover:bg-bg-primary border border-border rounded-lg transition-all"
                 >
                   {allDetailExpanded ? '전체 접기' : '전체 펼치기'}
                 </button>
@@ -202,7 +202,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
             <div className="space-y-1.5 md:space-y-2">
               {stock.vision_reason && (
                 <div className="bg-purple-50 border border-purple-100 rounded-lg p-2 md:p-3">
-                  <div className="text-[0.65rem] md:text-xs font-medium text-purple-700 mb-1">👁 Vision</div>
+                  <div className="text-[0.75rem] md:text-xs font-medium text-purple-700 mb-1">👁 Vision</div>
                   <p className="text-xs md:text-sm text-text-secondary">{stock.vision_reason}</p>
                   {stock.vision_news_analysis && (
                     <div className="mt-2 pt-2 border-t border-purple-100">
@@ -210,7 +210,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
                         className="flex items-center justify-between cursor-pointer"
                         onClick={(e) => { e.stopPropagation(); setIsVisionDetailOpen(!isVisionDetailOpen); }}
                       >
-                        <span className="text-[0.65rem] md:text-xs font-semibold text-text-muted">재료분석</span>
+                        <span className="text-[0.75rem] md:text-xs font-semibold text-text-muted">재료분석</span>
                         <span className="text-[0.6rem] text-text-muted transition-transform duration-200" style={{ transform: isVisionDetailOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
                       </div>
                       <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isVisionDetailOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0')}>
@@ -222,7 +222,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
               )}
               {stock.api_reason && (
                 <div className="bg-cyan-50 border border-cyan-100 rounded-lg p-2 md:p-3">
-                  <div className="text-[0.65rem] md:text-xs font-medium text-cyan-700 mb-1">📡 API</div>
+                  <div className="text-[0.75rem] md:text-xs font-medium text-cyan-700 mb-1">📡 API</div>
                   <p className="text-xs md:text-sm text-text-secondary">{stock.api_reason}</p>
                   {(stock.api_key_factors || stock.api_confidence != null || stock.api_risk_level || stock.api_news_analysis) && (
                     <div className="mt-2 pt-2 border-t border-cyan-100">
@@ -230,13 +230,13 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
                         className="flex items-center justify-between cursor-pointer"
                         onClick={(e) => { e.stopPropagation(); setIsApiDetailOpen(!isApiDetailOpen); }}
                       >
-                        <span className="text-[0.65rem] md:text-xs font-semibold text-text-muted">분석지표 + 재료분석</span>
+                        <span className="text-[0.75rem] md:text-xs font-semibold text-text-muted">분석지표 + 재료분석</span>
                         <span className="text-[0.6rem] text-text-muted transition-transform duration-200" style={{ transform: isApiDetailOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
                       </div>
                       <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isApiDetailOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0')}>
                         {stock.api_key_factors && (
                           <div className="mt-2">
-                            <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.65rem] md:text-xs">
+                            <div className="grid grid-cols-2 gap-1.5 md:gap-2 text-[0.75rem] md:text-xs">
                               <div><span className="text-text-muted">추세:</span> {stock.api_key_factors.price_trend}</div>
                               <div><span className="text-text-muted">거래량:</span> {stock.api_key_factors.volume_signal}</div>
                               <div><span className="text-text-muted">외인:</span> {stock.api_key_factors.foreign_flow}</div>
@@ -245,7 +245,7 @@ const CombinedStockCard = memo(function CombinedStockCard({ stock, criteria, isA
                           </div>
                         )}
                         {(stock.api_confidence != null || stock.api_risk_level) && (
-                          <div className="mt-2 text-[0.65rem] md:text-xs text-text-muted">
+                          <div className="mt-2 text-[0.75rem] md:text-xs text-text-muted">
                             {stock.api_confidence != null && <>신뢰도: {((stock.api_confidence ?? 0) * 100).toFixed(0)}%</>}
                             {stock.api_confidence != null && stock.api_risk_level && ' | '}
                             {stock.api_risk_level && <>위험도: {stock.api_risk_level}</>}
@@ -294,7 +294,7 @@ function StatCard({ icon, label, value, subValue, colorClass }: {
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[0.55rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+        <div className="text-[0.65rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
           {label}
         </div>
         <div className="text-sm md:text-base font-bold text-text-primary">
@@ -312,6 +312,7 @@ export function CombinedAnalysis() {
   const [matchFilters, setMatchFilters] = useState<Set<MatchStatus>>(new Set());
   const [signalFilters, setSignalFilters] = useState<Set<SignalType>>(new Set());
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [sortBy, setSortBy] = useState<'volume_rank' | 'confidence' | 'change_rate'>('volume_rank');
   const { isViewingHistory, viewingHistoryDateTime, isCompactView, searchQuery } = useUIStore();
   const isAdmin = useAuthStore((s) => s.isAdmin);
 
@@ -401,13 +402,18 @@ export function CombinedAnalysis() {
       stocks = stocks.filter(s => matchStock(searchQuery, s.name, s.code));
     }
 
-    // 거래대금 순위 기준 정렬 (API 데이터의 volume_rank 사용, 없으면 뒤로)
+    // 정렬
+    if (sortBy === 'confidence') {
+      return stocks.sort((a, b) => (b.confidence ?? 0) - (a.confidence ?? 0));
+    } else if (sortBy === 'change_rate') {
+      return stocks.sort((a, b) => (b.api_data?.price?.change_rate_pct ?? 0) - (a.api_data?.price?.change_rate_pct ?? 0));
+    }
     return stocks.sort((a, b) => {
       const rankA = a.api_data?.ranking?.volume_rank ?? Infinity;
       const rankB = b.api_data?.ranking?.volume_rank ?? Infinity;
       return rankA - rankB;
     });
-  }, [data, marketFilter, matchFilters, signalFilters, searchQuery]);
+  }, [data, marketFilter, matchFilters, signalFilters, searchQuery, sortBy]);
 
   // 통계 데이터 (pre-calculated에서 가져옴)
   const stats = data?.stats || { total: 0, match: 0, partial: 0, mismatch: 0, vision_only: 0, api_only: 0, no_data: 0, avg_confidence: 0 };
@@ -507,14 +513,14 @@ export function CombinedAnalysis() {
             📅
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+            <div className="text-[0.75rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
               분석 일시
             </div>
             <div className="text-sm md:text-base font-bold text-text-primary">
               {data.generated_at?.slice(0, 10) || data.date}
             </div>
             {data.generated_at && (
-              <div className="text-[0.65rem] md:text-xs text-text-muted font-medium">
+              <div className="text-[0.75rem] md:text-xs text-text-muted font-medium">
                 {data.generated_at.slice(11, 19)}
               </div>
             )}
@@ -525,7 +531,7 @@ export function CombinedAnalysis() {
             📊
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-[0.6rem] md:text-[0.65rem] text-text-muted uppercase tracking-wide font-semibold">
+            <div className="text-[0.75rem] md:text-xs text-text-muted uppercase tracking-wide font-semibold">
               분석 종목
             </div>
             <div className="text-sm md:text-base font-bold text-text-primary"><AnimatedNumber value={stats.total} duration={500} />개</div>
@@ -663,6 +669,19 @@ export function CombinedAnalysis() {
         counts={marketCounts}
         onChange={setMarketFilter}
       />
+
+      {/* 정렬 */}
+      <div className="flex justify-end mb-2">
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+          className="text-xs bg-bg-secondary border border-border rounded-lg px-2 py-1 text-text-secondary"
+        >
+          <option value="volume_rank">거래량 순위</option>
+          <option value="confidence">신뢰도</option>
+          <option value="change_rate">등락률</option>
+        </select>
+      </div>
 
       {/* 종목 그리드 */}
       {filteredStocks.length > 0 ? (

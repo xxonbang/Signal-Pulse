@@ -115,6 +115,7 @@ class SimulationCollector:
             open_price = int(output.get("stck_oprc", 0))
             close_price = int(output.get("stck_prpr", 0))
             high_price = int(output.get("stck_hgpr", 0))
+            low_price = int(output.get("stck_lwpr", 0))
 
             if open_price == 0:
                 return None
@@ -123,6 +124,7 @@ class SimulationCollector:
                 "open_price": open_price,
                 "close_price": close_price or None,
                 "high_price": high_price or None,
+                "low_price": low_price or None,
             }
         except Exception as e:
             print(f"[Simulation] 가격 조회 에러 ({stock_code}): {e}")
@@ -371,6 +373,9 @@ class SimulationCollector:
                 print(hpt or "시각 미확인")
                 time.sleep(0.1)
 
+        # 거래 비용 상수 (매수 수수료 + 매도 수수료 + 매도 세금)
+        TRADING_COST_PCT = 0.33  # 약 0.33% (수수료 0.015%×2 + 세금 0.18% + 기타)
+
         # 카테고리별 결과 조립
         result_categories = {}
         for cat, stocks in categories.items():
@@ -381,6 +386,19 @@ class SimulationCollector:
                 open_p = price["open_price"] if price else None
                 close_p = price["close_price"] if price else None
                 high_p = price["high_price"] if price else None
+                low_p = price.get("low_price") if price else None
+                return_pct = round(
+                    (close_p - open_p) / open_p * 100, 2
+                ) if open_p and close_p and open_p > 0 else None
+
+                # 손절/익절 판정
+                stop_result = None
+                if open_p and open_p > 0:
+                    if low_p and (low_p - open_p) / open_p * 100 <= -3.0:
+                        stop_result = "stop_loss"
+                    elif high_p and (high_p - open_p) / open_p * 100 >= 5.0:
+                        stop_result = "take_profit"
+
                 entry: dict = {
                     "code": code,
                     "name": stock["name"],
@@ -388,13 +406,16 @@ class SimulationCollector:
                     "open_price": open_p,
                     "close_price": close_p,
                     "high_price": high_p,
+                    "low_price": low_p,
                     "high_price_time": high_price_times.get(code),
-                    "return_pct": round(
-                        (close_p - open_p) / open_p * 100, 2
-                    ) if open_p and close_p and open_p > 0 else None,
+                    "return_pct": return_pct,
+                    "return_pct_net": round(
+                        return_pct - TRADING_COST_PCT, 2
+                    ) if return_pct is not None else None,
                     "high_return_pct": round(
                         (high_p - open_p) / open_p * 100, 2
                     ) if open_p and high_p and open_p > 0 else None,
+                    "stop_result": stop_result,
                 }
                 cat_results.append(entry)
             result_categories[cat] = cat_results
@@ -411,11 +432,15 @@ class SimulationCollector:
                     "high_price_time": high_price_times.get(code),
                 }
 
+        # 전 시그널 추적: 카테고리별 모든 종목의 시그널 기록 (가격 조회 없이)
+        all_signals = self._collect_all_signals(today_str)
+
         simulation_data = {
             "date": today_str,
             "collected_at": now.isoformat(),
             "categories": result_categories,
             "all_prices": all_prices,
+            "all_signals": all_signals,
         }
 
         return self._save_simulation(simulation_data)
@@ -466,6 +491,9 @@ class SimulationCollector:
                 print("데이터 없음")
             time.sleep(0.1)
 
+        # 거래 비용 상수
+        TRADING_COST_PCT = 0.33
+
         # 카테고리별 결과 조립
         result_categories = {}
         for cat, stocks in categories.items():
@@ -476,6 +504,9 @@ class SimulationCollector:
                 open_p = price["open_price"] if price else None
                 close_p = price["close_price"] if price else None
                 high_p = price["high_price"] if price else None
+                return_pct = round(
+                    (close_p - open_p) / open_p * 100, 2
+                ) if open_p and close_p and open_p > 0 else None
                 entry: dict = {
                     "code": code,
                     "name": stock["name"],
@@ -483,9 +514,10 @@ class SimulationCollector:
                     "open_price": open_p,
                     "close_price": close_p,
                     "high_price": high_p,
-                    "return_pct": round(
-                        (close_p - open_p) / open_p * 100, 2
-                    ) if open_p and close_p and open_p > 0 else None,
+                    "return_pct": return_pct,
+                    "return_pct_net": round(
+                        return_pct - TRADING_COST_PCT, 2
+                    ) if return_pct is not None else None,
                     "high_return_pct": round(
                         (high_p - open_p) / open_p * 100, 2
                     ) if open_p and high_p and open_p > 0 else None,
@@ -650,6 +682,34 @@ class SimulationCollector:
 
         print(f"[Simulation] 모든 시간대 적극매수 유니온: {len(all_codes)}개 종목")
         return all_codes
+
+    def _collect_all_signals(self, target_date: str) -> dict[str, dict]:
+        """해당 날짜 모든 종목의 시그널 기록 (가격 조회 없이)
+
+        Returns:
+            {code: {"name": ..., "vision_signal": ..., "kis_signal": ...}}
+        """
+        signals: dict[str, dict] = {}
+
+        # Vision
+        vision_data = self._load_json(self.RESULTS_DIR / "vision" / "vision_analysis.json")
+        if vision_data and vision_data.get("date") == target_date:
+            for stock in vision_data.get("results", []):
+                code = stock.get("code", "")
+                if code:
+                    signals.setdefault(code, {"name": stock.get("name", "")})
+                    signals[code]["vision_signal"] = stock.get("signal")
+
+        # KIS
+        kis_data = self._load_json(self.RESULTS_DIR / "kis" / "kis_analysis.json")
+        if kis_data and kis_data.get("date") == target_date:
+            for stock in kis_data.get("results", []):
+                code = stock.get("code", "")
+                if code:
+                    signals.setdefault(code, {"name": stock.get("name", "")})
+                    signals[code]["kis_signal"] = stock.get("signal")
+
+        return signals
 
     def _save_simulation(self, data: dict) -> dict:
         """시뮬레이션 결과 저장 & 인덱스 갱신"""
