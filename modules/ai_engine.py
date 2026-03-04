@@ -68,18 +68,19 @@ def get_next_api_key() -> tuple[str, int] | None:
     return GEMINI_API_KEYS[best.index], best.index
 
 
-def handle_rate_limit(key_index: int, retry_delay: float | None = None, quota_type: str = "UNKNOWN"):
+def handle_rate_limit(key_index: int, retry_delay: float | None = None):
     """429 에러 후 RPM/RPD 분류 및 쿨다운 설정
 
-    - quota_type="RPD" 또는 연속 3회 429 → daily_exhausted 마킹
-    - 그 외 → retry_delay 기반 쿨다운 (없으면 지수 백오프)
+    연속 429 횟수 기반으로 RPD 소진을 판정:
+    - 연속 3회 미만: RPM(일시적) → 쿨다운 설정
+    - 연속 3회 이상: RPD(당일 소진) → daily_exhausted 마킹
     """
     ks = _key_states[key_index]
     ks.consecutive_429 += 1
 
-    if quota_type == "RPD" or ks.consecutive_429 >= 3:
+    if ks.consecutive_429 >= 3:
         ks.daily_exhausted = True
-        print(f"  [KEY #{key_index + 1}] RPD 소진 확정 (quota_type={quota_type}, 연속 429: {ks.consecutive_429}회, 성공: {ks.success_count}회). 당일 제외.")
+        print(f"  [KEY #{key_index + 1}] RPD 소진 확정 (연속 429: {ks.consecutive_429}회, 성공: {ks.success_count}회). 당일 제외.")
     else:
         # RPM(일시적) → 쿨다운 설정
         if retry_delay and retry_delay > 0:
@@ -109,16 +110,6 @@ def _parse_retry_delay(error) -> float | None:
     except Exception:
         pass
     return None
-
-
-def _parse_quota_type(error) -> str:
-    """429 에러 메시지에서 RPM vs RPD 구분 (quotaId 패턴 매칭)"""
-    msg = str(error)
-    if "PerDay" in msg or "Daily" in msg:
-        return "RPD"
-    if "PerMinute" in msg:
-        return "RPM"
-    return "UNKNOWN"
 
 
 def _check_finish_reason(response) -> str | None:
@@ -584,8 +575,7 @@ def analyze_stocks_batch(scrape_results: list[dict], capture_dir: Path, max_retr
             print(f"  [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:150]}")
             if e.code == 429:
                 retry_delay = _parse_retry_delay(e)
-                quota_type = _parse_quota_type(e)
-                handle_rate_limit(key_index, retry_delay=retry_delay, quota_type=quota_type)
+                handle_rate_limit(key_index, retry_delay=retry_delay)
                 # 별도 프로젝트 키가 남아있으면 즉시 전환, 없으면 백오프 대기
                 avail = sum(1 for ks in _key_states if ks.is_available())
                 if avail > 0:
@@ -1179,8 +1169,7 @@ def analyze_kis_data(
             print(f"[ERROR] [KEY #{key_index + 1}] ClientError({e.code}): {str(e)[:200]}")
             if e.code == 429:
                 retry_delay = _parse_retry_delay(e)
-                quota_type = _parse_quota_type(e)
-                handle_rate_limit(key_index, retry_delay=retry_delay, quota_type=quota_type)
+                handle_rate_limit(key_index, retry_delay=retry_delay)
                 # 별도 프로젝트 키가 남아있으면 즉시 전환, 없으면 백오프 대기
                 avail = sum(1 for ks in _key_states if ks.is_available())
                 if avail > 0:
