@@ -1,6 +1,6 @@
 {
   "date": "2026-03-05",
-  "collected_at": "2026-03-05T15:40:22.438858+09:00",
+  "collected_at": "2026-03-05T20:06:17.308568+09:00",
   "categories": {
     "vision": [
       {
@@ -78,22 +78,16 @@
     "combined": []
   },
   "all_prices": {
-    "005380": {
-      "open_price": 565000,
-      "close_price": 548000,
-      "high_price": 582000,
+    "034020": {
+      "open_price": 91000,
+      "close_price": 90500,
+      "high_price": 93200,
       "high_price_time": null
     },
-    "012450": {
-      "open_price": 1361000,
-      "close_price": 1381000,
-      "high_price": 1486000,
-      "high_price_time": null
-    },
-    "042700": {
-      "open_price": 302000,
-      "close_price": 315000,
-      "high_price": 323000,
+    "065450": {
+      "open_price": 5220,
+      "close_price": 5600,
+      "high_price": 6080,
       "high_price_time": null
     },
     "010950": {
@@ -102,10 +96,46 @@
       "high_price": 136700,
       "high_price_time": null
     },
-    "034020": {
-      "open_price": 91000,
-      "close_price": 90500,
-      "high_price": 93200,
+    "032820": {
+      "open_price": 15690,
+      "close_price": 16580,
+      "high_price": 16580,
+      "high_price_time": "15:18"
+    },
+    "079550": {
+      "open_price": 648000,
+      "close_price": 763000,
+      "high_price": 792000,
+      "high_price_time": null
+    },
+    "012450": {
+      "open_price": 1361000,
+      "close_price": 1381000,
+      "high_price": 1486000,
+      "high_price_time": null
+    },
+    "005380": {
+      "open_price": 565000,
+      "close_price": 548000,
+      "high_price": 582000,
+      "high_price_time": null
+    },
+    "347700": {
+      "open_price": 41900,
+      "close_price": 45850,
+      "high_price": 45850,
+      "high_price_time": "13:37"
+    },
+    "178320": {
+      "open_price": 41650,
+      "close_price": 46450,
+      "high_price": 47650,
+      "high_price_time": null
+    },
+    "042700": {
+      "open_price": 302000,
+      "close_price": 315000,
+      "high_price": 323000,
       "high_price_time": null
     }
   },
@@ -500,7 +530,7 @@
     }
   },
   "fear_greed": {
-    "score": 37.2293542074364,
+    "score": 38.0810810810811,
     "rating": "fear"
   }
 }
