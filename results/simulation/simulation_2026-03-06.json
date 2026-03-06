@@ -1,0 +1,186 @@
+{
+  "date": "2026-03-06",
+  "collected_at": "2026-03-06T15:40:21.450901+09:00",
+  "categories": {
+    "vision": [
+      {
+        "code": "005380",
+        "name": "현대차",
+        "market": "KOSPI",
+        "open_price": 532000,
+        "close_price": 553000,
+        "high_price": 564000,
+        "low_price": 530000,
+        "high_price_time": null,
+        "return_pct": 3.95,
+        "return_pct_net": 3.62,
+        "high_return_pct": 6.02,
+        "stop_result": "take_profit"
+      },
+      {
+        "code": "010950",
+        "name": "S-Oil",
+        "market": "KOSPI",
+        "open_price": 141700,
+        "close_price": 129700,
+        "high_price": 142100,
+        "low_price": 122200,
+        "high_price_time": null,
+        "return_pct": -8.47,
+        "return_pct_net": -8.8,
+        "high_return_pct": 0.28,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "012450",
+        "name": "한화에어로스페이스",
+        "market": "KOSPI",
+        "open_price": 1414000,
+        "close_price": 1481000,
+        "high_price": 1540000,
+        "low_price": 1368000,
+        "high_price_time": null,
+        "return_pct": 4.74,
+        "return_pct_net": 4.41,
+        "high_return_pct": 8.91,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "042700",
+        "name": "한미반도체",
+        "market": "KOSPI",
+        "open_price": 326000,
+        "close_price": 333500,
+        "high_price": 334000,
+        "low_price": 305000,
+        "high_price_time": null,
+        "return_pct": 2.3,
+        "return_pct_net": 1.97,
+        "high_return_pct": 2.45,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "034020",
+        "name": "두산에너빌리티",
+        "market": "KOSPI",
+        "open_price": 88600,
+        "close_price": 98000,
+        "high_price": 98200,
+        "low_price": 88600,
+        "high_price_time": null,
+        "return_pct": 10.61,
+        "return_pct_net": 10.28,
+        "high_return_pct": 10.84,
+        "stop_result": "take_profit"
+      }
+    ],
+    "kis": [
+      {
+        "code": "010950",
+        "name": "S-Oil",
+        "market": "KOSPI",
+        "open_price": 141700,
+        "close_price": 129700,
+        "high_price": 142100,
+        "low_price": 122200,
+        "high_price_time": null,
+        "return_pct": -8.47,
+        "return_pct_net": -8.8,
+        "high_return_pct": 0.28,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "065450",
+        "name": "빅텍",
+        "market": "KOSDAQ",
+        "open_price": 5990,
+        "close_price": 5880,
+        "high_price": 6750,
+        "low_price": 5660,
+        "high_price_time": null,
+        "return_pct": -1.84,
+        "return_pct_net": -2.17,
+        "high_return_pct": 12.69,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "178320",
+        "name": "서진시스템",
+        "market": "KOSDAQ",
+        "open_price": 46300,
+        "close_price": 46650,
+        "high_price": 47200,
+        "low_price": 42500,
+        "high_price_time": null,
+        "return_pct": 0.76,
+        "return_pct_net": 0.43,
+        "high_return_pct": 1.94,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "032820",
+        "name": "우리기술",
+        "market": "KOSDAQ",
+        "open_price": 17130,
+        "close_price": 17230,
+        "high_price": 18750,
+        "low_price": 16620,
+        "high_price_time": null,
+        "return_pct": 0.58,
+        "return_pct_net": 0.25,
+        "high_return_pct": 9.46,
+        "stop_result": "take_profit"
+      },
+      {
+        "code": "079550",
+        "name": "LIG넥스원",
+        "market": "KOSPI",
+        "open_price": 843000,
+        "close_price": 834000,
+        "high_price": 899000,
+        "low_price": 796000,
+        "high_price_time": null,
+        "return_pct": -1.07,
+        "return_pct_net": -1.4,
+        "high_return_pct": 6.64,
+        "stop_result": "stop_loss"
+      },
+      {
+        "code": "347700",
+        "name": "스피어",
+        "market": "KOSDAQ",
+        "open_price": 45450,
+        "close_price": 46300,
+        "high_price": 48150,
+        "low_price": 42100,
+        "high_price_time": null,
+        "return_pct": 1.87,
+        "return_pct_net": 1.54,
+        "high_return_pct": 5.94,
+        "stop_result": "stop_loss"
+      }
+    ],
+    "combined": [
+      {
+        "code": "010950",
+        "name": "S-Oil",
+        "market": "KOSPI",
+        "open_price": 141700,
+        "close_price": 129700,
+        "high_price": 142100,
+        "low_price": 122200,
+        "high_price_time": null,
+        "return_pct": -8.47,
+        "return_pct_net": -8.8,
+        "high_return_pct": 0.28,
+        "stop_result": "stop_loss"
+      }
+    ]
+  },
+  "all_prices": {},
+  "all_signals": {},
+  "fear_greed": {
+    "score": 38.0810810810811,
+    "rating": "fear"
+  }
+}
