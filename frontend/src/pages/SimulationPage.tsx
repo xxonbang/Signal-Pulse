@@ -130,13 +130,20 @@ function PageHeader({ allDates }: { allDates?: string[] }) {
   const { isAdmin } = useAuthStore();
   const modeLabel = simulationMode === 'close' ? '종가 매도' : '최고가 매도';
   const investLabel = investmentMode === 'per_share' ? '종목당 1주' : '동일 금액';
-  const desc = `적극매수 시그널 종목 · ${investLabel} · 시가 매수 → ${modeLabel}`;
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h2 className="text-lg md:text-xl font-bold">모의투자 시뮬레이션</h2>
-        <p className="text-xs text-text-muted mt-0.5">{desc}</p>
+        <p className="text-xs text-text-muted mt-0.5 flex items-center gap-1 flex-wrap">
+          <span>적극매수 시그널 종목</span>
+          <span className="text-border">·</span>
+          <span className="font-semibold text-accent-primary">{investLabel}</span>
+          <span className="text-border">·</span>
+          <span>시가 매수</span>
+          <span className="text-text-muted/40">→</span>
+          <span className="font-semibold text-accent-primary">{modeLabel}</span>
+        </p>
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         {allDates && (
