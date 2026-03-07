@@ -199,7 +199,7 @@ function ControlGroup({ label, children }: { label: string; children: React.Reac
       <span className="text-[0.6rem] font-semibold text-text-muted/70 uppercase tracking-widest ml-1 mb-1 block">
         {label}
       </span>
-      <div className="flex gap-0.5 bg-bg-secondary/80 p-0.5 rounded-lg border border-border/60">
+      <div className="flex gap-1 bg-bg-secondary p-1 rounded-xl border border-border">
         {children}
       </div>
     </div>
@@ -216,10 +216,10 @@ function ControlButton({ active, onClick, label, shortLabel }: {
     <button
       onClick={onClick}
       className={cn(
-        'flex-1 py-1.5 md:py-2 px-3 md:px-4 rounded-md text-[0.7rem] md:text-xs font-semibold transition-all text-center',
+        'flex-1 py-2 md:py-2.5 px-3 md:px-4 rounded-lg text-xs md:text-sm font-semibold transition-all text-center',
         active
-          ? 'bg-white text-text-primary shadow-sm border border-border/40'
-          : 'text-text-muted hover:text-text-secondary'
+          ? 'bg-accent-primary text-white shadow-sm'
+          : 'text-text-muted hover:text-text-secondary hover:bg-bg-primary'
       )}
     >
       <span className="hidden sm:inline">{label}</span>
