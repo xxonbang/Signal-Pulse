@@ -63,7 +63,7 @@ function IndexCard({ data, label, icon }: { data: MarketIndexStatus; label: stri
           </div>
           {Object.entries(data.ma_values).map(([k, v]) => {
             const diff = data.current ? v - data.current : 0;
-            const colorClass = diff > 0 ? 'text-emerald-600' : diff < 0 ? 'text-red-500' : '';
+            const colorClass = diff > 0 ? 'text-red-500' : diff < 0 ? 'text-emerald-600' : '';
             return (
               <div key={k} className="flex flex-col">
                 <span className="text-[10px] uppercase tracking-wider opacity-40 font-medium">{k}</span>
