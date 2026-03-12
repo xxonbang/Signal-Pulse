@@ -1,27 +1,34 @@
 {
   "date": "2026-03-12",
-  "collected_at": "2026-03-12T07:49:04.551365+09:00",
+  "collected_at": "2026-03-12T15:40:24.572703+09:00",
   "categories": {
     "vision": [
       {
         "code": "329180",
         "name": "HD현대중공업",
         "market": "KOSPI",
-        "open_price": null,
-        "close_price": null,
-        "high_price": null,
-        "low_price": null,
+        "open_price": 588000,
+        "close_price": 604000,
+        "high_price": 608000,
+        "low_price": 582000,
         "high_price_time": null,
-        "return_pct": null,
-        "return_pct_net": null,
-        "high_return_pct": null,
+        "return_pct": 2.72,
+        "return_pct_net": 2.39,
+        "high_return_pct": 3.4,
         "stop_result": null
       }
     ],
     "kis": [],
     "combined": []
   },
-  "all_prices": {},
+  "all_prices": {
+    "329180": {
+      "open_price": 588000,
+      "close_price": 604000,
+      "high_price": 608000,
+      "high_price_time": null
+    }
+  },
   "all_signals": {
     "005930": {
       "name": "삼성전자",
